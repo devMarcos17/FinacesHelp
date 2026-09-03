@@ -18,8 +18,8 @@ class UserController extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|min:7',
-                'phone' => 'required|string|regex:/^\+[1-9]\d{7,14}$/',
-                'cpf' => 'required|string|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
+                'phone' => 'required|string',
+                'cpf' => 'required|string',
                 'date_of_birt' => 'required|date_format:d/m/Y',
             ]
         );

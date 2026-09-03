@@ -32,7 +32,6 @@ class GoalsController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'id_user' => 'required|integer|exists:users,id',
                 'title' => 'required|string',
                 'description' => 'nullable|string',
                 'target_year' => 'required|integer',
@@ -47,7 +46,7 @@ class GoalsController extends Controller
             ], 400);
         }
         $goal = new Goal();
-        $goal->id_user = $request->id_user;
+        $goal->id_user = $this->getUserId();
         $goal->title = $request->title;
         $goal->description = $request->description;
         $goal->target_year = $request->target_year;

@@ -5,7 +5,10 @@ namespace App\Services;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use App\Enums\TransactionCategory;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
+use Ramsey\Collection\Collection;
 
 class TransactionService
 {
@@ -20,47 +23,36 @@ class TransactionService
 
         return (int) ($user ? $user->id : Auth::id());
     }
-
     public function calculateBalance(): int
     {
-        $userId = $this->getUserId();
-
-        $revenue = Transaction::where('id_user', $userId)->where('type', 'revenue')->sum('amount');
-        $expanse = Transaction::where('id_user', $userId)->where('type', 'expense')->sum('amount');
-
-        $balance = $revenue - $expanse;
-        return $balance;
+        $idUser = $this->getUserId();
+        $revenue = Transaction::where('id_user', $idUser)->where('type', 'revenue')->sum('amount');
+        $expense = Transaction::where('id_user', $idUser)->where('type', 'expense')->sum('amount');
+        return $revenue - $expense;
     }
-
     public function totalRevenue(): int
     {
         $revenue = Transaction::where('id_user', $this->getUserId())->where('type', 'revenue')->sum('amount');
         return $revenue;
     }
-
     public function totalExpense(): int
     {
         $expanse = Transaction::where('id_user', $this->getUserId())->where('type', 'expense')->sum('amount');
         return $expanse;
     }
-
     public function filterDate(int $month, int $year)
     {
-        $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-        $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        $start = Date::createFromDate($year, $month, 1)->startOfMonth();
+        $end = Date::createFromDate($year, $month, 1)->endOfMonth();
 
-        $filter = Transaction::where('id_user', $this->getUserId())
-            ->whereBetween('created_at', [$startDate, $endDate])->get();
-
+        $filter = Transaction::where('id_user', $this->getUserId())->whereBetween('created_at', [$start, $end])->get();
         return $filter;
     }
-
     public function filterCategory(string $category)
     {
-        $categoryFilter = Transaction::where('id_user', $this->getUserId())->where('category', $category)->get();
-        return $categoryFilter;
+        $filterCategory = Transaction::where('id_user', $this->getUserId())->where('category', $category)->get();
+        return $filterCategory;
     }
-
     public function filterRevenue()
     {
         $revenue = Transaction::where('id_user', $this->getUserId())->where('type', 'revenue')->get();

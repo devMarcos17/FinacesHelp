@@ -2,17 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use App\Services\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DashBoardController extends Controller
 {
+     /**
+     *
+     * @return int
+     */
+    private function getUserId(): int
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return (int) ($user ? $user->id : Auth::id());
+    }
     public function __construct(private TransactionService $transactionService)
     {
-        $this->transactionService = new TransactionService();
     }
     public function dashboard(Request $request): JsonResponse
     {
@@ -29,6 +41,8 @@ class DashBoardController extends Controller
             ], 400);
         }
 
+        $transaction = new Transaction();
+        $transaction->id_user = $this->getUserId();
 
         $balance = $this->transactionService->calculateBalance();
         $month = (int) $request->input('month', Carbon::now()->month);

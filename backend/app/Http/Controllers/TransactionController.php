@@ -110,44 +110,39 @@ class TransactionController extends Controller
         $transaction->delete();
         return response()->json(['transaction' => $transaction], 200);
     }
-    public function balance(int $id): JsonResponse
+    public function balance(): JsonResponse
     {
-        $transaction = Transaction::find($id);
-        if (!$transaction) {
-            return response()->json(['message' => 'not found'], 404);
-        }
         $balance = $this->transactionService->calculateBalance();
-
         return response()->json(['balance' => $balance], 200);
     }
-    public function revenue(): JsonResponse
+    public function totalRevenue(): JsonResponse
     {
-        $revenue = $this->transactionService->totalRevenue();
-        return response()->json(['revenue' => $revenue], 200);
+        $revenueTotal = $this->transactionService->totalRevenue();
+        return response()->json(['total_revenue' => $revenueTotal], 200);
     }
-    public function expense(): JsonResponse
+    public function totalExpense(): JsonResponse
     {
         $expense = $this->transactionService->totalExpense();
-        return response()->json(['expense' => $expense], 200);
+        return response()->json(['total_expense' => $expense], 200);
     }
-    public function filterDate(Request $request)
+    public function filterDate(Request $request): JsonResponse
     {
-        $validator = Validator::make(
-            request()->all(),
-            [
-                'month' => 'nullable|integer|between:1,12',
-                'year' => 'nullable|integer|digits:4',
-            ]
-        );
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+        $validator = Validator::make(request()->all(),
+        [
+            'month' => 'required|integer|between:1,12',
+        'year'  => 'nullable|integer|digits:4',
+        ]);
+        if($validator->fails()){
+            return response()->json(['error' => $validator->errors()], 400);
         }
         $month = $request->input('month', Carbon::now()->month);
-        $year  = $request->input('year', Carbon::now()->year);
-        $filterTransaction = $this->transactionService->filterDate((int)$month, (int)$year);
-        return response()->json(['transaction' => $filterTransaction], 200);
+        $year = $request->input('year', Carbon::now()->year);
+
+        $filter = $this->transactionService->filterDate($month, $year);
+
+        return response()->json(['transactions' => $filter], 200);
     }
-    public function filterCategory(Request $request)
+    public function filterCategory(Request $request): JsonResponse
     {
         $validator = Validator::make(
             request()->all(),
@@ -178,22 +173,17 @@ class TransactionController extends Controller
     }
     public function expensesCategories(Request $request): JsonResponse
     {
-        $validator = Validator::make(
-            request()->all(),
-            [
-                'category' => ['required', new Enum(TransactionCategory::class)],
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+        $validator = Validator::make(request()->all(),
+        [
+            'category' => ['required', new Enum(TransactionCategory::class)],
+        ]);
+        if($validator->fails()){
+            return response()->json(['error' => $validator->errors()], 400);
         }
         $categoryEnum = TransactionCategory::from($request->category);
-        $transaction = $this->transactionService->expensesCategories($categoryEnum);
+        $expenseCategory = $this->transactionService->expensesCategories($categoryEnum);
 
-        return response()->json(['transaction' => $transaction], 200);
+        return response()->json(['transaction' => $expenseCategory], 200);
     }
     public function monthlyRevenue(Request $request)
     {

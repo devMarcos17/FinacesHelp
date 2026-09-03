@@ -1,17 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar</title>
 </head>
+
 <body>
-    <form action="" id="form">
-        <label for="">Nome</label>
-        <label for="">Email</label>
-        <label for="">Telefone</label>
-        <label for="">Senha</label>
+    <form id="form">
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="phone">Telefone</label>
+        <input type="tel" id="phone" name="phone">
+
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" name="cpf">
+
+        <label for="date_of_birt">Data de Nascimento</label>
+        <input type="date" id="date_of_birt" name="date_of_birt">
+
+        <input type="submit" value="Cadastrar">
     </form>
-    
+
+    <script src="../script/script.js"></script>
+
+
 </body>
+
 </html>
