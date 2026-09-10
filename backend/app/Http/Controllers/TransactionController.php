@@ -169,7 +169,7 @@ class TransactionController extends Controller
     public function filterExpense(): JsonResponse
     {
         $filterExpense = $this->transactionService->filterExpense();
-        return response()->json(['transaction' => $filterExpense], 200);
+        return response()->json(['transactions' => $filterExpense], 200);
     }
     public function expensesCategories(Request $request): JsonResponse
     {
@@ -183,7 +183,7 @@ class TransactionController extends Controller
         $categoryEnum = TransactionCategory::from($request->category);
         $expenseCategory = $this->transactionService->expensesCategories($categoryEnum);
 
-        return response()->json(['transaction' => $expenseCategory], 200);
+        return response()->json(['transactions' => $expenseCategory], 200);
     }
     public function monthlyRevenue(Request $request)
     {
@@ -191,7 +191,7 @@ class TransactionController extends Controller
             request()->all(),
             [
                 'month' => 'required|integer|between:1,12',
-                'year' => 'required|integer|digits:4',
+                'year' => 'nullable|integer|digits:4',
             ]
         );
         if ($validator->fails()) {
@@ -203,7 +203,7 @@ class TransactionController extends Controller
         $year  = $request->input('year', Carbon::now()->year);
 
         $revenue = $this->transactionService->monthlyRevenue($month, $year);
-        return response()->json(['revenue' => $revenue], 200);
+        return response()->json(['transactions' => $revenue], 200);
     }
     public function monthlyExpense(Request $request): JsonResponse
     {
@@ -211,7 +211,7 @@ class TransactionController extends Controller
             request()->all(),
             [
                 'month' => 'required|integer|between:1,12',
-                'year' => 'required|integer|digits:4',
+                'year' => 'nullable|integer|digits:4',
             ]
         );
         if ($validator->fails()) {
@@ -224,7 +224,7 @@ class TransactionController extends Controller
 
         $expense = $this->transactionService->monthlyExpense($month, $year);
 
-        return response()->json(['expense' => $expense], 200);
+        return response()->json(['transactions' => $expense], 200);
     }
     public function expensesByCategory(Request $request): JsonResponse
     {

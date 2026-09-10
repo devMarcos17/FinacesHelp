@@ -11,11 +11,11 @@ form.addEventListener('submit', async event => {
         const data = await response.json();
         if (response.ok) {
             sessionStorage.setItem('session', data.access_token);
-            alert('Cadastrado com sucesso!');
+            alert('Autenticado com sucesso!');
             window.location.href = '../pagesUser/index.html'
         }
         else {
-            alert('Error');
+            alert('Credenciais inválidas');
         }
     } catch (error) {
         console.log(error);

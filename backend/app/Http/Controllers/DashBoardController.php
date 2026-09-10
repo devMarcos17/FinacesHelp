@@ -47,8 +47,8 @@ class DashBoardController extends Controller
         $balance = $this->transactionService->calculateBalance();
         $month = (int) $request->input('month', Carbon::now()->month);
         $year = (int) $request->input('year', Carbon::now()->year);
-        $revenue = $this->transactionService->monthlyRevenue($month, $year);
-        $expense = $this->transactionService->monthlyExpense($month, $year);
+        $revenue = $this->transactionService->totalRevenue();
+        $expense = $this->transactionService->totalExpense();
 
         $expensesByCategory = $this->transactionService->expensesByCategory($month, $year);
 
@@ -58,7 +58,6 @@ class DashBoardController extends Controller
             ],
             'revenue' => $revenue,
             'expense' => $expense,
-            'expensesByCategory' => $expensesByCategory,
         ], 200);
     }
 }

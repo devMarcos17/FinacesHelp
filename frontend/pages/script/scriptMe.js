@@ -10,7 +10,9 @@ async function getMe() {
         });
         const data = await response.json();
         if (response.ok) {
-            console.log(data.name);
+             document.getElementById('user-name').textContent =
+                `Olá, ${data.name}!`;
+
         }
     } catch (error) {
         console.log(error);

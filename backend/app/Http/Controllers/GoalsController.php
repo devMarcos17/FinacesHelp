@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class GoalsController extends Controller
 {
-        /**
+    /**
      *
      * @return int
      */
@@ -21,10 +21,6 @@ class GoalsController extends Controller
         $user = Auth::user();
 
         return (int) ($user ? $user->id : Auth::id());
-    }
-    public function __construct(private GoalService $goalService)
-    {
-        $this->goalService = new GoalService();
     }
     //
     public function createGoal(Request $request): JsonResponse
@@ -36,7 +32,7 @@ class GoalsController extends Controller
                 'description' => 'nullable|string',
                 'target_year' => 'required|integer',
                 'target_date' => 'nullable|date',
-                'image_path' => 'nullable|string',
+                'image_path' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
                 'target_amount' => 'required|numeric',
             ]
         );
@@ -51,28 +47,41 @@ class GoalsController extends Controller
         $goal->description = $request->description;
         $goal->target_year = $request->target_year;
         $goal->target_date = $request->target_date;
-        $goal->image_path = $request->image_path;
         $goal->current_amount = 0;
         $goal->target_amount = $request->target_amount;
+
+        if ($request->hasFile('image_path') && $request->file('image_path')->isValid()) {
+            $file = $request->file('image_path');
+
+            $extension = $file->getClientOriginalExtension();
+
+
+            $imageName = md5($file->getClientOriginalName()) . '_' . time() . '.' . $extension;
+
+            $file->move(public_path('img/goals'), $imageName);
+
+            $goal->image_path = $imageName;
+        }
 
         $goal->save();
 
         return response()->json(['goal' => $goal], 201);
     }
-    public function updateGoal(int $id, Request $request)
+    public function updateGoal(Request $request): JsonResponse
     {
-        $goal = Goal::find($id);
+        $goal = Goal::find($request->id);
         if (!$goal) {
             return response()->json(['message' => 'not found'], 404);
         }
         $validator = Validator::make(
             request()->all(),
             [
+                'id' => 'required|integer',
+                'id_user' => 'nullable|integer',
                 'title' => 'nullable|string',
                 'description' => 'nullable|string',
                 'target_year' => 'nullable|integer',
                 'target_date' => 'nullable|date',
-                'image_path' => 'nullable|string',
                 'current_amount' => 'nullable|numeric',
 
             ]
@@ -88,13 +97,26 @@ class GoalsController extends Controller
                 'description',
                 'target_year',
                 'target_date',
-                'image_path',
                 'current_amount'
             ]),
             function ($value) {
                 return $value !== null && $value !== '';
             }
         );
+        if ($request->hasFile('image_path') && $request->file('image_path')->isValid()) {
+            $file = $request->file('image_path');
+
+            $extension = $file->getClientOriginalExtension();
+
+            $imageName = md5($file->getClientOriginalName())
+                . '_' . time()
+                . '.' . $extension;
+
+            $file->move(public_path('img/goals'), $imageName);
+
+            $filterData['image_path'] = $imageName;
+        }
+
         $goal->update($filterData);
 
         return response()->json(['goal' => $goal], 200);
@@ -108,34 +130,78 @@ class GoalsController extends Controller
 
         return response()->json(['goal' => $goal], 200);
     }
-    public function deleteGoal(int $id): JsonResponse
+    public function listGoalUser(): JsonResponse
     {
-        $goal = Goal::find($id);
+        $goals = Goal::where('id_user', $this->getUserId())->get();
+        return response()->json(['goal' => $goals], 200);
+    }
+    public function deleteGoal(Request $request): JsonResponse
+    {
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'id' => 'required|integer',
+                'id_user' => 'nullable|integer',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        $goal = Goal::find($request->id);
         if (!$goal) {
             return response()->json(['message' => 'not found'], 404);
         }
+        $goal = Goal::where('id', $request->id)->where('id_user', $this->getUserId())->firstOrFail();
         $goal->delete();
         return response()->json(['goal' => $goal], 200);
     }
-    public function deposit(int $id, Request $request)
+    public function deposit(Request $request): JsonResponse
     {
-        $validator = Validator::make(request()->all(),
-        [
-            'target_amount' => 'required|numeric',
-        ]);
-        if($validator->fails()){
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'id' => 'required|integer',
+                'current_amount' => 'required|numeric',
+            ]
+        );
+        if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-        $goal = Goal::where('id', $id)->where('id_user', $this->getUserId())->firstOrFail();
-        $goal->current_amount += $request->target_amount;
+        $goal = Goal::where('id', $request->id)->where('id_user', $this->getUserId())->firstOrFail();
+        $goal->current_amount += $request->current_amount;
         $goal->save();
 
         return response()->json(['goal' => $goal], 200);
     }
-    public function progress(int $id): JsonResponse
+    public function progress(Request $request): JsonResponse
     {
-        $percentage  = $this->goalService->progress($id);
-        return response()->json(['progress' => $percentage], 200);
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()
+            ], 400);
+        }
+
+        $goal = Goal::where('id', $request->id)
+            ->where('id_user', $this->getUserId())
+            ->firstOrFail();
+
+        if ($goal->current_amount <= 0) {
+            return response()->json([
+                'percentage' => 0
+            ], 200);
+        }
+
+        $percentage = min(
+            100,
+            ($goal->current_amount / $goal->target_amount) * 100
+        );
+
+        return response()->json([
+            'percentage' => round($percentage, 2)
+        ], 200);
     }
 }

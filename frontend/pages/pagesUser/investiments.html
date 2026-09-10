@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Controle Financeiro</title>
+
+    <style>
+
+        /* =========================================
+   RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #edf1f5;
+    color: #243447;
+    min-height: 100vh;
+}
+
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.navbar {
+    width: 100%;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 50px;
+
+    background: linear-gradient(
+        135deg,
+        #163a59,
+        #285b82
+    );
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+    color: white;
+    font-size: 21px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    color: #e8eef4;
+    text-decoration: none;
+
+    padding: 10px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+
+    transition: 0.2s;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+
+    margin: 40px auto;
+}
+
+
+/* =========================================
+   SEÇÕES
+========================================= */
+
+section {
+    width: 100%;
+}
+
+
+/* =========================================
+   CABEÇALHOS
+========================================= */
+
+.create-section-header {
+    margin-bottom: 22px;
+}
+
+.create-section-header h1 {
+    color: #193e5c;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    margin-bottom: 7px;
+}
+
+.create-section-header p {
+    color: #718096;
+
+    font-size: 14px;
+}
+
+
+.investments-header {
+    margin-bottom: 22px;
+}
+
+.investments-header h2 {
+    color: #193e5c;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    margin-bottom: 7px;
+}
+
+.investments-header p {
+    color: #718096;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   ÁREA DE CRIAR INVESTIMENTO
+========================================= */
+
+.create-section {
+    margin-bottom: 45px;
+}
+
+
+/* =========================================
+   FORMULÁRIO
+========================================= */
+
+#formInvestiment {
+    width: 100%;
+    max-width: 700px;
+
+    background: #f8fafc;
+
+    border: 1px solid #d9e0e7;
+    border-radius: 15px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 5px 15px rgba(31, 51, 68, 0.08);
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+}
+
+
+/* =========================================
+   BARRA LATERAL
+========================================= */
+
+#formInvestiment::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 5px;
+    height: 100%;
+
+    background: #285b82;
+}
+
+
+/* =========================================
+   LABELS
+========================================= */
+
+#formInvestiment label {
+    color: #536577;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    margin-bottom: -10px;
+}
+
+
+/* =========================================
+   INPUTS
+========================================= */
+
+#formInvestiment input[type="text"],
+#formInvestiment input[type="number"] {
+    width: 100%;
+
+    height: 45px;
+
+    padding: 0 14px;
+
+    border: 1px solid #ccd6df;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #243447;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+
+/* =========================================
+   INPUT FOCUS
+========================================= */
+
+#formInvestiment input[type="text"]:focus,
+#formInvestiment input[type="number"]:focus {
+    border-color: #285b82;
+
+    box-shadow:
+        0 0 0 3px rgba(40, 91, 130, 0.10);
+}
+
+
+#formInvestiment input::placeholder {
+    color: #9aa7b3;
+}
+
+
+/* =========================================
+   BOTÃO SALVAR
+========================================= */
+
+#formInvestiment button {
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    height: 46px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: linear-gradient(
+        135deg,
+        #163a59,
+        #285b82
+    );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    margin-top: 5px;
+}
+
+#formInvestiment button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 15px rgba(22, 58, 89, 0.25);
+}
+
+
+/* =========================================
+   MEUS INVESTIMENTOS
+========================================= */
+
+#resultado {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 20px;
+
+    margin-bottom: 45px;
+}
+
+
+/* =========================================
+   CARD DO INVESTIMENTO
+========================================= */
+
+#resultado > div {
+    position: relative;
+
+    background: #f8fafc;
+
+    border: 1px solid #d9e0e7;
+
+    border-left: 5px solid #285b82;
+
+    border-radius: 15px;
+
+    padding: 23px;
+
+    box-shadow:
+        0 5px 15px rgba(31, 51, 68, 0.08);
+
+    transition: 0.25s;
+
+    overflow: hidden;
+}
+
+#resultado > div:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 25px rgba(31, 51, 68, 0.13);
+}
+
+
+/* =========================================
+   INFORMAÇÕES
+========================================= */
+
+#resultado p {
+    color: #536577;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    margin-bottom: 14px;
+}
+
+#resultado strong {
+    color: #193e5c;
+}
+
+
+/* =========================================
+   RENTABILIDADE
+========================================= */
+
+[id^="profitability-"] {
+    color: #008f35;
+
+    font-weight: bold;
+}
+
+
+/* =========================================
+   GRÁFICO DONUT
+========================================= */
+
+#resultado canvas {
+    display: block;
+
+    width: 210px !important;
+    height: 210px !important;
+
+    max-width: 100%;
+
+    margin: 20px auto;
+}
+
+
+/* =========================================
+   BOTÕES DOS INVESTIMENTOS
+========================================= */
+
+#resultado button {
+    height: 40px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 8px;
+
+    color: white;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+/* =========================================
+   EXCLUIR
+========================================= */
+
+#resultado button:first-of-type {
+    background: #d00000;
+
+    margin-right: 6px;
+}
+
+#resultado button:first-of-type:hover {
+    background: #a80000;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   ATUALIZAR
+========================================= */
+
+#resultado button:last-of-type {
+    background: #285b82;
+}
+
+#resultado button:last-of-type:hover {
+    background: #163a59;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   HR
+========================================= */
+
+#resultado hr {
+    display: none;
+}
+
+
+/* =========================================
+   RESPONSIVO — TABLET
+========================================= */
+
+@media (max-width: 800px) {
+
+    .navbar {
+        padding: 0 25px;
+    }
+
+    .container {
+        width: 92%;
+    }
+
+    #formInvestiment {
+        max-width: 100%;
+    }
+
+    #resultado {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVO — CELULAR
+========================================= */
+
+@media (max-width: 600px) {
+
+    .navbar {
+        padding: 0 18px;
+    }
+
+    .container {
+        width: 92%;
+
+        margin: 30px auto;
+    }
+
+    .create-section-header h1 {
+        font-size: 24px;
+    }
+
+    .investments-header h2 {
+        font-size: 21px;
+    }
+
+    #formInvestiment {
+        grid-template-columns: 1fr;
+
+        padding: 22px;
+    }
+
+    #formInvestiment button {
+        grid-column: auto;
+    }
+
+    #resultado {
+        grid-template-columns: 1fr;
+    }
+
+    #resultado > div {
+        padding: 20px;
+    }
+
+    #resultado canvas {
+        width: 190px !important;
+        height: 190px !important;
+    }
+
+    #resultado button {
+        width: 100%;
+
+        margin-bottom: 8px;
+    }
+
+    #resultado button:first-of-type {
+        margin-right: 0;
+    }
+}
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+
+        <!-- =========================================
+             CRIAR INVESTIMENTO
+        ========================================= -->
+
+        <section class="create-section">
+
+            <div class="create-section-header">
+
+                <h1>Criar Investimento</h1>
+
+                <p>
+                    Adicione um novo investimento ao seu controle financeiro.
+                </p>
+
+            </div>
+
+
+            <form id="formInvestiment">
+
+                <input
+                    type="hidden"
+                    id="id"
+                    name="id"
+                >
+
+
+                <label for="title">
+                    Título
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Ex: Tesouro Direto"
+                >
+
+
+                <label for="amount_invested">
+                    Valor investido
+                </label>
+
+                <input
+                    type="number"
+                    id="amount_invested"
+                    name="amount_invested"
+                    step="0.01"
+                    placeholder="Ex: 1000.00"
+                >
+
+
+                <button type="submit">
+                    Salvar Investimento
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =========================================
+             MEUS INVESTIMENTOS
+        ========================================= -->
+
+        <section class="investments-section">
+
+            <div class="investments-header">
+
+                <h2>Meus Investimentos</h2>
+
+                <p>
+                    Acompanhe seus investimentos, valores e rentabilidade.
+                </p>
+
+            </div>
+
+
+            <div id="resultado"></div>
+
+        </section>
+
+
+    </div>
+
+
+    <!-- Chart.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- Script dos investimentos -->
+
+    <script src="../script/scriptInvestiment.js"></script>
+
+
+    <!-- Script de atualização -->
+
+    <script src="../script/scriptUpdateInvestiment.js"></script>
+
+
+</body>
+</html>

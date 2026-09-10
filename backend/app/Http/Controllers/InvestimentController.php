@@ -51,17 +51,17 @@ class InvestimentController extends Controller
 
         return response()->json(['investiment' => $investiment], 201);
     }
-    public function updateInvestiment(int $id, Request $request)
+    public function updateInvestiment(Request $request): JsonResponse
     {
-        $investiment = Investiment::find($id);
+        $investiment = Investiment::find($request->id);
         if (!$investiment) {
             return response()->json(['message' => 'not found'], 404);
         }
         $validator = Validator::make(
             request()->all(),
             [
+                'id' => 'required|integer',
                 'title' => 'nullable|string',
-                'amount_invested' => 'nullable|numeric',
 
             ]
         );
@@ -73,7 +73,6 @@ class InvestimentController extends Controller
         $filterData = array_filter(
             $request->only([
                 'title',
-                'amount_invested',
             ]),
             function ($value) {
                 return $value !== null && $value !== '';
@@ -83,9 +82,9 @@ class InvestimentController extends Controller
 
         return response()->json(['investiment' => $investiment], 200);
     }
-    public function deleteInvestiment(int $id): JsonResponse
+    public function deleteInvestiment(Request $request): JsonResponse
     {
-        $investiment = Investiment::find($id);
+        $investiment = Investiment::find($request->id);
         if (!$investiment) {
             return response()->json(['message' => 'not found'], 404);
         }
@@ -94,8 +93,8 @@ class InvestimentController extends Controller
     }
     public function listInvestiment(): JsonResponse
     {
-        $investiments = Investiment::all();
-        return response()->json(['investiments' => $investiments], 200);
+        $investiment = Investiment::where('id_user', $this->getUserId())->get();
+        return response()->json(['investiments' => $investiment], 200);
     }
     public function listInvestimentId(int $id): JsonResponse
     {
@@ -105,22 +104,46 @@ class InvestimentController extends Controller
         }
         return response()->json(['investiment' => $investiment], 200);
     }
-    public function profitability(int $id): JsonResponse
+    public function profitability(Request $request): JsonResponse
     {
-        $profitability = $this->investimentService->profitability($id);
-        return response()->json(['investiment' => $profitability], 200);
-        
-    }
-    public function deposit(int $id, Request $request)
-    {
-          $validator = Validator::make(request()->all(),
-        [
-            'amount' => 'required|numeric|gt:0',
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:investiments,id',
         ]);
-        if($validator->fails()){
+
+        if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-        $investiment = Investiment::where('id', $id)->where('id_user', $this->getUserId())->firstOrFail();
+
+        $investiment = Investiment::where('id', $request->id)
+            ->where('id_user', $this->getUserId())
+            ->first();
+
+        if (!$investiment || $investiment->amount_invested <= 0) {
+            return response()->json([
+                'profitability' => 0.0
+            ], 200);
+        }
+
+        $profitability = (($investiment->current_amount - $investiment->amount_invested) / $investiment->amount_invested) * 100;
+
+        return response()->json([
+            'investiment_id' => $investiment->id,
+            'profitability' => round($profitability, 2)
+        ], 200);
+    }
+    public function deposit(Request $request): JsonResponse
+    {
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'id' => 'required|integer',
+                'amount' => 'required|numeric|gt:0',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        $investiment = Investiment::where('id', $request->id)->where('id_user', $this->getUserId())->firstOrFail();
         $investiment->amount_invested += $request->amount;
         $investiment->current_amount += $request->amount;
         $investiment->save();

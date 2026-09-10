@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form id="updateForm" enctype="multipart/form-data">
+
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="id" id="id">
+
+            <label for="title">Título:</label>
+            <input type="text" name="title" id="title">
+
+            <label for="description">Descrição:</label>
+            <textarea name="description" id="description"></textarea>
+
+            <label for="target_year">Ano da meta:</label>
+            <input type="number" name="target_year" id="target_year">
+
+            <label for="target_date">Data da meta:</label>
+            <input type="date" name="target_date" id="target_date">
+
+            <label for="image_path">Imagem:</label>
+            <input type="file" name="image_path" id="image_path">
+
+            <button type="submit">Salvar alterações</button>
+
+        </form>
+
+
+    </form>
+    <script src="../script/scriptUpdate.js"></script>
+</body>
+
+</html>
