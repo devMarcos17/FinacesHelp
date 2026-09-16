@@ -12,7 +12,12 @@ form.addEventListener('submit', async event => {
         if (response.ok) {
             sessionStorage.setItem('session', data.access_token);
             alert('Autenticado com sucesso!');
-            window.location.href = '../pagesUser/index.html'
+
+            if (data.role === 'admin') {
+                window.location.href = '../pagesAdmin/adm.html';
+            } if(data.role === 'user'){
+                window.location.href = '../pagesUser/index.html';
+            }
         }
         else {
             alert('Credenciais inválidas');
