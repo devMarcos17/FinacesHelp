@@ -78,7 +78,7 @@ class UserController extends Controller
     public function login(): JsonResponse
     {
         $credentials = request(['email', 'password']);
-       
+
         /** @var string|false $token */
         $token = Auth::guard()->attempt($credentials);
 
@@ -87,7 +87,7 @@ class UserController extends Controller
                 'erro' => 'Invalid credentials'
             ], 401);
         }
-       
+
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
@@ -284,35 +284,80 @@ class UserController extends Controller
     public function filterUsersMonth(): JsonResponse
     {
         $users = User::where('created_at', '>=', Carbon::now()->subDays(30))->get();
-        return response()->json(['users' => $users],200);
+        return response()->json(['users' => $users], 200);
     }
     public function filterDataOld(): JsonResponse
     {
-        $validator = Validator::make(request()->all(),
-        [
-            'old' => 'required|string',
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'old' => 'required|string',
 
-        ]);
-        if($validator->fails()){
-            return response()->json(['error' => $validator->errors()],400);
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
         }
 
         $users = User::orderBy('created_at', 'ASC')->get();
-        
+
         return response()->json(['userss' => $users], 200);
     }
     public function filterDataRecent(): JsonResponse
     {
-          $validator = Validator::make(request()->all(),
-        [
-            'recent' => 'required|string',
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'recent' => 'required|string',
 
-        ]);
-        if($validator->fails()){
-            return response()->json(['error' => $validator->errors()],400);
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
         }
         $users = User::orderBy('created_at', 'DESC')->get();
         return response()->json(['users' => $users], 200);
+    }
+    public function forgoutPassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'email' => 'required|email',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        $password = Password::sendResetLink($request->only('email'));
+        return response()->json(['password' => $password], 200);
+    }
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'token' => 'required|string',
+                'email' => 'required|email',
+                'password' => 'required|min:7|confirmed',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        $status = Password::reset(
+            $request->only('email', 'password','password_confirmation', 'token'),
+            function(User $user, string $password){
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+                $user->save();
+            }
+        );
+        if($status == Password::PASSWORD_RESET){
+            return response()->json(['status' => $status], 200);
+        }
+        return response()->json(['message' => 'Fail to redefine the password'], 400);
 
     }
 }

@@ -17,6 +17,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('/search', [UserController::class, 'search'])->middleware(['auth', 'admin'])->name('search');
     Route::post('/filterDataOld', [UserController::class, 'filterDataOld'])->middleware(['auth', 'admin'])->name('filterDataOld');
     Route::post('/filterDataRecent', [UserController::class, 'filterDataRecent'])->middleware(['auth', 'admin'])->name('filterDataRecent');
+    Route::post('/forgout', [UserController::class,'forgoutPassword'])->name('forgout');
+    Route::post('/reset', [UserController::class,'resetPassword'])->name('resetPassword');
     
     //Route::post('/forgotPassword', [UserController::class, 'forgotPassword'])->name('forgotPassword');
     //Route::post('/resetPassword', [UserController::class, 'resetPassword'])->name('resetPassword');
