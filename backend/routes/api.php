@@ -12,13 +12,30 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('/login', [UserController::class, 'login'])->name('login');
     Route::post('/me', [UserController::class, 'me'])->middleware('auth')->name('me');
     Route::post('/logout', [UserController::class, 'logout'])->middleware('auth')->name('logout');
+    Route::post('/disable', [UserController::class, 'disableUser'])->middleware(['auth', 'admin'])->name('disableUser');
+    Route::post('/active', [UserController::class, 'activeUser'])->middleware(['auth', 'admin'])->name('activeUser');
+    Route::post('/search', [UserController::class, 'search'])->middleware(['auth', 'admin'])->name('search');
+    Route::post('/filterDataOld', [UserController::class, 'filterDataOld'])->middleware(['auth', 'admin'])->name('filterDataOld');
+    Route::post('/filterDataRecent', [UserController::class, 'filterDataRecent'])->middleware(['auth', 'admin'])->name('filterDataRecent');
+    
+    //Route::post('/forgotPassword', [UserController::class, 'forgotPassword'])->name('forgotPassword');
+    //Route::post('/resetPassword', [UserController::class, 'resetPassword'])->name('resetPassword');
 
-    Route::get('/list', [UserController::class, 'list'])->middleware('auth')->name('list');
-    Route::get('/list/{id}', [UserController::class, 'listId'])->middleware('auth')->name('listId');
+    
+    Route::get('/getActiveUsers', [UserController::class, 'getActiveUsers'])->middleware(['auth', 'admin'])->name('getActiveUsers');
+    Route::get('/getDisableUsers', [UserController::class, 'getDisableUsers'])->middleware(['auth', 'admin'])->name('getDisableUsers');
+    Route::get('/activeUsersTotal', [UserController::class, 'getActiveUsersTotal'])->middleware(['auth', 'admin'])->name('getActiveUsersTotal');
+    Route::get('/disableUsersTotal', [UserController::class, 'getDisableUsersTotal'])->middleware(['auth', 'admin'])->name('getDisableUsersTotal');
+    Route::get('/adminsTotal', [UserController::class, 'getAdminsTotal'])->middleware(['auth', 'admin'])->name('getAdminsTotal');
+    Route::get('/usersTotal', [UserController::class, 'getUsersTotal'])->middleware(['auth', 'admin'])->name('getUsersTotal');
+    Route::get('/list', [UserController::class, 'list'])->middleware(['auth','admin'])->name('list');
+    Route::get('/filterUsersMonth', [UserController::class, 'filterUsersMonth'])->middleware(['auth', 'admin'])->name('filterUsersMonth');
+    //Route::get('/list', [UserController::class, 'listId'])->middleware('auth')->name('listId');
+    
+    
+    Route::put('/update', [UserController::class, 'update'])->middleware(['auth', 'admin'])->name('update');
 
-    Route::put('/update/{id}', [UserController::class, 'update'])->middleware('auth')->name('update');
-
-    Route::delete('/delete/{id}', [UserController::class, 'delete'])->middleware('auth')->name('delete');
+    Route::delete('/delete', [UserController::class, 'delete'])->middleware(['auth', 'admin'])->name('delete');
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($router) {
@@ -67,7 +84,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'investiment'], function($route
     Route::put('/update',[InvestimentController::class, 'updateInvestiment'])->middleware('auth')->name('updateInvestiment');
 
     Route::get('/list',[InvestimentController::class, 'listInvestiment'])->middleware('auth')->name('listInvestiments');
-    Route::get('/list/{id}',[InvestimentController::class, 'listInvestimentId'])->middleware('auth')->name('listInvestimentId');
+    Route::get('/list',[InvestimentController::class, 'listInvestimentId'])->middleware('auth')->name('listInvestimentId');
     Route::post('/profitability',[InvestimentController::class, 'profitability'])->middleware('auth')->name('profitability');
 
     Route::delete('/delete',[InvestimentController::class, 'deleteInvestiment'])->middleware('auth')->name('deleteInvestiment');
