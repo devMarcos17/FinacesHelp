@@ -1,7 +1,3 @@
-// =========================================
-// LISTAGEM GERAL & BUSCA
-// =========================================
-
 async function getList() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
@@ -26,7 +22,6 @@ async function getList() {
     }
 }
 
-// Função da nova rota POST /api/auth/search
 async function searchUsers(query) {
     if (!query || query.trim() === '') {
         getList();
@@ -51,7 +46,6 @@ async function searchUsers(query) {
         const data = await response.json();
 
         if (response.ok) {
-            // Supondo que a API de pesquisa retorne { users: [...] } ou { user: [...] }
             const users = data.users || data.user || data;
             renderUsersList(users);
         } else {
@@ -62,7 +56,6 @@ async function searchUsers(query) {
     }
 }
 
-// Função auxiliar para renderizar os cards na tela sem duplicar código HTML
 function renderUsersList(users) {
     const listContainer = document.getElementById('list-users');
     if (!listContainer) return;
@@ -98,17 +91,12 @@ function renderUsersList(users) {
     });
 }
 
-// Evento no input de busca no HTML (certifique-se de ter um input com id="search-input")
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         searchUsers(e.target.value);
     });
 }
-
-// =========================================
-// AÇÕES DOS BOTÕES (SUA LÓGICA MANTIDA)
-// =========================================
 
 async function deleteUser(id) {
     const token = 'Bearer ' + sessionStorage.getItem('session');
@@ -144,7 +132,7 @@ async function deleteUser(id) {
 }
 
 async function activeUser(id) {
-    const token = 'Bearer ' + sessionStorage.getItem('session'); // Espaço corrigido após 'Bearer '
+    const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
         const response = await fetch('http://127.0.0.1:8000/api/auth/active', {
             method: 'POST',
@@ -187,7 +175,7 @@ async function disableUser(id) {
         const data = await response.json();
         if (response.ok) {
             console.log('Usuario desativado com sucesso!');
-            alert('Usuario desativado com sucesso!'); // Mensagem do alert corrigida
+            alert('Usuario desativado com sucesso!');
             getList();
         }
     } catch (error) {

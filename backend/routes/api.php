@@ -15,14 +15,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('/disable', [UserController::class, 'disableUser'])->middleware(['auth', 'admin'])->name('disableUser');
     Route::post('/active', [UserController::class, 'activeUser'])->middleware(['auth', 'admin'])->name('activeUser');
     Route::post('/search', [UserController::class, 'search'])->middleware(['auth', 'admin'])->name('search');
-    Route::post('/filterDataOld', [UserController::class, 'filterDataOld'])->middleware(['auth', 'admin'])->name('filterDataOld');
-    Route::post('/filterDataRecent', [UserController::class, 'filterDataRecent'])->middleware(['auth', 'admin'])->name('filterDataRecent');
-    Route::post('/forgout', [UserController::class,'forgoutPassword'])->name('forgout');
+    Route::post('/forgot', [UserController::class,'forgotPassword'])->name('forgot');
     Route::post('/reset', [UserController::class,'resetPassword'])->name('resetPassword');
-    
-    //Route::post('/forgotPassword', [UserController::class, 'forgotPassword'])->name('forgotPassword');
-    //Route::post('/resetPassword', [UserController::class, 'resetPassword'])->name('resetPassword');
-
     
     Route::get('/getActiveUsers', [UserController::class, 'getActiveUsers'])->middleware(['auth', 'admin'])->name('getActiveUsers');
     Route::get('/getDisableUsers', [UserController::class, 'getDisableUsers'])->middleware(['auth', 'admin'])->name('getDisableUsers');
@@ -33,6 +27,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::get('/list', [UserController::class, 'list'])->middleware(['auth','admin'])->name('list');
     Route::get('/filterUsersMonth', [UserController::class, 'filterUsersMonth'])->middleware(['auth', 'admin'])->name('filterUsersMonth');
     //Route::get('/list', [UserController::class, 'listId'])->middleware('auth')->name('listId');
+    Route::get('/filterDataOld', [UserController::class, 'filterDataOld'])->middleware(['auth', 'admin'])->name('filterDataOld');
+    Route::get('/filterDataRecent', [UserController::class, 'filterDataRecent'])->middleware(['auth', 'admin'])->name('filterDataRecent');
     
     
     Route::put('/update', [UserController::class, 'update'])->middleware(['auth', 'admin'])->name('update');

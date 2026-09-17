@@ -28,7 +28,7 @@ class ResetPasswordNotificationEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Password Notification',
+            subject: 'Reset Password Notification Email',
         );
     }
 

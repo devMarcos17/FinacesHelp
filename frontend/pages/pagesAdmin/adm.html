@@ -332,6 +332,7 @@
     border-bottom: 1px solid #e2e8f0;
 }
 
+
 #list-filterUsers .user-card p:last-child {
     border-bottom: none;
     margin-bottom: 0;
@@ -383,7 +384,6 @@
         <input type="text" id="search-input" placeholder="Pesquisar por nome ou e-mail...">
     </div>
 
-
     <section class="list">
         <h2>Lista de Usuários</h2>
         <div id="list-users"></div>
@@ -393,11 +393,35 @@
         <h2>Novos Cadastros (Este Mês)</h2>
         <div id="list-filterUsers"></div>
     </section>
+ <section class="list">
+
+    <div class="list-header">
+        <h2>Usuários mais antigos</h2>
+        <span>Antigos</span>
+    </div>
+
+    <div id="users-filters-old"></div>
+
+</section>
+
+
+<section class="list">
+
+    <div class="list-header">
+        <h2>Usuários mais recentes</h2>
+        <span>Recentes</span>
+    </div>
+
+    <div id="users-filters-recent"></div>
+
+</section>
 
     <!-- Scripts da Aplicação -->
     <script src="../scriptAdm/scriptMe.js"></script>
     <script src="../scriptAdm/scriptList.js"></script>
     <script src="../scriptAdm/scriptTotal.js"></script>
     <script src="../scriptAdm/scriptFilterUsersMonth.js"></script>
+    <script src="../scriptAdm/scriptFilter.js"></script>
+
 </body>
 </html>

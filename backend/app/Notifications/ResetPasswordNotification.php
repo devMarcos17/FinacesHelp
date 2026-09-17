@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Mail\ResetPasswordNotification as MailResetPasswordNotification;
 use App\Mail\ResetPasswordNotificationEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

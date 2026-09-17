@@ -288,37 +288,16 @@ class UserController extends Controller
     }
     public function filterDataOld(): JsonResponse
     {
-        $validator = Validator::make(
-            request()->all(),
-            [
-                'old' => 'required|string',
-
-            ]
-        );
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
         $users = User::orderBy('created_at', 'ASC')->get();
 
-        return response()->json(['userss' => $users], 200);
+        return response()->json(['users' => $users], 200);
     }
     public function filterDataRecent(): JsonResponse
     {
-        $validator = Validator::make(
-            request()->all(),
-            [
-                'recent' => 'required|string',
-
-            ]
-        );
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
         $users = User::orderBy('created_at', 'DESC')->get();
         return response()->json(['users' => $users], 200);
     }
-    public function forgoutPassword(Request $request): JsonResponse
+    public function forgotPassword(Request $request): JsonResponse
     {
         $validator = Validator::make(
             request()->all(),
@@ -337,27 +316,24 @@ class UserController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'token' => 'required|string',
                 'email' => 'required|email',
-                'password' => 'required|min:7|confirmed',
+                'token' => 'required|string',
+                'password' => 'required|confirmed',
             ]
         );
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
         $status = Password::reset(
-            $request->only('email', 'password','password_confirmation', 'token'),
-            function(User $user, string $password){
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
+            $request->only('email', 'token', 'password', 'password_confirmation'),
+            function (User $user, string $password) {
+                $user->forceFill(['password' => Hash::make($password)])->setRememberToken(Str::random(60));
                 $user->save();
             }
         );
-        if($status == Password::PASSWORD_RESET){
+        if ($status == Password::PASSWORD_RESET) {
             return response()->json(['status' => $status], 200);
         }
-        return response()->json(['message' => 'Fail to redefine the password'], 400);
-
+        return response()->json(['error' => 'failed to redefine password'], 400);
     }
 }

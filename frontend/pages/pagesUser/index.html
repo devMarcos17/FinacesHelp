@@ -49,6 +49,16 @@
             letter-spacing: 0.5px;
         }
 
+        /* =========================
+           LINKS DO MENU
+        ========================= */
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .nav-link {
             color: #e8eef4;
             text-decoration: none;
@@ -58,12 +68,47 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 8px;
 
-            transition: 0.2s;
+            background: transparent;
+
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
         }
 
         .nav-link:hover {
             background: rgba(255, 255, 255, 0.12);
             color: white;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* =========================
+           BOTÃO SAIR
+        ========================= */
+
+        .logout-button:hover {
+            background: #d00000;
+            border-color: #d00000;
+            color: white;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 5px 12px rgba(208, 0, 0, 0.35);
+        }
+
+        .logout-button:active {
+            transform: translateY(0);
+            box-shadow: none;
         }
 
         /* =========================
@@ -264,13 +309,6 @@
             max-height: 100%;
         }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-
         /* =========================
            RESPONSIVO
         ========================= */
@@ -297,12 +335,29 @@
         @media (max-width: 500px) {
 
             .navbar {
-                height: 65px;
-                padding: 0 18px;
+                height: auto;
+                min-height: 65px;
+
+                padding: 15px 18px;
+
+                flex-wrap: wrap;
+
+                gap: 12px;
             }
 
             .logo {
                 font-size: 17px;
+            }
+
+            .nav-links {
+                width: 100%;
+
+                display: flex;
+                flex-wrap: wrap;
+
+                justify-content: center;
+
+                gap: 7px;
             }
 
             .nav-link {
@@ -335,14 +390,15 @@
 
 <body>
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
 
     <nav class="navbar">
 
         <div class="logo">
             Finance Help
         </div>
-        <button onclick="logout()">Sair</button>
 
         <div class="nav-links">
 
@@ -358,13 +414,21 @@
                 Investimentos
             </a>
 
+            <button
+                class="nav-link logout-button"
+                type="button"
+                onclick="logout()">
+                Sair
+            </button>
+
         </div>
 
     </nav>
 
 
-
-    <!-- CONTEÚDO -->
+    <!-- =========================
+         CONTEÚDO
+    ========================= -->
 
     <main class="container">
 
@@ -372,7 +436,9 @@
 
         <section class="welcome">
 
-            <span>Bem-vindo de volta</span>
+            <span>
+                Bem-vindo de volta
+            </span>
 
             <h1 id="user-name">
                 Carregando usuário...
@@ -381,7 +447,9 @@
         </section>
 
 
-        <!-- CARDS -->
+        <!-- =========================
+             CARDS
+        ========================= -->
 
         <section class="cards">
 
@@ -432,7 +500,9 @@
         </section>
 
 
-        <!-- GRÁFICO -->
+        <!-- =========================
+             GRÁFICO
+        ========================= -->
 
         <section class="chart-card">
 
@@ -457,10 +527,11 @@
         </section>
 
     </main>
-    
 
 
-    <!-- SCRIPTS -->
+    <!-- =========================
+         SCRIPTS
+    ========================= -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -469,6 +540,8 @@
     <script src="../script/scriptDashBoard.js"></script>
 
     <script src="../script/scriptMe.js"></script>
+
+    <script src="../script/scriptLogout.js"></script>
 
 </body>
 

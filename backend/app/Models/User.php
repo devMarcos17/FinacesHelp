@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Override;
+use Password;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 #[Fillable(['name', 'email', 'password', 'cpf', 'phone', 'date_of_birt', 'status', 'role'])]
@@ -45,7 +46,7 @@ class User extends Authenticatable implements JWTSubject
     #[Override]
     public function sendPasswordResetNotification($token)
     {
-        $url = config('services.frontend.url') . '/reset?token=' . $token . '&email=' . urlencode($this->email);
+        $url = rtrim(config('services.frontend.url'), '/') . '/frontend/pages/pagesUser/resetPassword.html?token=' . $token . '&email=' . urlencode($this->email);
         $this->notify(new ResetPasswordNotification($url));
     }
 }
