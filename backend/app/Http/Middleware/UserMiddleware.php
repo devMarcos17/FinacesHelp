@@ -18,6 +18,6 @@ class UserMiddleware
         if (auth()->user() && auth()->user()->role === 'admin') {
         return $next($request);
     }
-    return response()->json(['erro' => 'Unauthenticated'], 403);
+    return response()->json(['error' => 'Unauthenticated'], 403);
     }
 }

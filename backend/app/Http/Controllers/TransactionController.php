@@ -65,12 +65,24 @@ class TransactionController extends Controller
         $transactions = Transaction::all();
         return response()->json(['transactions' => $transactions], 200);
     }
-    public function listTransactionUser(int $id): JsonResponse
+    public function listTransactionById(Request $request): JsonResponse
     {
-        $transaction = Transaction::find($id);
+       $transaction = Transaction::find($request->id);
         if (!$transaction) {
             return response()->json(['message' => 'not found'], 404);
         }
+
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'id' => 'required|integer',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+
         return response()->json(['transaction' => $transaction], 200);
     }
     public function updateTransaction(int $id, Request $request)
@@ -101,9 +113,9 @@ class TransactionController extends Controller
 
         $transaction->update($filterData);
     }
-    public function deleteTransaction(int $id)
+    public function deleteTransaction(Request $request)
     {
-        $transaction = Transaction::find($id);
+        $transaction = Transaction::find($request->id);
         if (!$transaction) {
             return response()->json(['message' => 'not found'], 404);
         }
@@ -130,7 +142,7 @@ class TransactionController extends Controller
         $validator = Validator::make(request()->all(),
         [
             'month' => 'required|integer|between:1,12',
-        'year'  => 'nullable|integer|digits:4',
+            'year'  => 'nullable|integer|digits:4',
         ]);
         if($validator->fails()){
             return response()->json(['error' => $validator->errors()], 400);

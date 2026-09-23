@@ -26,7 +26,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::get('/usersTotal', [UserController::class, 'getUsersTotal'])->middleware(['auth', 'admin'])->name('getUsersTotal');
     Route::get('/list', [UserController::class, 'list'])->middleware(['auth','admin'])->name('list');
     Route::get('/filterUsersMonth', [UserController::class, 'filterUsersMonth'])->middleware(['auth', 'admin'])->name('filterUsersMonth');
-    //Route::get('/list', [UserController::class, 'listId'])->middleware('auth')->name('listId');
+    Route::get('/listById', [UserController::class, 'listById'])->middleware(['auth', 'admin'])->name('listById');
     Route::get('/filterDataOld', [UserController::class, 'filterDataOld'])->middleware(['auth', 'admin'])->name('filterDataOld');
     Route::get('/filterDataRecent', [UserController::class, 'filterDataRecent'])->middleware(['auth', 'admin'])->name('filterDataRecent');
     
@@ -37,7 +37,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($router) {
-    Route::post('/createTransaction', [TransactionController::class, 'createTransaction'])->middleware('auth')->name('createTransaction');
+    Route::post('/create', [TransactionController::class, 'createTransaction'])->middleware('auth')->name('createTransaction');
     Route::post('/filter', [TransactionController::class, 'filterDate'])->middleware('auth')->name('filterDate');
     Route::post('/filterCategory', [TransactionController::class, 'filterCategory'])->middleware('auth')->name('filterCategory');
     Route::post('/expensesByCategory', [TransactionController::class, 'expensesByCategory'])->middleware('auth')->name('expensesByCategory');
@@ -45,7 +45,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::post('/monthlyExpense', [TransactionController::class, 'monthlyExpense'])->middleware('auth')->name('monthlyExpense');
 
     Route::get('/listTransaction', [TransactionController::class, 'listTransaction'])->middleware('auth')->name('listTransaction');
-    Route::get('/listTransaction', [TransactionController::class, 'listTransactionId'])->middleware('auth')->name('listTransactionId');
+    Route::get('/listTransactionById', [TransactionController::class, 'listTransactionById'])->middleware('auth')->name('listTransactionById');
     Route::get('/balance', [TransactionController::class, 'balance'])->middleware('auth')->name('balance');
     Route::get('/totalExpense', [TransactionController::class, 'totalExpense'])->middleware('auth')->name('totalExpense');
     Route::get('/totalRevenue', [TransactionController::class, 'totalRevenue'])->middleware('auth')->name('totalRevenue');

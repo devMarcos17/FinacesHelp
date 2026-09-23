@@ -65,12 +65,23 @@ class UserController extends Controller
         return response()->json(['user' => $users], 200);
     }
 
-    public function listId(int $id): JsonResponse
+    public function listById(Request $request): JsonResponse
     {
-        $user = User::find($id);
+        $user = User::find($request->id);
         if (!$user) {
             return response()->json(['message' => 'not found'], 404);
         }
+
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'id' => 'required|integer',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
 
         return response()->json(['user' => $user], 200);
     }

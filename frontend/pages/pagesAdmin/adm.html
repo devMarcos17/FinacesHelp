@@ -342,6 +342,121 @@
     color: #0f172a;
     font-weight: 600;
 }
+/* =========================================
+   OLD E RECENT - GRID
+========================================= */
+
+#users-filters-old,
+#users-filters-recent {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+
+/* =========================================
+   OLD E RECENT - CARDS
+========================================= */
+
+#users-filters-old .user-card,
+#users-filters-recent .user-card {
+    background: #ffffff;
+
+    border: 1px solid #d9e0e7;
+
+    border-left: 5px solid #285b82;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    box-shadow: 0 4px 12px rgba(31, 51, 68, 0.07);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+/* =========================================
+   HOVER DOS CARDS
+========================================= */
+
+#users-filters-old .user-card:hover,
+#users-filters-recent .user-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 9px 22px rgba(31, 51, 68, 0.12);
+}
+
+
+/* =========================================
+   TEXTOS DOS CARDS
+========================================= */
+
+#users-filters-old .user-card p,
+#users-filters-recent .user-card p {
+    color: #536577;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1.6;
+
+    margin-bottom: 8px;
+
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    word-break: break-word;
+}
+
+
+/* =========================================
+   ÚLTIMO PARÁGRAFO
+========================================= */
+
+#users-filters-old .user-card p:last-child,
+#users-filters-recent .user-card p:last-child {
+    margin-bottom: 0;
+
+    padding-bottom: 0;
+
+    border-bottom: none;
+}
+
+
+/* =========================================
+   STRONG
+========================================= */
+
+#users-filters-old .user-card strong,
+#users-filters-recent .user-card strong {
+    color: #0f172a;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 600px) {
+
+    #users-filters-old,
+    #users-filters-recent {
+        grid-template-columns: 1fr;
+    }
+
+}
     </style>
 </head>
 <body>

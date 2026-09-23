@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function(AuthenticationException $e, Request $r){
             if($r->is('api/*')){
-                return response()->json(['message' => $e->getMessage()], 400);
+                return response()->json(['message' => $e->getMessage()], 401);
             }
         });
     })->create();
