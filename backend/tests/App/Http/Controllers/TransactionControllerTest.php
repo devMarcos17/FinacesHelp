@@ -14,14 +14,6 @@ class TransactionControllerTest extends TestCase
     private User $user;
     private Transaction $transaction;
 
-    private function getUserId(): int
-    {
-        /** @var User|null $user */
-        $user = Auth::user();
-
-        return (int) ($user ? $user->id : Auth::id());
-    }
-
     public function setUp(): void
     {
 
@@ -68,8 +60,8 @@ class TransactionControllerTest extends TestCase
             'category' => 'salary',
             'description' => 'salary of month',
         ]);
-        $response->assertBadRequest();
-        $response->assertJsonStructure(['errors' => ['type']]);
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors(['type']);
     }
 
     // php artisan test --filter TransactionControllerTest::test_list_transaction_user_by_id_success
@@ -83,11 +75,7 @@ class TransactionControllerTest extends TestCase
     // php artisan test --filter TransactionControllerTest::test_delete_transaction_user_by_id_sucess
     public function test_delete_transaction_user_by_id_sucess()
     {
-        $response = $this->actingAs($this->user)->deleteJson('api/transaction/delete/' . $this->transaction->id);
-
-        $response->assertOk();
-        $this->assertDatabaseMissing('transactions', ['id' => $this->transaction->id]);
-
+        $response = $this->actingAs($this->user)->deleteJson('api/transaction/delete/?id=' . $this->transaction->id);
         $response->assertOk();
         $this->assertDatabaseMissing('transactions', ['id' => $this->transaction->id]);
     }
@@ -101,7 +89,7 @@ class TransactionControllerTest extends TestCase
                 'month' => 19,
             ]
         );
-        $response->assertBadRequest();
-        $response->assertJsonStructure(['error' => ['month']]);
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors(['month']);
     }
 }

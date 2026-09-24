@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-        /**
+    /**
      *
      * @return int
      */
@@ -44,9 +44,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $transaction = new Transaction();
@@ -67,7 +65,7 @@ class TransactionController extends Controller
     }
     public function listTransactionById(Request $request): JsonResponse
     {
-       $transaction = Transaction::find($request->id);
+        $transaction = Transaction::find($request->id);
         if (!$transaction) {
             return response()->json(['message' => 'not found'], 404);
         }
@@ -79,7 +77,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
 
@@ -101,9 +99,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
 
@@ -139,13 +135,15 @@ class TransactionController extends Controller
     }
     public function filterDate(Request $request): JsonResponse
     {
-        $validator = Validator::make(request()->all(),
-        [
-            'month' => 'required|integer|between:1,12',
-            'year'  => 'nullable|integer|digits:4',
-        ]);
-        if($validator->fails()){
-            return response()->json(['error' => $validator->errors()], 400);
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'month' => 'required|integer|between:1,12',
+                'year'  => 'nullable|integer|digits:4',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $month = $request->input('month', Carbon::now()->month);
         $year = $request->input('year', Carbon::now()->year);
@@ -163,9 +161,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $category = $request->category;
         $filterTransaction = $this->transactionService->filterCategory($category);
@@ -185,12 +181,14 @@ class TransactionController extends Controller
     }
     public function expensesCategories(Request $request): JsonResponse
     {
-        $validator = Validator::make(request()->all(),
-        [
-            'category' => ['required', new Enum(TransactionCategory::class)],
-        ]);
-        if($validator->fails()){
-            return response()->json(['error' => $validator->errors()], 400);
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'category' => ['required', new Enum(TransactionCategory::class)],
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $categoryEnum = TransactionCategory::from($request->category);
         $expenseCategory = $this->transactionService->expensesCategories($categoryEnum);
@@ -207,9 +205,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $month = $request->input('month', Carbon::now()->month);
         $year  = $request->input('year', Carbon::now()->year);
@@ -227,9 +223,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $month = $request->input('month', Carbon::now()->month);
         $year  = $request->input('year', Carbon::now()->year);
@@ -248,9 +242,7 @@ class TransactionController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $month = $request->input('month', Carbon::now()->month);
         $year  = $request->input('year', Carbon::now()->year);

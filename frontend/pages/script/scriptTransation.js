@@ -490,7 +490,7 @@ async function createTransaction() {
         event.preventDefault();
         const formDataTransaction = new FormData(formTransaction);
         try {
-            const responseTransaction = await fetch('http://127.0.0.1:8000/api/transaction/createTransaction', {
+            const responseTransaction = await fetch('http://127.0.0.1:8000/api/transaction/create', {
                 method: 'POST',
                 headers: {
                     'Authorization': token,

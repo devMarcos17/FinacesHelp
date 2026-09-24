@@ -37,9 +37,7 @@ class GoalsController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $goal = new Goal();
         $goal->id_user = $this->getUserId();
@@ -87,9 +85,7 @@ class GoalsController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $filterData = array_filter(
             $request->only([
@@ -145,7 +141,7 @@ class GoalsController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $goal = Goal::find($request->id);
         if (!$goal) {
@@ -165,7 +161,7 @@ class GoalsController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $goal = Goal::where('id', $request->id)->where('id_user', $this->getUserId())->firstOrFail();
         $goal->current_amount += $request->current_amount;
@@ -180,9 +176,7 @@ class GoalsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors()
-            ], 400);
+          return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $goal = Goal::where('id', $request->id)

@@ -38,7 +38,7 @@ class InvestimentController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()]);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $investiment = new Investiment();
 
@@ -66,9 +66,7 @@ class InvestimentController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $filterData = array_filter(
             $request->only([
@@ -111,7 +109,7 @@ class InvestimentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $investiment = Investiment::where('id', $request->id)
@@ -141,7 +139,7 @@ class InvestimentController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $investiment = Investiment::where('id', $request->id)->where('id_user', $this->getUserId())->firstOrFail();
         $investiment->amount_invested += $request->amount;

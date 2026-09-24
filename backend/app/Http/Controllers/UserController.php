@@ -37,9 +37,7 @@ class UserController extends Controller
         );
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = new User();
@@ -79,7 +77,7 @@ class UserController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
 
@@ -162,9 +160,7 @@ class UserController extends Controller
         );
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
+           return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $filterData = array_filter($request->only(['name', 'email', 'password', 'phone', 'cpf', 'status', 'date_of_birt']), function ($value) {
@@ -185,7 +181,7 @@ class UserController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json(['errors' =>$validator->errors(), 422]);
         }
 
         $user = User::find($request->id);
@@ -206,7 +202,7 @@ class UserController extends Controller
         );
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $user = User::where('id', $request->id)->where('status', 'ativo')->first();
         if ($user) {
@@ -227,7 +223,7 @@ class UserController extends Controller
         );
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = User::where('id', $request->id)->where('status', 'inativo')->first();
@@ -277,7 +273,7 @@ class UserController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $search = $request->search;
 
@@ -317,7 +313,7 @@ class UserController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $password = Password::sendResetLink($request->only('email'));
         return response()->json(['password' => $password], 200);
@@ -333,7 +329,7 @@ class UserController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
         $status = Password::reset(
             $request->only('email', 'token', 'password', 'password_confirmation'),
@@ -345,6 +341,6 @@ class UserController extends Controller
         if ($status == Password::PASSWORD_RESET) {
             return response()->json(['status' => $status], 200);
         }
-        return response()->json(['error' => 'failed to redefine password'], 400);
+        return response()->json(['errors' => $validator->errors()], 422);
     }
 }
