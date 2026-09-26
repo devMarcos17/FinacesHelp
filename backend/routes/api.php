@@ -41,6 +41,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::post('/filter', [TransactionController::class, 'filterDate'])->middleware('auth')->name('filterDate');
     Route::post('/filterCategory', [TransactionController::class, 'filterCategory'])->middleware('auth')->name('filterCategory');
     Route::post('/expensesByCategory', [TransactionController::class, 'expensesByCategory'])->middleware('auth')->name('expensesByCategory');
+    Route::post('/expensesCategories', [TransactionController::class, 'expensesCategories'])->middleware('auth')->name('expensesCategories');
     Route::post('/monthlyRevenue', [TransactionController::class, 'monthlyRevenue'])->middleware('auth')->name('monthlyRevenue');
     Route::post('/monthlyExpense', [TransactionController::class, 'monthlyExpense'])->middleware('auth')->name('monthlyExpense');
 

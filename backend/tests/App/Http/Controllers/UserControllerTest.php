@@ -44,7 +44,7 @@ class UserControllerTest extends TestCase
                 'role' => 'admin',
             ]
         );
-        $response->assertStatus(400);
+        $response->assertUnprocessable();
         $response->assertJsonStructure(['errors' => ['email']]);
     }
     // php artisan test --filter UserControllerTest::test_user_login_sucess
@@ -97,6 +97,7 @@ class UserControllerTest extends TestCase
     // php artisan test --filter UserControllerTest::test_disable_user_sucess
     public function test_disable_user_sucess(): void
     {
+        $this->user->update(['status' => 'ativo']);
         $response = $this->actingAs($this->user)->postJson('api/auth/disable', [
             'id' => $this->user->id,
         ]);

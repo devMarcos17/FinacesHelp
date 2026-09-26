@@ -83,15 +83,17 @@ class TransactionController extends Controller
 
         return response()->json(['transaction' => $transaction], 200);
     }
-    public function updateTransaction(int $id, Request $request)
+    public function updateTransaction(Request $request)
     {
-        $transaction = Transaction::find($id);
+        $transaction = Transaction::find($request->id);
         if (!$transaction) {
             return response()->json(['message' => 'not found'], 404);
         }
         $validator = Validator::make(
             request()->all(),
             [
+                'id' => 'required|integer',
+                'id_user' => 'nullable|integer',
                 'type' => 'nullable|string',
                 'amount' => 'nullable|integer',
                 'category' => 'nullable|string',
