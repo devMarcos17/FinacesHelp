@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Goal;
-use App\Services\GoalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -117,9 +116,9 @@ class GoalsController extends Controller
 
         return response()->json(['goal' => $goal], 200);
     }
-    public function listGoal(int $id): JsonResponse
+    public function listGoalId(Request $request): JsonResponse
     {
-        $goal = Goal::find($id);
+        $goal = Goal::find($request->id);
         if (!$goal) {
             return response()->json(['message' => 'not found'], 404);
         }

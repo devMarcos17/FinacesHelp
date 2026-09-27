@@ -68,13 +68,15 @@ Route::group(['middleware' => 'api', 'prefix' => 'goals'], function ($router) {
     
     Route::post('/create', [GoalsController::class, 'createGoal'])->middleware('auth')->name('createGoal');
     Route::post('/deposit', [GoalsController::class, 'deposit'])->middleware('auth')->name('deposit');
+    Route::post('/progress', [GoalsController::class, 'progress'])->middleware('auth')->name('progress');
+
 
     Route::put('/update', [GoalsController::class, 'updateGoal'])->middleware('auth')->name('updateGoal');
    
     Route::delete('/delete', [GoalsController::class, 'deleteGoal'])->middleware('auth')->name('deleteGoal');
    
+    Route::get('/listGoalId', [GoalsController::class, 'listGoalId'])->middleware('auth')->name('listGoalId');
     Route::get('/list', [GoalsController::class, 'listGoalUser'])->middleware('auth')->name('listGoalUser');
-    Route::post('/progress', [GoalsController::class, 'progress'])->middleware('auth')->name('progress');
 });
 Route::group(['middleware' => 'api', 'prefix' => 'investiment'], function($router){
     Route::post('/create',[InvestimentController::class, 'createInvestiment'])->middleware('auth')->name('createInvestiment');
