@@ -111,7 +111,7 @@ class TransactionController extends Controller
 
         $transaction->update($filterData);
     }
-    public function deleteTransaction(Request $request)
+    public function deleteTransaction(Request $request): JsonResponse
     {
         $transaction = Transaction::find($request->id);
         if (!$transaction) {

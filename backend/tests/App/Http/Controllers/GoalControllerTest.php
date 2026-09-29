@@ -82,8 +82,4 @@ class GoalControllerTest extends TestCase
         $response->assertCreated();
         $this->assertDatabaseHas('goals', ['id_user' => $this->user->id, 'target_amount' => 0]);
     }
-    public function test_user_cannot_create_goal_without_required_fields()
-    {
-        
-    }
 }

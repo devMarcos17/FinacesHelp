@@ -80,12 +80,12 @@ Route::group(['middleware' => 'api', 'prefix' => 'goals'], function ($router) {
 });
 Route::group(['middleware' => 'api', 'prefix' => 'investiment'], function($router){
     Route::post('/create',[InvestimentController::class, 'createInvestiment'])->middleware('auth')->name('createInvestiment');
-    //Route::post('/deposit',[InvestimentController::class, 'deposit'])->middleware('auth')->name('deposit');
+    Route::post('/deposit',[InvestimentController::class, 'deposit'])->middleware('auth')->name('deposit');
 
     Route::put('/update',[InvestimentController::class, 'updateInvestiment'])->middleware('auth')->name('updateInvestiment');
 
     Route::get('/list',[InvestimentController::class, 'listInvestiment'])->middleware('auth')->name('listInvestiments');
-    Route::get('/list',[InvestimentController::class, 'listInvestimentId'])->middleware('auth')->name('listInvestimentId');
+    Route::get('/listInvestimentId',[InvestimentController::class, 'listInvestimentById'])->middleware('auth')->name('listInvestimentById');
     Route::post('/profitability',[InvestimentController::class, 'profitability'])->middleware('auth')->name('profitability');
 
     Route::delete('/delete',[InvestimentController::class, 'deleteInvestiment'])->middleware('auth')->name('deleteInvestiment');

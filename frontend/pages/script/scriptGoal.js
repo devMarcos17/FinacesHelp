@@ -138,8 +138,6 @@ async function deleteGoal(id) {
 
         if (response.ok) {
             alert('Meta cancelada com sucesso!');
-
-            // Volta/recarrega a mesma página
             window.location.reload();
         } else {
             console.log('Erro ao cancelar:', data);

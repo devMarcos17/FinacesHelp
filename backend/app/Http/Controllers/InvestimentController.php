@@ -40,9 +40,10 @@ class InvestimentController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $investiment = new Investiment();
 
-        $investiment->id_user = $this->getUserId();
+        $investiment->id_user = $this->getUserId(); 
         $investiment->title = $request->title;
         $investiment->amount_invested = $request->amount_invested;
         $investiment->current_amount = $request->amount_invested;
@@ -94,9 +95,9 @@ class InvestimentController extends Controller
         $investiment = Investiment::where('id_user', $this->getUserId())->get();
         return response()->json(['investiments' => $investiment], 200);
     }
-    public function listInvestimentId(int $id): JsonResponse
+    public function listInvestimentById(Request $request): JsonResponse
     {
-        $investiment = Investiment::find($id);
+        $investiment = Investiment::find($request->id);
         if (!$investiment) {
             return response()->json(['message' => 'not found'], 404);
         }
@@ -148,4 +149,5 @@ class InvestimentController extends Controller
 
         return response()->json(['investiment' => $investiment], 200);
     }
+    
 }

@@ -44,6 +44,7 @@ class GoalsController extends Controller
         $goal->description = $request->description;
         $goal->target_year = $request->target_year;
         $goal->target_date = $request->target_date;
+        $goal->status = 'in_progress';
         $goal->current_amount = 0;
         $goal->target_amount = $request->target_amount;
 
@@ -153,20 +154,37 @@ class GoalsController extends Controller
     public function deposit(Request $request): JsonResponse
     {
         $validator = Validator::make(
-            request()->all(),
+            $request->all(),
             [
                 'id' => 'required|integer',
-                'current_amount' => 'required|numeric',
+                'current_amount' => 'required|numeric|min:0.01',
             ]
         );
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $goal = Goal::where('id', $request->id)->where('id_user', $this->getUserId())->firstOrFail();
-        $goal->current_amount += $request->current_amount;
+
+        $goal = Goal::where('id', $request->id)
+            ->where('id_user', $this->getUserId())
+            ->firstOrFail();
+
+        $currentAmount = (float) $goal->current_amount;
+        $depositAmount = (float) $request->current_amount;
+        $targetAmount = (float) $goal->target_amount;
+
+        $newAmount = $currentAmount + $depositAmount;
+        $goal->current_amount = $newAmount;
+
+        if ($newAmount >= $targetAmount) {
+            $goal->status = 'completed';
+        }
+
         $goal->save();
 
-        return response()->json(['goal' => $goal], 200);
+        return response()->json([
+            'goal' => $goal
+        ], 200);
     }
     public function progress(Request $request): JsonResponse
     {
@@ -175,7 +193,7 @@ class GoalsController extends Controller
         ]);
 
         if ($validator->fails()) {
-          return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $goal = Goal::where('id', $request->id)
@@ -183,15 +201,10 @@ class GoalsController extends Controller
             ->firstOrFail();
 
         if ($goal->current_amount <= 0) {
-            return response()->json([
-                'percentage' => 0
-            ], 200);
+            return response()->json(['percentage' => 0], 200);
         }
 
-        $percentage = min(
-            100,
-            ($goal->current_amount / $goal->target_amount) * 100
-        );
+        $percentage = min(100, ($goal->current_amount / $goal->target_amount) * 100);
 
         return response()->json([
             'percentage' => round($percentage, 2)
