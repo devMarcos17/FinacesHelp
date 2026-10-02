@@ -186,6 +186,44 @@ class GoalsController extends Controller
             'goal' => $goal
         ], 200);
     }
+    public function withDraw(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+            'devolution_amount' => 'required|numeric|min:0.01',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $goal = Goal::where('id', $request->id)
+            ->where('id_user', $this->getUserId())
+            ->firstOrFail();
+
+        $currentAmount = (float) $goal->current_amount;
+        $withdrawAmount = (float) $request->devolution_amount;
+        $targetAmount = (float) $goal->target_amount;
+
+        if ($withdrawAmount > $currentAmount) {
+            return response()->json([
+                'message' => 'insufficient balance'
+            ], 400);
+        }
+
+        $newAmount = $currentAmount - $withdrawAmount;
+        $goal->current_amount = $newAmount;
+
+        if ($newAmount < $targetAmount) {
+            $goal->status = 'in_progress';
+        }
+
+        $goal->save();
+
+        return response()->json([
+            'goal' => $goal
+        ], 200);
+    }
     public function progress(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -209,5 +247,26 @@ class GoalsController extends Controller
         return response()->json([
             'percentage' => round($percentage, 2)
         ], 200);
+    }
+    public function listGoalCompleted(): JsonResponse
+    {
+        $goal = Goal::where('id_user', $this->getUserId())
+        ->where('status', 'completed')
+        ->get();
+
+        if(!$goal){
+            return response()->json(['message' => 'not found'], 404);
+        }
+        return response()->json(['goal' => $goal], 200);
+    }
+    public function listGoalCancelled(): JsonResponse
+    {
+        $goal = Goal::where('id_user', $this->getUserId())
+        ->where('status', 'canceled')
+        ->get();
+        if(!$goal){
+            return response()->json(['message' => 'not found'], 404);
+        }
+        return response()->json(['goal' => $goal], 200);
     }
 }

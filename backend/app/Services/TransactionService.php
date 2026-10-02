@@ -95,4 +95,27 @@ class TransactionService
 
         return $transaction;
     }
+    public function expensesByPayment()
+    {
+        $transaction = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'expense')
+            ->selectRaw('payment_method, SUM(amount) as total')
+            ->groupBy('payment_method')
+            ->get();
+
+        return $transaction;
+    }
+    public function highestMonthlyExpense()
+    {
+        $start = Carbon::now()->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
+
+        $transaction = Transaction::where('user_id', $this->getUserId())
+            ->where('type', 'expense')
+            ->whereBetween('created_at', [$start, $end])
+            ->orderBy('amount', 'desc')
+            ->first();
+
+        return $transaction;
+    }
 }

@@ -15,7 +15,7 @@ async function getDashBoard() {
 
     const data = await response.json();
 
-    console.log(data);
+    console.log(data.transaction);
 
     if (response.ok) {
 
@@ -29,6 +29,25 @@ async function getDashBoard() {
             `R$ ${data.expense}`;
 
         createDashboardChart(data.revenue, data.expense);
+    }
+}
+
+async function highestMonthlyExpense() {
+    const token = 'Bearer ' + sessionStorage.getItem('session');
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/transaction/highestMonthlyExpense', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/json'
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data)
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -72,7 +91,7 @@ function createDashboardChart(revenue, expense) {
 
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
 
                             const value = context.raw;
 
@@ -85,3 +104,4 @@ function createDashboardChart(revenue, expense) {
     });
 }
 getDashBoard();
+highestMonthlyExpense();

@@ -94,6 +94,7 @@ async function getFilteredTransactionsMonth() {
                     <p>Valor: ${transaction.amount}</p>
                     <p>Tipo: ${transaction.type}</p>
                     <p>Descrição: ${transaction.description}</p>
+                    <p>Forma de pagamento: ${transaction.payment_method}</p>
                 </div>
             `;
     });
@@ -164,7 +165,6 @@ async function getFilteredTransactionsType() {
 }
 
 
-// FILTRO POR CATEGORIA
 async function getFilterCategory() {
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
@@ -261,6 +261,7 @@ document
         }
 
     });
+
 async function getExpenses() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const category =
@@ -309,6 +310,8 @@ async function getExpenses() {
             `;
     });
 }
+
+let chartRevenueMonth = null;
 async function getRevenueMounth() {
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
@@ -353,6 +356,30 @@ async function getRevenueMounth() {
     revenueMonthResult.innerHTML = `
             <p>Total recebido no mês: R$ ${data.transactions}</p>
         `;
+
+    const canvas = document.getElementById('revenue-month-chart');
+    if (canvas) {
+        if (chartRevenueMonth) {
+            chartRevenueMonth.destroy();
+        }
+        chartRevenueMonth = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: [`Mês ${month}`],
+                datasets: [{
+                    label: 'Receita Total',
+                    data: [Number(data.transactions)],
+                    backgroundColor: '#01ac40'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
 }
 
 document
@@ -364,6 +391,7 @@ document
 // GASTOS POR MÊS
 // ==========================================
 
+let chartExpensesMonth = null;
 async function getExpensesMonth() {
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
@@ -408,12 +436,37 @@ async function getExpensesMonth() {
     expenseMonthResult.innerHTML = `
             <p>Total gasto no mês: R$ ${data.transactions}</p>
         `;
+
+    const canvas = document.getElementById('expense-month-chart');
+    if (canvas) {
+        if (chartExpensesMonth) {
+            chartExpensesMonth.destroy();
+        }
+        chartExpensesMonth = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: [`Mês ${month}`],
+                datasets: [{
+                    label: 'Gasto Total',
+                    data: [Number(data.transactions)],
+                    backgroundColor: '#e10c0c'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
 }
 
 document
     .getElementById('expense-month-button')
     .addEventListener('click', getExpensesMonth);
 
+let chartExpenseCategories = null;
 async function getExpenseCategories() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
@@ -468,6 +521,38 @@ async function getExpenseCategories() {
                 </p>
             `;
         });
+
+        const canvas = document.getElementById('expense-category-chart');
+        if (canvas) {
+            if (chartExpenseCategories) {
+                chartExpenseCategories.destroy();
+            }
+
+            const labels = data.transaction.map(item => item.category);
+            const amounts = data.transaction.map(item => Number(item.total));
+
+            chartExpenseCategories = new Chart(canvas, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: amounts,
+                        backgroundColor: [
+                            '#e10c0c', '#2563eb', '#f59e0b', '#10b981',
+                            '#8b5cf6', '#ec4899', '#64748b', '#06b6d4'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
 
     } catch (error) {
         console.error('Erro na requisição:', error);

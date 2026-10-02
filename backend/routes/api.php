@@ -54,6 +54,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::get('/expense', [TransactionController::class, 'expense'])->middleware('auth')->name('expense');
     Route::get('/filterRevenue', [TransactionController::class, 'filterRevenue'])->middleware('auth')->name('filterRevenue');
     Route::get('/filterExpense', [TransactionController::class, 'filterExpense'])->middleware('auth')->name('filterExpense');
+    Route::get('/expensesByPayment', [TransactionController::class, 'expensesByPayment'])->middleware('auth')->name('expensesByPayment');
+    Route::get('/highestMonthlyExpense', [TransactionController::class, 'highestMonthlyExpense'])->middleware('auth')->name('highestMonthlyExpense');
 
     Route::put('/update', [TransactionController::class, 'updateTransaction'])->middleware('auth')->name('updateTransaction');
 
@@ -69,6 +71,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'goals'], function ($router) {
     Route::post('/create', [GoalsController::class, 'createGoal'])->middleware('auth')->name('createGoal');
     Route::post('/deposit', [GoalsController::class, 'deposit'])->middleware('auth')->name('deposit');
     Route::post('/progress', [GoalsController::class, 'progress'])->middleware('auth')->name('progress');
+    Route::post('/withDraw', [GoalsController::class, 'withDraw'])->middleware('auth')->name('withDraw');
+    
 
 
     Route::put('/update', [GoalsController::class, 'updateGoal'])->middleware('auth')->name('updateGoal');
@@ -77,10 +81,15 @@ Route::group(['middleware' => 'api', 'prefix' => 'goals'], function ($router) {
    
     Route::get('/listGoalId', [GoalsController::class, 'listGoalId'])->middleware('auth')->name('listGoalId');
     Route::get('/list', [GoalsController::class, 'listGoalUser'])->middleware('auth')->name('listGoalUser');
+    Route::get('/completed', [GoalsController::class, 'listGoalCompleted'])->middleware('auth')->name('listGoalCompleted');
+    Route::get('/cancelled', [GoalsController::class, 'listGoalCancelled'])->middleware('auth')->name('listGoalCancelled');
 });
 Route::group(['middleware' => 'api', 'prefix' => 'investiment'], function($router){
     Route::post('/create',[InvestimentController::class, 'createInvestiment'])->middleware('auth')->name('createInvestiment');
     Route::post('/deposit',[InvestimentController::class, 'deposit'])->middleware('auth')->name('deposit');
+    Route::post('/withDraw',[InvestimentController::class, 'withDraw'])->middleware('auth')->name('withDraw');
+    
+    
 
     Route::put('/update',[InvestimentController::class, 'updateInvestiment'])->middleware('auth')->name('updateInvestiment');
 

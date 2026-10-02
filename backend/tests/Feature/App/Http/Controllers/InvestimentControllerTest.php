@@ -1,12 +1,14 @@
 <?php
 
-namespace Tests\Feature\Http\Controllers;
+namespace Tests\Feature\App\Http\Controllers;
+
 
 use App\Models\Investiment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+// php artisan test --filter InvestimentControllerTest
 class InvestimentControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -37,6 +39,7 @@ class InvestimentControllerTest extends TestCase
         ]);
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_create_investiment_success
     public function test_create_investiment_success(): void
     {
         $response = $this->actingAs($this->user)->postJson('/api/investiment/create', [
@@ -54,6 +57,7 @@ class InvestimentControllerTest extends TestCase
         ]);
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_create_investiment_validation_fails
     public function test_create_investiment_validation_fails(): void
     {
         $response = $this->actingAs($this->user)->postJson('/api/investiment/create', []);
@@ -62,6 +66,7 @@ class InvestimentControllerTest extends TestCase
         $response->assertJsonValidationErrors(['title', 'amount_invested']);
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_update_investiment_success
     public function test_update_investiment_success(): void
     {
         $response = $this->actingAs($this->user)->putJson('/api/investiment/update', [
@@ -77,6 +82,7 @@ class InvestimentControllerTest extends TestCase
         ]);
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_delete_investiment_success
     public function test_delete_investiment_success(): void
     {
         $response = $this->actingAs($this->user)->deleteJson('/api/investiment/delete', [
@@ -90,6 +96,7 @@ class InvestimentControllerTest extends TestCase
         ]);
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_list_investiments_user
     public function test_list_investiments_user(): void
     {
         $response = $this->actingAs($this->user)->getJson('/api/investiment/list');
@@ -98,6 +105,7 @@ class InvestimentControllerTest extends TestCase
         $response->assertJsonCount(1, 'investiments');
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_list_investiment_by_id_success
     public function test_list_investiment_by_id_success(): void
     {
         $response = $this->actingAs($this->user)
@@ -106,6 +114,7 @@ class InvestimentControllerTest extends TestCase
         $response->assertOk();
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_profitability_calculation
     public function test_profitability_calculation(): void
     {
         $response = $this->actingAs($this->user)->postJson('/api/investiment/profitability', [
@@ -119,6 +128,7 @@ class InvestimentControllerTest extends TestCase
         ]);
     }
 
+    //php artisan test --filter InvestimentControllerTest::test_deposit_investiment_success
     public function test_deposit_investiment_success(): void
     {
         $response = $this->actingAs($this->user)->postJson('/api/investiment/deposit', [
@@ -133,5 +143,29 @@ class InvestimentControllerTest extends TestCase
             'amount_invested' => 1500.00,
             'current_amount' => 1750.00,
         ]);
+    }
+
+    //php artisan test --filter InvestimentControllerTest::test_with_draw_investiment_sucess
+    public function test_with_draw_investiment_sucess(): void
+    {
+        $investiment = Investiment::create([
+            'id_user' => $this->user->id,
+            'title' => 'CDB Banco Inter',
+            'amount_invested' => 500.00,
+            'current_amount' => 1250.00
+        ]);
+        $response = $this->actingAs($this->user)->postJson('api/investiment/withDraw',[
+            'id' => $investiment->id,
+            'devolution_amount' => 20
+        ]);
+        $response->assertOk();
+        $this->assertDatabaseHas('investiments', ['id' => $investiment->id, 'current_amount' => 1230.00]);
+        $this->assertDatabaseHas('transactions', [
+        'id_user' => $this->user->id,
+        'type' => 'revenue',
+        'amount' => 20,
+        'category' => 'other',
+        'description' => 'Investiment'
+    ]);
     }
 }

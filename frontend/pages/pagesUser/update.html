@@ -6,7 +6,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
 
+body {
+    background-color: #f4f6f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+#updateForm {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#updateForm label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: -8px;
+}
+
+#updateForm input[type="text"],
+#updateForm input[type="number"],
+#updateForm input[type="date"],
+#updateForm textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #1a202c;
+    background-color: #f8fafc;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+}
+
+#updateForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#updateForm input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px dashed #cbd5e0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+#updateForm input[type="text"]:focus,
+#updateForm input[type="number"]:focus,
+#updateForm input[type="date"]:focus,
+#updateForm textarea:focus {
+    border-color: #3182ce;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+#updateForm button[type="submit"] {
+    margin-top: 8px;
+    padding: 12px 20px;
+    background-color: #2b6cb0;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#updateForm button[type="submit"]:hover {
+    background-color: #2c5282;
+}
+
+#updateForm button[type="submit"]:active {
+    transform: scale(0.98);
+}
+</style>
 <body>
     <form id="updateForm" enctype="multipart/form-data">
 

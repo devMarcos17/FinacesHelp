@@ -6,20 +6,20 @@
 >
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix = "Test.php">tests/Unit</directory>
+            <directory suffix="Test.php">tests/Unit</directory>
         </testsuite>
+
         <testsuite name="Feature">
-            <directory suffix = "Test.php">tests/Feature</directory>
-        </testsuite>
-        <testsuite name="App">
-            <directory suffix = "Test.php">tests/App</directory>
+            <directory suffix="Test.php">tests/Feature</directory>
         </testsuite>
     </testsuites>
+
     <source>
         <include>
             <directory>app</directory>
         </include>
     </source>
+
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

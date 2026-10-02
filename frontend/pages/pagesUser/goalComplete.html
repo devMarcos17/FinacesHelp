@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #333;
+    padding: 40px 20px;
+}
+
+.completed-goals-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.goals-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.goals-header h2 {
+    font-size: 2rem;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.goals-header p {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+#result-finished {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.goal-card.completed-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    border-top: 5px solid #0284c7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.goal-card.completed-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.badge-completed {
+    align-self: flex-start;
+    background-color: #e0f2fe;
+    color: #0284c7;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.goal-card p {
+    width: 100%;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.goal-card p strong {
+    color: #0f172a;
+}
+
+.goal-card img {
+    width: 100%;
+    max-width: 220px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 10px 0 15px 0;
+    border: 1px solid #f1f5f9;
+}
+
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    background-color: #0284c7 !important;
+}
+
+.goal-card p:last-child {
+    font-size: 0.85rem;
+    color: #0284c7;
+    text-align: right;
+    margin-bottom: 0;
+}
+    </style>
+    <section class="completed-goals-section">
+    <div class="goals-header">
+        <h2>Metas Concluídas</h2>
+        <p>Parabéns! Veja aqui todas as conquistas que você alcançou.</p>
+    </div>
+
+    <div id="result-finished"></div>
+</section>
+    <script src="../script/scriptGoalCompleted.js"></script>
+</body>
+</html>

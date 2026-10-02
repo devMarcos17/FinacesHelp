@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Investiment;
+use App\Models\Transaction;
 use App\Services\InvestimentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+
 
 class InvestimentController extends Controller
 {
@@ -43,7 +45,7 @@ class InvestimentController extends Controller
 
         $investiment = new Investiment();
 
-        $investiment->id_user = $this->getUserId(); 
+        $investiment->id_user = $this->getUserId();
         $investiment->title = $request->title;
         $investiment->amount_invested = $request->amount_invested;
         $investiment->current_amount = $request->amount_invested;
@@ -149,5 +151,42 @@ class InvestimentController extends Controller
 
         return response()->json(['investiment' => $investiment], 200);
     }
-    
+    public function withDraw(Request $request): JsonResponse
+    {
+        $validator = Validator::make(
+            request()->all(),
+            [
+                'id' => 'required|integer',
+                'devolution_amount' => 'required|numeric|gt:0',
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $investiment = Investiment::where('id', $request->id)
+            ->where('id_user', $this->getUserId())
+            ->firstOrFail();
+
+        if ($request->devolution_amount > $investiment->current_amount) {
+            return response()->json([
+                'error' => 'this value dont can bigger what investiment'
+            ], 422);
+        }
+        $investiment->current_amount -= $request->devolution_amount;
+        $investiment->save();
+
+        $transaction  = Transaction::create([
+            'id_user' => $this->getUserId(),
+            'type' => 'revenue',
+            'amount' => $request->devolution_amount,
+            'category' => 'other',
+            'description' => 'Investiment',
+        ]);
+
+        return response()->json([
+            'investiment' => $investiment,
+            'transaction' => $transaction
+        ], 200);
+    }
 }

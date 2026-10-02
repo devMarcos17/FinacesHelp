@@ -1,5 +1,5 @@
 async function deposit(event, id) {
-    event.preventDefault(); // Isto agora vai funcionar porque o onsubmit HTML vai capturá-lo
+    event.preventDefault();
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const form = event.target;
@@ -14,7 +14,7 @@ async function deposit(event, id) {
                 method: 'POST',
                 headers: {
                     'Authorization': token,
-                    'Accept': 'application/json'
+                    'Accept':'application/json',
                 },
                 body: formData
             }

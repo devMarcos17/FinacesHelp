@@ -48,34 +48,45 @@ async function listGoal() {
                 if (goals.status == 'in_progress') {
                     let status = 'andamento';
                     resultado.innerHTML += `
-            <div>
-            <p>
+    <div>
+        <p>
             <strong>Título:</strong> ${goals.title}<br>
             <strong>Descrição:</strong> ${goals.description}<br>
             <strong>Status:</strong> ${status}<br>
+
             <img 
-            src="http://127.0.0.1:8000/img/goals/${goals.image_path}" 
-            alt="${goals.title}"
-            style="width: 200px; height: auto;"
+                src="http://127.0.0.1:8000/img/goals/${goals.image_path}" 
+                alt="${goals.title}"
+                style="width: 200px; height: auto;"
             >
-            </p>
+        </p>
 
         <div class="progress-container">
             <div 
                 class="progress-bar" 
                 id="progress-${goals.id}"
-                style="width: 0%">
-            </div>
+                style="width: 0%"
+            ></div>
         </div>
 
         <p>
-            Progresso: <span id="percentage-${goals.id}">0%</span>
+            Progresso: 
+            <span id="percentage-${goals.id}">0%</span>
         </p>
 
-        <form class="deposit-form" onsubmit="deposit(event, ${goals.id})">
-            <input type="hidden" name="id" value="${goals.id}">
+        <!-- Formulário de depósito -->
+        <form 
+            class="deposit-form" 
+            onsubmit="deposit(event, ${goals.id})"
+        >
+            <input 
+                type="hidden" 
+                name="id" 
+                value="${goals.id}"
+            >
 
             <label>Valor do depósito</label>
+
             <input 
                 type="number" 
                 name="current_amount" 
@@ -85,13 +96,47 @@ async function listGoal() {
                 required
             >
 
-            <button type="submit">Depositar</button>
+            <button type="submit">
+                Depositar
+            </button>
         </form>
 
-        <button type="button" onclick="deleteGoal(${goals.id})">
+        <!-- Formulário de retirada -->
+        <form 
+            class="devolution-form" 
+            onsubmit="devolution(event, ${goals.id})"
+        >
+            <input 
+                type="hidden" 
+                name="id" 
+                value="${goals.id}"
+            >
+
+            <label>Valor da retirada</label>
+
+            <input 
+                type="number" 
+                name="devolution_amount" 
+                step="0.01" 
+                min="0.01" 
+                placeholder="Ex: 500.00" 
+                required
+            >
+
+            <button type="submit">
+                Retirar
+            </button>
+        </form>
+
+        <!-- Botão para excluir -->
+        <button 
+            type="button" 
+            onclick="deleteGoal(${goals.id})"
+        >
             Excluir
         </button>
 
+        <!-- Botão para atualizar -->
         <button 
             type="button" 
             onclick="window.location.href='update.html?id=${goals.id}'"
@@ -102,6 +147,7 @@ async function listGoal() {
         <hr>
     </div>
 `;
+
                     getGoalPercentage(goals.id);
 
                 }

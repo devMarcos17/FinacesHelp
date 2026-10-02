@@ -40,6 +40,7 @@ class TransactionController extends Controller
                 'amount' => 'required|integer',
                 'category' => 'required|string',
                 'description' => 'required|string',
+                'payment_method' => 'required|string|in:pix,credit,debit,cash,bank_transfer,other'
 
             ]
         );
@@ -53,6 +54,7 @@ class TransactionController extends Controller
         $transaction->amount = $request->amount;
         $transaction->category = $request->category;
         $transaction->description = $request->description;
+        $transaction->payment_method = $request->payment_method;
 
         $transaction->save();
 
@@ -98,6 +100,7 @@ class TransactionController extends Controller
                 'amount' => 'nullable|integer',
                 'category' => 'nullable|string',
                 'description' => 'nullable|string',
+                'payment_method' => 'nullable|string|in:pix,credit,debit,cash,bank_transfer,other',
             ]
         );
         if ($validator->fails()) {
@@ -105,7 +108,9 @@ class TransactionController extends Controller
         }
 
 
-        $filterData = array_filter($request->only(['type', 'amount', 'category', 'description']), function ($value) {
+        $filterData = array_filter($request->only([
+            'type', 'amount', 'category', 'description', 'payment_method']), 
+            function ($value){
             return $value !== null && $value !== '';
         });
 
@@ -250,6 +255,19 @@ class TransactionController extends Controller
         $year  = $request->input('year', Carbon::now()->year);
 
         $transaction = $this->transactionService->expensesByCategory($month, $year);
+        return response()->json(['transaction' => $transaction], 200);
+    }
+    public function expensesByPayment(): JsonResponse
+    {
+       
+        $transaction = $this->transactionService->expensesByPayment()->values();
+
+        return response()->json(['transaction' => $transaction], 200);
+    }
+    public function highestMonthlyExpense(): JsonResponse
+    {
+        $transaction = $this->transactionService->highestMonthlyExpense();
+
         return response()->json(['transaction' => $transaction], 200);
     }
 }

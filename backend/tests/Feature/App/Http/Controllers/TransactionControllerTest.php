@@ -1,14 +1,15 @@
 <?php
 
-namespace Tests\App\Http\Controllers;
+namespace Tests\Feature\App\Http\Controllers;
+
 
 use App\Enums\TransactionCategory;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
+// php artisan test --filter TransactionControllerTest
 class TransactionControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,6 +36,7 @@ class TransactionControllerTest extends TestCase
             'amount' => 2500,
             'category' => 'salary',
             'description' => 'Salary of month',
+            'payment_method' => 'cash'
         ]);
     }
 
@@ -46,22 +48,24 @@ class TransactionControllerTest extends TestCase
             'amount' => 2500,
             'category' => 'salary',
             'description' => 'salary of month',
+            'payment_method' => 'cash'
         ]);
 
         $response->assertCreated();
-        $this->assertDatabaseHas('transactions', ['id_user' => $this->user->id, 'type' => 'revenue']);
+        $this->assertDatabaseHas('transactions', ['id_user' => $this->user->id, 'payment_method' => 'cash']);
     }
 
     // php artisan test --filter TransactionControllerTest::test_create_transaction_validation_fails
     public function test_create_transaction_validation_fails(): void
     {
         $response = $this->actingAs($this->user)->postJson('/api/transaction/create', [
+            'type' => 'revenue',
             'amount' => 2500,
             'category' => 'salary',
             'description' => 'salary of month',
         ]);
         $response->assertUnprocessable();
-        $response->assertJsonValidationErrors(['type']);
+        $response->assertJsonValidationErrors(['payment_method']);
     }
 
     // php artisan test --filter TransactionControllerTest::test_list_transaction_user_by_id_success
@@ -157,7 +161,7 @@ class TransactionControllerTest extends TestCase
         ]);
         $response->assertOk();
         $this->assertDatabaseHas('transactions', [
-            'id' => $this->transaction->id, 
+            'id' => $this->transaction->id,
             'amount' => 200
         ]);
     }
@@ -171,5 +175,63 @@ class TransactionControllerTest extends TestCase
             ]);
         $response->assertOk();
         $this->assertDatabaseHas('transactions', ['id_user' => $this->user->id, 'amount' => $this->transaction->amount]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_calculate_balance_sucess
+    public function test_calculate_balance_sucess(): void
+    {
+        $user = User::create([
+            'name' => 'Marcos new',
+            'email' => 'marcoskct@gmail.com',
+            'password' => bcrypt('1234567'),
+            'phone' => '21999999999',
+            'cpf' => '12345678900',
+            'date_of_birt' => '22/09/2006',
+            'status' => 'inativo',
+            'role' => 'user',
+        ]);
+
+        Transaction::create([
+            'id_user' => $user->id,
+            'type' => 'expense',
+            'amount' => 500,
+            'category' => 'salary',
+            'description' => 'Conta de Luz',
+        ]);
+
+        Transaction::create([
+            'id_user' => $user->id,
+            'type' => 'revenue',
+            'amount' => 3000,
+            'category' => 'salary',
+            'description' => 'Salário',
+        ]);
+
+        $response = $this->actingAs($user)->getJson('api/transaction/balance?id=' . $user->id);
+
+        $response->assertOk();
+        $response->assertJson(['balance' => 2500]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_expenses_payment_method_transaction
+    public function test_expenses_payment_method_transaction()
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/expensesByPayment'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'transaction'
+        ]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_highest_expense_monthly_transaction
+    public function test_highest_expense_monthly_transaction()
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/highestMonthlyExpense'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction']);
     }
 }
