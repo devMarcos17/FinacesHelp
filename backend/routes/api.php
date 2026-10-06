@@ -56,6 +56,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::get('/filterExpense', [TransactionController::class, 'filterExpense'])->middleware('auth')->name('filterExpense');
     Route::get('/expensesByPayment', [TransactionController::class, 'expensesByPayment'])->middleware('auth')->name('expensesByPayment');
     Route::get('/highestMonthlyExpense', [TransactionController::class, 'highestMonthlyExpense'])->middleware('auth')->name('highestMonthlyExpense');
+    Route::get('/highestMonthlyRevenue', [TransactionController::class, 'highestMonthlyRevenue'])->middleware('auth')->name('highestMonthlyRevenue');
 
     Route::put('/update', [TransactionController::class, 'updateTransaction'])->middleware('auth')->name('updateTransaction');
 

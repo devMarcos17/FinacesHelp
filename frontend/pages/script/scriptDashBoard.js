@@ -44,13 +44,36 @@ async function highestMonthlyExpense() {
         });
         const data = await response.json();
         if (response.ok) {
-            console.log(data)
+            document.getElementById('highest-expense').innerText = 'R$ ' + data.transaction.amount;
+            document.getElementById('highest-expense-description').innerText = data.transaction.description.toUpperCase();
+            document.getElementById('highest-expense-payment').innerText = data.transaction.payment_method.toUpperCase();
         }
     } catch (error) {
         console.log(error);
     }
 }
 
+async function highestMonthlyRevenue() {
+    const token = 'Bearer ' + sessionStorage.getItem('session');
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/transaction/highestMonthlyRevenue', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/json'
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log(data.transaction.amount);
+            document.getElementById('highest-revenue').innerText = 'R$ ' + data.transaction.amount;
+            document.getElementById('highest-revenue-description').innerText = data.transaction.description.toUpperCase();
+            document.getElementById('highest-revenue-payment').innerText = data.transaction.payment_method.toUpperCase();
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 function createDashboardChart(revenue, expense) {
 
@@ -105,3 +128,4 @@ function createDashboardChart(revenue, expense) {
 }
 getDashBoard();
 highestMonthlyExpense();
+highestMonthlyRevenue();

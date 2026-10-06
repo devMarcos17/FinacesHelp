@@ -267,7 +267,11 @@ class TransactionController extends Controller
     public function highestMonthlyExpense(): JsonResponse
     {
         $transaction = $this->transactionService->highestMonthlyExpense();
-
+        return response()->json(['transaction' => $transaction], 200);
+    }
+    public function highestMonthlyRevenue(): JsonResponse
+    {
+        $transaction = $this->transactionService->highestMonthlyRevenue();
         return response()->json(['transaction' => $transaction], 200);
     }
 }

@@ -70,9 +70,7 @@ async function listInvestiment() {
 
                 getProfitability(investiment.id);
             });
-
-            // Cria os gráficos somente depois que todos os investimentos
-            // já foram adicionados ao DOM.
+            
             data.investiments.forEach(investiment => {
                 createDonutChart(investiment);
             });

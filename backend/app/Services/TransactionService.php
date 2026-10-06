@@ -110,11 +110,24 @@ class TransactionService
         $start = Carbon::now()->startOfMonth();
         $end = Carbon::now()->endOfMonth();
 
-        $transaction = Transaction::where('user_id', $this->getUserId())
+        $transaction = Transaction::where('id_user', $this->getUserId())
             ->where('type', 'expense')
             ->whereBetween('created_at', [$start, $end])
             ->orderBy('amount', 'desc')
             ->first();
+
+        return $transaction;
+    }
+    public function highestMonthlyRevenue()
+    {
+        $start = Carbon::now()->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
+
+        $transaction = Transaction::where('id_user', $this->getUserId())
+        ->where('type', 'revenue')
+        ->whereBetween('created_at', [$start, $end])
+        ->orderBy('amount', 'desc')
+        ->first();
 
         return $transaction;
     }

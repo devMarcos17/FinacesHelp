@@ -19,26 +19,18 @@
             background: #edf1f5;
             color: #243447;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-
-        /* =========================
-           NAVBAR
-        ========================= */
 
         .navbar {
             width: 100%;
             height: 70px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             padding: 0 50px;
-
-            background: linear-gradient(135deg,
-                    #163a59,
-                    #285b82);
-
+            background: linear-gradient(135deg, #163a59, #285b82);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
@@ -49,10 +41,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* =========================
-           LINKS DO MENU
-        ========================= */
-
         .nav-links {
             display: flex;
             align-items: center;
@@ -62,47 +50,28 @@
         .nav-link {
             color: #e8eef4;
             text-decoration: none;
-
             padding: 10px 18px;
-
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 8px;
-
             background: transparent;
-
             font-family: Arial, Helvetica, sans-serif;
             font-size: 14px;
-
             cursor: pointer;
-
-            transition:
-                background 0.25s ease,
-                color 0.25s ease,
-                transform 0.25s ease,
-                box-shadow 0.25s ease,
-                border-color 0.25s ease;
+            transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
 
         .nav-link:hover {
             background: rgba(255, 255, 255, 0.12);
             color: white;
-
             transform: translateY(-2px);
-
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
-
-        /* =========================
-           BOTÃO SAIR
-        ========================= */
 
         .logout-button:hover {
             background: #d00000;
             border-color: #d00000;
             color: white;
-
             transform: translateY(-2px);
-
             box-shadow: 0 5px 12px rgba(208, 0, 0, 0.35);
         }
 
@@ -111,20 +80,12 @@
             box-shadow: none;
         }
 
-        /* =========================
-           CONTAINER
-        ========================= */
-
         .container {
             width: 90%;
             max-width: 1200px;
-
             margin: 40px auto;
+            flex: 1;
         }
-
-        /* =========================
-           USUÁRIO
-        ========================= */
 
         .welcome {
             margin-bottom: 30px;
@@ -132,97 +93,85 @@
 
         .welcome span {
             display: block;
-
             color: #6b7b8c;
             font-size: 15px;
-
             margin-bottom: 5px;
         }
 
         .welcome h1 {
             color: #193e5c;
-
             font-size: 32px;
             font-weight: 700;
         }
 
-        /* =========================
-           CARDS
-        ========================= */
-
         .cards {
             display: grid;
-
             grid-template-columns: repeat(3, 1fr);
-
             gap: 22px;
+            margin-bottom: 35px;
+        }
 
+        .cards-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
             margin-bottom: 35px;
         }
 
         .card {
             position: relative;
-
             background: #f8fafc;
-
             border: 1px solid #d9e0e7;
-
             border-radius: 15px;
-
             padding: 25px;
-
             min-height: 145px;
-
-            box-shadow:
-                0 5px 15px rgba(31, 51, 68, 0.08);
-
+            box-shadow: 0 5px 15px rgba(31, 51, 68, 0.08);
             overflow: hidden;
-
             transition: 0.25s;
         }
 
         .card:hover {
             transform: translateY(-4px);
-
-            box-shadow:
-                0 10px 25px rgba(31, 51, 68, 0.13);
+            box-shadow: 0 10px 25px rgba(31, 51, 68, 0.13);
         }
 
         .card::before {
             content: "";
-
             position: absolute;
-
             left: 0;
             top: 0;
-
             width: 5px;
             height: 100%;
-
             background: #285b82;
         }
 
         .card-title {
             color: #718096;
-
             font-size: 14px;
             font-weight: bold;
-
             text-transform: uppercase;
-
             letter-spacing: 1px;
-
             margin-bottom: 15px;
         }
 
         .card-value {
             font-size: 29px;
             font-weight: bold;
-
             color: #193e5c;
         }
 
-        /* Saldo */
+        .card-desc {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .card-payment {
+            margin-top: 4px;
+            font-size: 13px;
+            color: #a0aec0;
+            text-transform: capitalize;
+        }
 
         .balance-card::before {
             background: #285b82;
@@ -232,8 +181,6 @@
             color: #285b82;
         }
 
-        /* Entrada */
-
         .revenue-card::before {
             background: #00a63c;
         }
@@ -241,8 +188,6 @@
         .revenue-card .card-value {
             color: #008f35;
         }
-
-        /* Saída */
 
         .expense-card::before {
             background: #e00000;
@@ -252,54 +197,36 @@
             color: #d00000;
         }
 
-        /* =========================
-           GRÁFICO
-        ========================= */
-
         .chart-card {
             background: #f8fafc;
-
             border: 1px solid #d9e0e7;
-
             border-radius: 15px;
-
             padding: 30px;
-
-            box-shadow:
-                0 5px 15px rgba(31, 51, 68, 0.08);
+            box-shadow: 0 5px 15px rgba(31, 51, 68, 0.08);
         }
 
         .chart-header {
             text-align: center;
-
             margin-bottom: 25px;
         }
 
         .chart-header h2 {
             color: #193e5c;
-
             font-size: 22px;
-
             margin-bottom: 6px;
         }
 
         .chart-header p {
             color: #7a8794;
-
             font-size: 14px;
         }
 
         .chart-container {
             width: 100%;
-
             max-width: 500px;
-
             height: 420px;
-
             margin: 0 auto;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
         }
@@ -309,12 +236,74 @@
             max-height: 100%;
         }
 
-        /* =========================
-           RESPONSIVO
-        ========================= */
+        .footer {
+            background: #163a59;
+            color: #e8eef4;
+            padding: 30px 0 20px 0;
+            margin-top: 50px;
+            border-top: 3px solid #285b82;
+        }
+
+        .footer-content {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-brand h3 {
+            color: #ffffff;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .footer-brand p {
+            color: #a0aec0;
+            font-size: 13px;
+        }
+
+        .footer-info {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #d1d5db;
+        }
+
+        .footer-item a {
+            color: #63b3ed;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-item a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto 0 auto;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+        }
 
         @media (max-width: 800px) {
-
             .navbar {
                 padding: 0 25px;
             }
@@ -323,25 +312,31 @@
                 width: 92%;
             }
 
-            .cards {
+            .cards, .cards-highlights {
                 grid-template-columns: 1fr;
             }
 
             .welcome h1 {
                 font-size: 27px;
             }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-info {
+                flex-direction: column;
+                gap: 12px;
+            }
         }
 
         @media (max-width: 500px) {
-
             .navbar {
                 height: auto;
                 min-height: 65px;
-
                 padding: 15px 18px;
-
                 flex-wrap: wrap;
-
                 gap: 12px;
             }
 
@@ -351,12 +346,9 @@
 
             .nav-links {
                 width: 100%;
-
                 display: flex;
                 flex-wrap: wrap;
-
                 justify-content: center;
-
                 gap: 7px;
             }
 
@@ -390,157 +382,94 @@
 
 <body>
 
-    <!-- =========================
-         NAVBAR
-    ========================= -->
-
     <nav class="navbar">
-
         <div class="logo">
             Finance Help
         </div>
-
         <div class="nav-links">
-
-            <a class="nav-link" href="transactions.html">
-                Transações
-            </a>
-
-            <a class="nav-link" href="goal.html">
-                Objetivos
-            </a>
-
-            <a class="nav-link" href="investiments.html">
-                Investimentos
-            </a>
-
-            <button
-                class="nav-link logout-button"
-                type="button"
-                onclick="logout()">
-                Sair
-            </button>
-
+            <a class="nav-link" href="transactions.html">Transações</a>
+            <a class="nav-link" href="goal.html">Objetivos</a>
+            <a class="nav-link" href="investiments.html">Investimentos</a>
+            <button class="nav-link logout-button" type="button" onclick="logout()">Sair</button>
         </div>
-
     </nav>
 
-
-    <!-- =========================
-         CONTEÚDO
-    ========================= -->
-
     <main class="container">
-
-        <!-- USUÁRIO -->
-
         <section class="welcome">
-
-            <span>
-                Bem-vindo de volta
-            </span>
-
-            <h1 id="user-name">
-                Carregando usuário...
-            </h1>
-
+            <span>Bem-vindo de volta</span>
+            <h1 id="user-name">Carregando usuário...</h1>
         </section>
-
-
-        <!-- =========================
-             CARDS
-        ========================= -->
 
         <section class="cards">
-
-            <!-- SALDO -->
-
             <div class="card balance-card">
-
-                <div class="card-title">
-                    Saldo atual
-                </div>
-
-                <p class="card-value" id="balance">
-                    Carregando...
-                </p>
-
+                <div class="card-title">Saldo atual</div>
+                <p class="card-value" id="balance">Carregando...</p>
             </div>
-
-
-            <!-- ENTRADAS -->
-
             <div class="card revenue-card">
-
-                <div class="card-title">
-                    Entradas
-                </div>
-
-                <p class="card-value" id="revenue">
-                    Carregando...
-                </p>
-
+                <div class="card-title">Entradas</div>
+                <p class="card-value" id="revenue">Carregando...</p>
             </div>
-
-
-            <!-- SAÍDAS -->
-
             <div class="card expense-card">
-
-                <div class="card-title">
-                    Saídas
-                </div>
-
-                <p class="card-value" id="expense">
-                    Carregando...
-                </p>
-
+                <div class="card-title">Saídas</div>
+                <p class="card-value" id="expense">Carregando...</p>
             </div>
-
         </section>
 
-
-        <!-- =========================
-             GRÁFICO
-        ========================= -->
+        <section class="cards-highlights">
+            <div class="card revenue-card">
+                <div class="card-title">Maior Receita do Mês</div>
+                <p class="card-value" id="highest-revenue">Carregando...</p>
+                <p class="card-desc" id="highest-revenue-description">--</p>
+                <p class="card-payment" id="highest-revenue-payment">--</p>
+            </div>
+            <div class="card expense-card">
+                <div class="card-title">Maior Despesa do Mês</div>
+                <p class="card-value" id="highest-expense">Carregando...</p>
+                <p class="card-desc" id="highest-expense-description">--</p>
+                <p class="card-payment" id="highest-expense-payment">--</p>
+            </div>
+        </section>
 
         <section class="chart-card">
-
             <div class="chart-header">
-
-                <h2>
-                    Entradas x Saídas
-                </h2>
-
-                <p>
-                    Visualização da movimentação financeira
-                </p>
-
+                <h2>Entradas x Saídas</h2>
+                <p>Visualização da movimentação financeira</p>
             </div>
-
             <div class="chart-container">
-
                 <canvas id="dashboard-chart"></canvas>
-
             </div>
-
         </section>
-
     </main>
 
-
-    <!-- =========================
-         SCRIPTS
-    ========================= -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Finance Help</h3>
+                <p>Gestão financeira pessoal simples e eficiente.</p>
+            </div>
+            <div class="footer-info">
+                <div class="footer-item">
+                    <span>Desenvolvido por: <strong>Marcos Lucas</strong></span>
+                </div>
+                <div class="footer-item">
+                    <span>GitHub:</span>
+                    <a href="https://github.com/devMarcos17" target="_blank">github.com/devMarcos17</a>
+                </div>
+                <div class="footer-item">
+                    <span>Contato:</span>
+                    <strong>(21) 97230-5425</strong>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Finance Help. Todos os direitos reservados.
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-
     <script src="../script/scriptDashBoard.js"></script>
-
     <script src="../script/scriptMe.js"></script>
-
     <script src="../script/scriptLogout.js"></script>
 
 </body>
