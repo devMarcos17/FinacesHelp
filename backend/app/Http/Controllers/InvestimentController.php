@@ -42,24 +42,21 @@ class InvestimentController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $data = request()->only([
+            'id_user',
+            'title',
+            'amount_invested'
+        ]);
 
-        $investiment = new Investiment();
-
-        $investiment->id_user = $this->getUserId();
-        $investiment->title = $request->title;
-        $investiment->amount_invested = $request->amount_invested;
-        $investiment->current_amount = $request->amount_invested;
-
-        $investiment->save();
+        $investiment = $this->investimentService->createInvestiment(
+            $data,
+            $request->amount_invested
+        );
 
         return response()->json(['investiment' => $investiment], 201);
     }
     public function updateInvestiment(Request $request): JsonResponse
     {
-        $investiment = Investiment::find($request->id);
-        if (!$investiment) {
-            return response()->json(['message' => 'not found'], 404);
-        }
         $validator = Validator::make(
             request()->all(),
             [
@@ -79,22 +76,21 @@ class InvestimentController extends Controller
                 return $value !== null && $value !== '';
             }
         );
-        $investiment->update($filterData);
+        $investiment = $this->investimentService->updateInvestiment(
+            $request->id,
+            $filterData
+        );
 
         return response()->json(['investiment' => $investiment], 200);
     }
     public function deleteInvestiment(Request $request): JsonResponse
     {
-        $investiment = Investiment::find($request->id);
-        if (!$investiment) {
-            return response()->json(['message' => 'not found'], 404);
-        }
-        $investiment->delete();
+        $investiment = $this->investimentService->deleteInvestiment($request->id);
         return response()->json(['investiment' => $investiment], 200);
     }
     public function listInvestiment(): JsonResponse
     {
-        $investiment = Investiment::where('id_user', $this->getUserId())->get();
+        $investiment = $this->investimentService->listInvestiment();
         return response()->json(['investiments' => $investiment], 200);
     }
     public function listInvestimentById(Request $request): JsonResponse
@@ -114,23 +110,12 @@ class InvestimentController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        $investiment = Investiment::where('id', $request->id)
-            ->where('id_user', $this->getUserId())
-            ->first();
-
-        if (!$investiment || $investiment->amount_invested <= 0) {
-            return response()->json([
-                'profitability' => 0.0
-            ], 200);
-        }
-
-        $profitability = (($investiment->current_amount - $investiment->amount_invested) / $investiment->amount_invested) * 100;
-
+        $investiment = $this->investimentService->profitability($request->id);
+        
         return response()->json([
-            'investiment_id' => $investiment->id,
-            'profitability' => round($profitability, 2)
-        ], 200);
+            'profitability' => $investiment['profitability'],
+            'investiment_id' => $investiment['investiment_id']
+            ], 200);
     }
     public function deposit(Request $request): JsonResponse
     {
@@ -163,30 +148,11 @@ class InvestimentController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        $investiment = Investiment::where('id', $request->id)
-            ->where('id_user', $this->getUserId())
-            ->firstOrFail();
-
-        if ($request->devolution_amount > $investiment->current_amount) {
-            return response()->json([
-                'error' => 'this value dont can bigger what investiment'
-            ], 422);
-        }
-        $investiment->current_amount -= $request->devolution_amount;
-        $investiment->save();
-
-        $transaction  = Transaction::create([
-            'id_user' => $this->getUserId(),
-            'type' => 'revenue',
-            'amount' => $request->devolution_amount,
-            'category' => 'other',
-            'description' => 'Investiment',
-        ]);
-
+        
+        $investiment = $this->investimentService->withDraw($request->id, $request->devolution_amount);
         return response()->json([
-            'investiment' => $investiment,
-            'transaction' => $transaction
+            'investiment' => $investiment['investiment'],
+            'transaction' => $investiment['transaction']
         ], 200);
     }
 }

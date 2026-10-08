@@ -5,10 +5,8 @@ namespace App\Services;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use App\Enums\TransactionCategory;
-use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
-use Ramsey\Collection\Collection;
 
 class TransactionService
 {
@@ -22,6 +20,39 @@ class TransactionService
         $user = Auth::user();
 
         return (int) ($user ? $user->id : Auth::id());
+    }
+    public function createTransaction(array $data): Transaction
+    {
+        $transaction = new Transaction();
+        $transaction->id_user = $data['id_user'];
+        $transaction->type = $data['type'];
+        $transaction->amount = $data['amount'];
+        $transaction->category = $data['category'];
+        $transaction->description = $data['description'];
+        $transaction->payment_method = $data['payment_method'];
+
+        $transaction->save();
+
+        return $transaction;
+    }
+    public function updateTransaction(array $data, int $idTransaction): Transaction
+    {
+        $transaction = Transaction::where('id', $idTransaction)
+            ->where('id_user', $this->getUserId())
+            ->firstOrFail();
+
+        $transaction->update($data);
+
+        return $transaction;
+    }
+    public function deleteTransaction(): Transaction
+    {
+        $transaction = Transaction::where('id', $this->getUserId())->where('id_user', $this->getUserId())
+        ->firstOrFail();
+
+        $transaction->delete();
+        
+        return $transaction;
     }
     public function calculateBalance(): int
     {
@@ -105,6 +136,16 @@ class TransactionService
 
         return $transaction;
     }
+    public function revenueByPayment()
+    {
+        $transaction = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'revenue')
+            ->selectRaw('payment_method, SUM(amount) as total')
+            ->groupBy('payment_method')
+            ->get();
+
+        return $transaction;
+    }
     public function highestMonthlyExpense()
     {
         $start = Carbon::now()->startOfMonth();
@@ -124,10 +165,10 @@ class TransactionService
         $end = Carbon::now()->endOfMonth();
 
         $transaction = Transaction::where('id_user', $this->getUserId())
-        ->where('type', 'revenue')
-        ->whereBetween('created_at', [$start, $end])
-        ->orderBy('amount', 'desc')
-        ->first();
+            ->where('type', 'revenue')
+            ->whereBetween('created_at', [$start, $end])
+            ->orderBy('amount', 'desc')
+            ->first();
 
         return $transaction;
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Carbon\Carbon;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,10 +11,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 
 class UserController extends Controller
 {
+    public function __construct(private UserService $userService)
+    {
+        $this->userService = new UserService();
+    }
     private function getUserId(): int
     {
         /** @var User|null $user */
@@ -39,26 +44,23 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $data = request()->only([
+            'name',
+            'email',
+            'password',
+            'phone',
+            'cpf',
+            'date_of_birt'
+        ]);
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->role = $request->role;
-        $user->password = $request->password;
-        $user->phone = $request->phone;
-        $user->cpf = $request->cpf;
-        $user->date_of_birt = $request->date_of_birt;
-        $user->status = 'ativo';
-        $user->role = 'user';
-
-        $user->save();
+        $user = $this->userService->registerUser($data);
 
         return response()->json(['message' => $user], 201);
     }
 
     public function list(): JsonResponse
     {
-        $users = User::orderBy('name', 'asc')->get();
+        $users = User::orderBy('id', 'asc')->get();
 
         return response()->json(['user' => $users], 200);
     }
@@ -100,8 +102,8 @@ class UserController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => auth('api')->factory()->getTTL() * 60,
-            'role' => auth('api')->user()->role,
+            'expires_in'   => JWTAuth::factory()->getTTL() * 60,
+            'role'         => auth('api')->user()->role,
         ]);
     }
 
@@ -140,13 +142,8 @@ class UserController extends Controller
     }
     public function update(Request $request): JsonResponse
     {
-        $user = User::find($request->id);
-        if (!$user) {
-            return response()->json(['message' => 'not found'], 404);
-        }
-
         $validator = Validator::make(
-            $request->all(),
+            request()->all(),
             [
                 'id' => 'required|integer',
                 'id_user' => 'nullable|integer',
@@ -160,14 +157,27 @@ class UserController extends Controller
         );
 
         if ($validator->fails()) {
-           return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $filterData = array_filter($request->only(['name', 'email', 'password', 'phone', 'cpf', 'status', 'date_of_birt']), function ($value) {
+        $filterData = array_filter($request->only([
+            'name',
+            'email',
+            'password',
+            'phone',
+            'cpf',
+            'status',
+            'date_of_birt'
+        ]), function ($value) {
             return $value !== null && $value !== '';
         });
 
-        $user->update($filterData);
+        if (isset($filterData['password'])) {
+            $filterData['password'] = Hash::make($filterData['password']);
+        }
+
+        $user = $this->userService->updateUser($request->id, $filterData);
+
         return response()->json(['user' => $user], 200);
     }
 
@@ -176,20 +186,14 @@ class UserController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'id' => 'required|integer',
-                'id_user' => 'nullable|integer',
+                'id' => 'required|integer'
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['errors' =>$validator->errors(), 422]);
+            return response()->json(['errors' => $validator->errors(), 422]);
         }
+        $user = $this->userService->deleteUser($request->id);
 
-        $user = User::find($request->id);
-        if (!$user) {
-            return response()->json(['message' => 'not found'], 404);
-        }
-
-        $user->delete();
         return response()->json(['user' => $user], 200);
     }
     public function disableUser(Request $request): JsonResponse
@@ -204,14 +208,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $user = User::where('id', $request->id)->where('status', 'ativo')->first();
-        if ($user) {
-            $user->status = 'inativo';
-            $user->save();
-
-            return response()->json(['user' => $user], 200);
-        }
-        return response()->json(['message' => 'User not found or already active'], 404);
+        $user = $this->userService->disableUser($request->id);
+        return response()->json(['user' => $user]);
     }
     public function activeUser(Request $request): JsonResponse
     {
@@ -226,43 +224,38 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = User::where('id', $request->id)->where('status', 'inativo')->first();
-        if ($user) {
-            $user->status = 'ativo';
-            $user->save();
-            return response()->json(['user' => $user], 200);
-        }
-        return response()->json(['message' => 'User not found or already disable'], 404);
+        $user = $this->userService->activeUser($request->id);
+        return response()->json(['user' => $user], 200);
     }
     public function getActiveUsers(): JsonResponse
     {
-        $users = User::where('status', 'ativo')->orderBy('name', 'asc')->get();
+        $users = $this->userService->getActiveUsers();
         return response()->json(['users' => $users], 200);
     }
     public function getDisableUsers(): JsonResponse
     {
-        $users = User::where('status', 'inativo')->orderBy('name', 'asc')->get();
+        $users = $this->userService->getDisableUsers();
         return response()->json(['users' => $users], 200);
     }
     public function getAdminsTotal(): JsonResponse
     {
-        $usersAdmin = User::where('role', 'admin')->count('users');
-        return response()->json(['users' => $usersAdmin], 200);
+        $userAdm = $this->userService->getAdminsTotal();
+        return response()->json(['users' => $userAdm], 200);
     }
     public function getUsersTotal(): JsonResponse
     {
-        $users = User::count('users');
-        return response()->json(['users' => $users], 200);
+        $usersTotal = $this->userService->getUsersTotal();
+        return response()->json(['users' => $usersTotal], 200);
     }
     public function getDisableUsersTotal(): JsonResponse
     {
-        $users = User::where('status', 'inativo')->count('users');
-        return response()->json(['users' => $users], 200);
+        $usersDisable = $this->userService->getDisableUsersTotal();
+        return response()->json(['users' => $usersDisable], 200);
     }
     public function getActiveUsersTotal(): JsonResponse
     {
-        $users = User::where('status', 'ativo')->count('users');
-        return response()->json(['users' => $users], 200);
+        $usersActive = $this->userService->getActiveUsersTotal();
+        return response()->json(['users' => $usersActive], 200);
     }
     public function search(Request $request): JsonResponse
     {
@@ -277,32 +270,25 @@ class UserController extends Controller
         }
         $search = $request->search;
 
-        $user = User::where(function ($query) use ($search) {
-            $query->where('name', 'LIKE', '%' . $search . '%')
-                ->orWhere('email', 'LIKE', '%' . $search . '%')
-                ->orWhere('status', 'LIKE', '%' . $search . '%');
-        })->get();
-        if (!$user) {
-            return response()->json(['message' => 'not found'], 404);
-        }
-        return response()->json(['user' => $user], 200);
+        $userSearch = $this->userService->search($search);
+        return response()->json(['user' => $userSearch], 200);
     }
 
     public function filterUsersMonth(): JsonResponse
     {
-        $users = User::where('created_at', '>=', Carbon::now()->subDays(30))->get();
-        return response()->json(['users' => $users], 200);
+        $usersFilter = $this->userService->filterUsersMonth();
+        return response()->json(['users' => $usersFilter], 200);
     }
     public function filterDataOld(): JsonResponse
     {
-        $users = User::orderBy('created_at', 'ASC')->get();
+        $usersOld = $this->userService->filterDataOld();
 
-        return response()->json(['users' => $users], 200);
+        return response()->json(['users' => $usersOld], 200);
     }
     public function filterDataRecent(): JsonResponse
     {
-        $users = User::orderBy('created_at', 'DESC')->get();
-        return response()->json(['users' => $users], 200);
+        $usersRecent = $this->userService->filterDataRecent();
+        return response()->json(['users' => $usersRecent], 200);
     }
     public function forgotPassword(Request $request): JsonResponse
     {
@@ -315,10 +301,17 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $password = Password::sendResetLink($request->only('email'));
-        return response()->json(['password' => $password], 200);
+        $forgot = $this->userService->forgotPassword($request->email);
+        if ($forgot) {
+            return response()->json(
+                ['message' =>
+                'Password reset link sent successfully.'],
+                200
+            );
+        }
+        return response()->json(['message' => 'Unable to send password reset link.'], 400);
     }
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
         $validator = Validator::make(
             request()->all(),
@@ -331,16 +324,15 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $status = Password::reset(
-            $request->only('email', 'token', 'password', 'password_confirmation'),
-            function (User $user, string $password) {
-                $user->forceFill(['password' => Hash::make($password)])->setRememberToken(Str::random(60));
-                $user->save();
-            }
+
+        $status = $this->userService->resetPassword(
+            $request->email,
+            $request->token,
+            $request->password
         );
-        if ($status == Password::PASSWORD_RESET) {
-            return response()->json(['status' => $status], 200);
+        if($status){
+            return response()->json(['message' => 'Password has been reset successfully.'], 200);
         }
-        return response()->json(['errors' => $validator->errors()], 422);
+        return response()->json(['message' => 'Invalid token or password reset failed.'], 400);
     }
 }

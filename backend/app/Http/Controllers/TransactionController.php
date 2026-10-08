@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+    public function __construct(
+        private TransactionService $transactionService
+    ) {
+        $this->transactionService = new TransactionService();
+    }
     /**
      *
      * @return int
@@ -25,13 +30,8 @@ class TransactionController extends Controller
 
         return (int) ($user ? $user->id : Auth::id());
     }
-    public function __construct(
-        private TransactionService $transactionService
-    ) {
-        $this->transactionService = new TransactionService();
-    }
-    //
-    public function createTransaction(Request $request): JsonResponse
+
+    public function createTransaction(): JsonResponse
     {
         $validator = Validator::make(
             request()->all(),
@@ -47,16 +47,18 @@ class TransactionController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $data = array_merge(
+            request()->only([
+                'type',
+                'amount',
+                'category',
+                'description',
+                'payment_method',
+            ]),
+            ['id_user' => $this->getUserId()]
+        );
 
-        $transaction = new Transaction();
-        $transaction->id_user = $this->getUserId();
-        $transaction->type = $request->type;
-        $transaction->amount = $request->amount;
-        $transaction->category = $request->category;
-        $transaction->description = $request->description;
-        $transaction->payment_method = $request->payment_method;
-
-        $transaction->save();
+        $transaction = $this->transactionService->createTransaction($data);
 
         return response()->json(['transaction' => $transaction], 201);
     }
@@ -85,17 +87,12 @@ class TransactionController extends Controller
 
         return response()->json(['transaction' => $transaction], 200);
     }
-    public function updateTransaction(Request $request)
+    public function updateTransaction(Request $request): JsonResponse
     {
-        $transaction = Transaction::find($request->id);
-        if (!$transaction) {
-            return response()->json(['message' => 'not found'], 404);
-        }
         $validator = Validator::make(
             request()->all(),
             [
                 'id' => 'required|integer',
-                'id_user' => 'nullable|integer',
                 'type' => 'nullable|string',
                 'amount' => 'nullable|integer',
                 'category' => 'nullable|string',
@@ -106,23 +103,29 @@ class TransactionController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $filterData = array_filter(
+            $request->only([
+                'type',
+                'amount',
+                'category',
+                'description',
+                'payment_method'
+            ]),
+            function ($value) {
+                return $value !== null && $value !== '';
+            }
+        );
+        $transaction = $this->transactionService->updateTransaction(
+            $filterData,
+           (int)$request->id
+        );
 
-
-        $filterData = array_filter($request->only([
-            'type', 'amount', 'category', 'description', 'payment_method']), 
-            function ($value){
-            return $value !== null && $value !== '';
-        });
-
-        $transaction->update($filterData);
+        return response()->json(['transaction' => $transaction], 200);
     }
-    public function deleteTransaction(Request $request): JsonResponse
+    public function deleteTransaction(): JsonResponse
     {
-        $transaction = Transaction::find($request->id);
-        if (!$transaction) {
-            return response()->json(['message' => 'not found'], 404);
-        }
-        $transaction->delete();
+        $transaction = $this->transactionService->deleteTransaction();
+
         return response()->json(['transaction' => $transaction], 200);
     }
     public function balance(): JsonResponse
@@ -259,9 +262,14 @@ class TransactionController extends Controller
     }
     public function expensesByPayment(): JsonResponse
     {
-       
+
         $transaction = $this->transactionService->expensesByPayment()->values();
 
+        return response()->json(['transaction' => $transaction], 200);
+    }
+    public function revenueByPayment(): JsonResponse
+    {
+        $transaction = $this->transactionService->revenueByPayment()->values();
         return response()->json(['transaction' => $transaction], 200);
     }
     public function highestMonthlyExpense(): JsonResponse

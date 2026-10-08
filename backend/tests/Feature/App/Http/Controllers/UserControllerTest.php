@@ -28,6 +28,27 @@ class UserControllerTest extends TestCase
         ]);
     }
 
+    // php artisan test --filter UserControllerTest::test_user_register_sucess
+    public function test_user_register_sucess()
+    {
+         $response = $this->postJson(
+            '/api/auth/register',
+            [
+                'name' => 'Marcos',
+                'email' => 'marcos2020@gmail.com',
+                'password' => bcrypt('1234567'),
+                'phone' => '21999999999',
+                'cpf' => '12345678900',
+                'date_of_birt' => '22/09/2006',
+                'status' => 'ativo',
+                'role' => 'admin',
+            ]
+        );
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('users', ['name' => 'Marcos']);
+    }
+
     // php artisan test --filter UserControllerTest::test_user_register_validation_fails
     public function test_user_register_validation_fails(): void
     {

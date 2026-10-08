@@ -214,7 +214,19 @@ class TransactionControllerTest extends TestCase
     }
 
     //php artisan test --filter TransactionControllerTest::test_expenses_payment_method_transaction
-    public function test_expenses_payment_method_transaction()
+    public function test_expenses_payment_method_transaction(): void
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/expensesByPayment'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'transaction'
+        ]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_revenue_payment_method_transaction
+    public function test_revenue_payment_method_transaction(): void
     {
         $response = $this->actingAs($this->user)->getJson(
             'api/transaction/expensesByPayment'
@@ -226,7 +238,7 @@ class TransactionControllerTest extends TestCase
     }
 
     //php artisan test --filter TransactionControllerTest::test_highest_expense_monthly_transaction
-    public function test_highest_expense_monthly_transaction()
+    public function test_highest_expense_monthly_transaction(): void
     {
         $response = $this->actingAs($this->user)->getJson(
             'api/transaction/highestMonthlyExpense'
