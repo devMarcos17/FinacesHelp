@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Goal;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -10,19 +11,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
+use function PHPUnit\Framework\isEmpty;
+
 class UserService
 {
-    /**
-     *
-     * @return int
-     */
-    private function getUserId(): int
-    {
-        /** @var \App\Models\User|null $user */
-        $user = Auth::user();
-
-        return (int) ($user ? $user->id : Auth::id());
-    }
     public function registerUser(array $data): User
     {
         $user = new User();
@@ -33,13 +25,14 @@ class UserService
         $user->phone = $data['phone'];
         $user->date_of_birt = $data['date_of_birt'];
 
-
         $user->status = 'ativo';
         $user->role = 'user';
 
         $user->save();
+
         return $user;
     }
+
     public function updateUser(int $idUser, array $data): User
     {
         $user = User::findOrFail($idUser);
@@ -50,118 +43,117 @@ class UserService
     }
     public function deleteUser(int $idUser): User
     {
-        $user = User::where('id', $idUser)->firstOrFail();
+        $user = User::findOrFail($idUser);
 
         $user->delete();
 
         return $user;
     }
-    public function disableUser(int $idUser): User
+    public function disableUser(int $idUser)
     {
-        $user = User::where('id', $idUser)->where('status', 'ativo')
-            ->firstOrFail();
-
+        $user = User::where('id', $idUser)
+        ->where('status', 'ativo')
+        ->firstOrFail();
+        
         $user->status = 'inativo';
         $user->save();
 
         return $user;
     }
-    public function activeUser(int $idUser): User
+    public function activeUser(int $idUser)
     {
-        $user = User::where('id', $idUser)->where('status', 'inativo')
-            ->firstOrFail();
+        $user = User::where('id', $idUser)
+        ->where('status', 'inativo')
+        ->firstOrFail();
 
         $user->status = 'ativo';
+
         $user->save();
+        return $user;
+    }
+    public function getActiveUser(): Collection
+    {
+        $user = User::where('status', 'ativo')
+        ->orderBy('id', 'asc')->get();
 
         return $user;
     }
-    public function getActiveUsers(): Collection
+    public function getDisablesUser(): Collection
     {
-        $users = User::where('status', 'ativo')->orderBy('name', 'asc')->get();
-        return $users;
-    }
-    public function getDisableUsers(): Collection
-    {
-        $users = User::where('status', 'inativo')->orderBy('name', 'asc')->get();
-        return $users;
-    }
-    public function getAdminsTotal(): int
-    {
-        $user = User::where('role', 'admin')->count();
+        $user = User::where('status', 'inativo')
+        ->orderBy('id', 'asc')->get();
+
         return $user;
     }
     public function getUsersTotal(): int
     {
-        $usersTotal = User::count('users');
-        return $usersTotal;
-    }
-    public function getDisableUsersTotal()
-    {
-        $userDisable = User::where('status', 'inativo')->count();
-        return $userDisable;
-    }
-    public function getActiveUsersTotal(): int
-    {
-        $userActive = User::where('status', 'ativo')->count();
-        return $userActive;
-    }
-    public function search(string $search): Collection|bool
-    {
-        $user = User::whereAny([
-            'name',
-            'email',
-            'status',
-            'id'
-        ], 'LIKE', "%{$search}%")->get();
-
+        $user = User::count();
         return $user;
     }
-    public  function filterUsersMonth(): Collection|bool
+    public function getAdminTotal(): int
     {
-        $users = User::where(
-            'created_at',
-            '>=',
-            Carbon::now()->subDays(30)
-        )
-            ->get();
+        $user = User::where('role', 'admin')->count();
+        return $user;
+    }
+    public function getDisableUserTotal(): int
+    {
+        $user = User::where('status', 'inativo')->count();
+        return $user;
+    }
+    public function getActiveUserTotal(): int
+    {
+        $user = User::where('status', 'ativo')->count();
+        return $user;
+    }
+    public function search(string $search)
+    {
+        $search = User::whereAny([
+            'id',
+            'name',
+            'email',
+        ], 'LIKE', "%{$search}%")->get();
 
-        if ($users->isEmpty()) {
+        return $search;
+    }
+    public function filterUsersMonth(): Collection|bool
+    {
+       $user = User::where('created_at', '>=', Carbon::now()->subDays(30))
+    ->get();
+        if($user->isEmpty()){
             return false;
         }
-        return $users;
+        return $user;
     }
     public function filterDataOld(): Collection
     {
-        $users = User::orderBy('created_at', 'ASC')->get();
-        return $users;
+        $user = User::orderBy('created_at', 'ASC')->get();
+        return $user;
     }
     public function filterDataRecent(): Collection
     {
-        $users = User::orderBy('crated_at', 'DESC')->get();
-        return $users;
+        $user = User::OrderBy('created_at', 'DESC')->get();
+        return $user;
     }
     public function forgotPassword(string $email): bool
     {
-        $status = Password::sendResetLink(['email' => $email]);
+        $status = Password::sendResetLink([
+            'email' => $email
+        ]);
 
         return $status === Password::RESET_LINK_SENT;
     }
-    public function resetPassword(string $email, string $token, string $password): bool
+    public function resetPassword(string $email, string $token, string $password)
     {
         $status = Password::reset([
             'email' => $email,
             'token' => $token,
-            'password' => $password,
-            'password_confirmation' => $password
-        ], function (User $user, string $password){
-            $user->forceFill(['password' => Hash::make($password)])->setRememberToken(Str::random(60));
-            $user->save();
+            'password' => $password
+        ], function(User $user, string $password){
+            $user->forceFill(['password' => Hash::make($password)])
+            ->setRememberToken(Str::random(60));
         });
-        if ($status == Password::PASSWORD_RESET){
-            return true;
-        }
-        return false;
-    }
 
+        return $status === Password::PASSWORD_RESET;
+        
+    }
 }

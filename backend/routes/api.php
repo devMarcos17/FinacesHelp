@@ -55,8 +55,12 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::get('/filterRevenue', [TransactionController::class, 'filterRevenue'])->middleware('auth')->name('filterRevenue');
     Route::get('/filterExpense', [TransactionController::class, 'filterExpense'])->middleware('auth')->name('filterExpense');
     Route::get('/expensesByPayment', [TransactionController::class, 'expensesByPayment'])->middleware('auth')->name('expensesByPayment');
+    Route::get('/revenuesByPayment', [TransactionController::class, 'revenuesByPayment'])->middleware('auth')->name('revenuesByPayment');
     Route::get('/highestMonthlyExpense', [TransactionController::class, 'highestMonthlyExpense'])->middleware('auth')->name('highestMonthlyExpense');
     Route::get('/highestMonthlyRevenue', [TransactionController::class, 'highestMonthlyRevenue'])->middleware('auth')->name('highestMonthlyRevenue');
+    Route::get('/meanByMonthExpense', [TransactionController::class, 'meanByMonthExpense'])->middleware('auth')->name('meanByMonthExpense');
+    Route::get('/meanByDayExpense', [TransactionController::class, 'meanByDayExpense'])->middleware('auth')->name('meanByDayExpense');
+    Route::get('/meanByYearExpense', [TransactionController::class, 'meanByYearExpense'])->middleware('auth')->name('meanByYearExpense');
 
     Route::put('/update', [TransactionController::class, 'updateTransaction'])->middleware('auth')->name('updateTransaction');
 

@@ -229,7 +229,7 @@ class TransactionControllerTest extends TestCase
     public function test_revenue_payment_method_transaction(): void
     {
         $response = $this->actingAs($this->user)->getJson(
-            'api/transaction/expensesByPayment'
+            'api/transaction/revenuesByPayment'
         );
         $response->assertOk();
         $response->assertJsonStructure([
@@ -245,5 +245,35 @@ class TransactionControllerTest extends TestCase
         );
         $response->assertOk();
         $response->assertJsonStructure(['transaction']);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_mean_month_expense
+    public function test_mean_month_expense()
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/meanByMonthExpense'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction' => ['avg']]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_mean_day_expense
+    public function test_mean_day_expense()
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/meanByDayExpense'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction' => ['avg']]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_mean_year_expense
+    public function test_mean_year_expense()
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/meanByYearExpense'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction' => ['avg']]);
     }
 }

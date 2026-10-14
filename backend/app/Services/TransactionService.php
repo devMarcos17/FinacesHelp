@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Enums\TransactionCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Database\Eloquent\Collection;
 
 class TransactionService
 {
@@ -24,7 +25,8 @@ class TransactionService
     public function createTransaction(array $data): Transaction
     {
         $transaction = new Transaction();
-        $transaction->id_user = $data['id_user'];
+
+        $transaction->id_user = $this->getUserId();
         $transaction->type = $data['type'];
         $transaction->amount = $data['amount'];
         $transaction->category = $data['category'];
@@ -42,109 +44,127 @@ class TransactionService
             ->firstOrFail();
 
         $transaction->update($data);
-
         return $transaction;
     }
-    public function deleteTransaction(): Transaction
+    public function deleteTransaction(int $idTransaction): Transaction
     {
-        $transaction = Transaction::where('id', $this->getUserId())->where('id_user', $this->getUserId())
-        ->firstOrFail();
+        $transaction = Transaction::where('id', $idTransaction)
+            ->where('id_user', $this->getUserId())
+            ->firstOrFail();
 
         $transaction->delete();
-        
+
         return $transaction;
     }
-    public function calculateBalance(): int
+    public function calculateBalance(): float
     {
-        $idUser = $this->getUserId();
-        $revenue = Transaction::where('id_user', $idUser)->where('type', 'revenue')->sum('amount');
-        $expense = Transaction::where('id_user', $idUser)->where('type', 'expense')->sum('amount');
+        $revenue = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'revenue')
+            ->sum('amount');
+
+        $expense = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'expense')
+            ->sum('amount');
+
         return $revenue - $expense;
     }
-    public function totalRevenue(): int
+    public function totalRevenue()
     {
-        $revenue = Transaction::where('id_user', $this->getUserId())->where('type', 'revenue')->sum('amount');
-        return $revenue;
+        $totalRevenue = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'revenue')
+            ->sum('amount');
+
+        return $totalRevenue;
     }
-    public function totalExpense(): int
+    public function totalExpense()
     {
-        $expanse = Transaction::where('id_user', $this->getUserId())->where('type', 'expense')->sum('amount');
-        return $expanse;
+        $totalExpense = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'expense')
+            ->sum('amount');
+
+        return $totalExpense;
     }
     public function filterDate(int $month, int $year)
     {
         $start = Date::createFromDate($year, $month, 1)->startOfMonth();
         $end = Date::createFromDate($year, $month, 1)->endOfMonth();
 
-        $filter = Transaction::where('id_user', $this->getUserId())->whereBetween('created_at', [$start, $end])->get();
-        return $filter;
+        $filterDate = Transaction::where('id_user', $this->getUserId())
+            ->whereBetween('created_at', [$start, $end])
+            ->get();
+
+        return $filterDate;
     }
     public function filterCategory(string $category)
     {
-        $filterCategory = Transaction::where('id_user', $this->getUserId())->where('category', $category)->get();
-        return $filterCategory;
+        $transaction = Transaction::where('id_user', $this->getUserId())
+            ->where('category', $category)
+            ->get();
+
+        return $transaction;
+    }
+    public function filterExpense()
+    {
+        $transaction = Transaction::where('id_user')
+            ->where('type', 'expense')
+            ->get();
+
+        return $transaction;
     }
     public function filterRevenue()
     {
-        $revenue = Transaction::where('id_user', $this->getUserId())->where('type', 'revenue')->get();
-        return $revenue;
+        return Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'revenue')
+            ->get();
     }
-
-    public function filterExpense()
-    {
-        $expense = Transaction::where('id_user', $this->getUserId())->where('type', 'expense')->get();
-        return $expense;
-    }
-
     public function expensesCategories(TransactionCategory $transactionCategory)
     {
-        $transaction = Transaction::where('id_user', $this->getUserId())->where('category', $transactionCategory->value)->get();
+        $transaction = Transaction::where('id_user', $this->getUserId())
+            ->where('category', $transactionCategory->value)
+            ->get();
+
         return $transaction;
     }
-
-    public function monthlyRevenue(int $month, int $year): int
+    public function monthlyRevenue(int $month, int $year)
     {
-        $transaction = Transaction::where('id_user', $this->getUserId())->where('type', 'revenue')->whereMonth('created_at', $month)->whereYear('created_at', $year)->sum('amount');
+        $transaction = Transaction::where('id_user', $this->getUserId())
+            ->where('type', 'revenue')
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->sum('amount');
+
         return $transaction;
     }
-
-    public function monthlyExpense(int $month, int $year): int
-    {
-        $transaction = Transaction::where('id_user', $this->getUserId())->where('type', 'expense')->whereMonth('created_at', $month)->whereYear('created_at', $year)->sum('amount');
-        return $transaction;
-    }
-
-    public function expensesByCategory(int $month, int $year)
+    public function monthlyExpense(int $month, int $year)
     {
         $transaction = Transaction::where('id_user', $this->getUserId())
             ->where('type', 'expense')
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
-            ->selectRaw('category, SUM(amount) as total')
-            ->groupBy('category')
-            ->get();
+            ->sum('amount');
 
         return $transaction;
     }
-    public function expensesByPayment()
+    public function expensesByCategory(int $month, int $year): Collection
     {
         $transaction = Transaction::where('id_user', $this->getUserId())
+            ->whereMonth('created_at', $month)
+            ->whereYear('created', $year)
+            ->selectRaw('category SUM(amount) as total')
+            ->groupBy('category')
+            ->get()
+            ->values();
+
+        return $transaction;
+    }
+    public function expensesByPayment(): Collection
+    {
+        return Transaction::where('id_user', $this->getUserId())
             ->where('type', 'expense')
             ->selectRaw('payment_method, SUM(amount) as total')
             ->groupBy('payment_method')
-            ->get();
-
-        return $transaction;
-    }
-    public function revenueByPayment()
-    {
-        $transaction = Transaction::where('id_user', $this->getUserId())
-            ->where('type', 'revenue')
-            ->selectRaw('payment_method, SUM(amount) as total')
-            ->groupBy('payment_method')
-            ->get();
-
-        return $transaction;
+            ->get()
+            ->values();
     }
     public function highestMonthlyExpense()
     {
@@ -153,8 +173,8 @@ class TransactionService
 
         $transaction = Transaction::where('id_user', $this->getUserId())
             ->where('type', 'expense')
-            ->whereBetween('created_at', [$start, $end])
-            ->orderBy('amount', 'desc')
+            ->whereBetween('creared_at', [$start, $end])
+            ->orderBy('DESC')
             ->first();
 
         return $transaction;
@@ -166,9 +186,56 @@ class TransactionService
 
         $transaction = Transaction::where('id_user', $this->getUserId())
             ->where('type', 'revenue')
-            ->whereBetween('created_at', [$start, $end])
-            ->orderBy('amount', 'desc')
+            ->whereBetween('creared_at', [$start, $end])
+            ->orderBy('ASC')
             ->first();
+
+        return $transaction;
+    }
+    public function revenuesByPayment()
+    {
+        $transaction = Transaction::where('id_user', $this->getUserId())
+        ->where('type', 'revenue')
+        ->selectRaw('payment_method, SUM(amount) as total')
+        ->groupBy('payment_method')
+        ->get()
+        ->values();
+
+        return $transaction;
+    }
+    public function meanByMonthExpense()
+    {
+        $start = Carbon::now()->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
+
+        $transaction = Transaction::where('id_user', $this->getUserId())
+        ->where('type', 'expense')
+        ->whereBetween('created_at', [$start, $end])
+        ->avg('amount');
+
+        return $transaction;
+    }
+    public function meanByDayExpense()
+    {
+        $start = Carbon::now()->startOfDay();
+        $end = Carbon::now()->endOfDay();
+
+        $transaction = Transaction::where('id_user', $this->getUserId())
+        ->where('type', 'expense')
+        ->whereBetween('created_at', [$start, $end])
+        ->avg('amount');
+
+        return $transaction;
+    }
+    public function meanByYearExpense()
+    {
+        $start = Carbon::now()->startOfYear();
+        $end = Carbon::now()->endOfYear();
+
+        $transaction = Transaction::where('id_user', $this->getUserId())
+        ->where('type', 'expense')
+        ->whereBetween('created_at', [$start, $end])
+        ->avg('amount');
 
         return $transaction;
     }

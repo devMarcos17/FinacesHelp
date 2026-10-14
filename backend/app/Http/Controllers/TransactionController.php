@@ -117,14 +117,14 @@ class TransactionController extends Controller
         );
         $transaction = $this->transactionService->updateTransaction(
             $filterData,
-           (int)$request->id
+            (int)$request->id
         );
 
         return response()->json(['transaction' => $transaction], 200);
     }
-    public function deleteTransaction(): JsonResponse
+    public function deleteTransaction(Request $request): JsonResponse
     {
-        $transaction = $this->transactionService->deleteTransaction();
+        $transaction = $this->transactionService->deleteTransaction($request->id);
 
         return response()->json(['transaction' => $transaction], 200);
     }
@@ -263,13 +263,13 @@ class TransactionController extends Controller
     public function expensesByPayment(): JsonResponse
     {
 
-        $transaction = $this->transactionService->expensesByPayment()->values();
+        $transaction = $this->transactionService->expensesByPayment();
 
         return response()->json(['transaction' => $transaction], 200);
     }
-    public function revenueByPayment(): JsonResponse
+    public function revenuesByPayment(): JsonResponse
     {
-        $transaction = $this->transactionService->revenueByPayment()->values();
+        $transaction = $this->transactionService->revenuesByPayment();
         return response()->json(['transaction' => $transaction], 200);
     }
     public function highestMonthlyExpense(): JsonResponse
@@ -281,5 +281,20 @@ class TransactionController extends Controller
     {
         $transaction = $this->transactionService->highestMonthlyRevenue();
         return response()->json(['transaction' => $transaction], 200);
+    }
+    public function meanByMonthExpense(): JsonResponse
+    {
+        $transaction = $this->transactionService->meanByMonthExpense();
+        return response()->json(['transaction' => ['avg' => $transaction]], 200);
+    }
+    public function meanByDayExpense(): JsonResponse
+    {
+        $transaction = $this->transactionService->meanByDayExpense();
+        return response()->json(['transaction' => ['avg' => $transaction]], 200);
+    }
+    public function meanByYearExpense(): JsonResponse
+    {
+        $transaction = $this->transactionService->meanByYearExpense();
+        return response()->json(['transaction' => ['avg' => $transaction]], 200);
     }
 }
