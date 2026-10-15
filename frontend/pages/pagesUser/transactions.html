@@ -4,1305 +4,1913 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro</title>
-</head>
-<style>
-    /* =========================================
-   RESET
-========================================= */
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        background: #edf1f5;
-        color: #243447;
-        min-height: 100vh;
-    }
-
-
-    /* =========================================
-   NAVBAR
-========================================= */
-
-    .navbar {
-        width: 100%;
-        height: 70px;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        padding: 0 50px;
-
-        background: linear-gradient(135deg,
-                #163a59,
-                #285b82);
-
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .logo {
-        color: white;
-        font-size: 21px;
-        font-weight: bold;
-        letter-spacing: 0.5px;
-    }
-
-    .nav-link {
-        color: #e8eef4;
-        text-decoration: none;
-
-        padding: 10px 18px;
-
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 8px;
-
-        transition: 0.2s;
-    }
-
-    .nav-link:hover {
-        background: rgba(255, 255, 255, 0.12);
-        color: white;
-    }
-
-
-    /* =========================================
-   SEÇÕES GERAIS
-========================================= */
-
-    section {
-        width: 90%;
-        max-width: 1200px;
-        margin: 40px auto;
-    }
-
-    hr {
-        width: 90%;
-        max-width: 1200px;
-
-        margin: 0 auto;
-
-        border: none;
-        border-top: 1px solid #d8e0e7;
-    }
-
-
-    /* =========================================
-   RESUMO FINANCEIRO
-========================================= */
-
-    #financial-summary {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-
-        margin-top: 40px;
-        margin-bottom: 35px;
-    }
-
-    #financial-summary>div {
-        position: relative;
-
-        background: #f8fafc;
-
-        border: 1px solid #d9e0e7;
-        border-radius: 15px;
-
-        padding: 25px;
-
-        min-height: 145px;
-
-        box-shadow:
-            0 5px 15px rgba(31, 51, 68, 0.08);
-
-        overflow: hidden;
-
-        transition: 0.25s;
-    }
-
-    #financial-summary>div:hover {
-        transform: translateY(-4px);
-
-        box-shadow:
-            0 10px 25px rgba(31, 51, 68, 0.13);
-    }
-
-
-    /* Barrinha lateral */
-
-    #financial-summary>div::before {
-        content: "";
-
-        position: absolute;
-
-        left: 0;
-        top: 0;
-
-        width: 5px;
-        height: 100%;
-
-        background: #285b82;
-    }
-
-
-    /* Saldo */
-
-    #financial-summary>div:nth-child(1)::before {
-        background: #285b82;
-    }
-
-
-    /* Receita */
-
-    #financial-summary>div:nth-child(2)::before {
-        background: #00a63c;
-    }
-
-
-    /* Despesa */
-
-    #financial-summary>div:nth-child(3)::before {
-        background: #e00000;
-    }
-
-
-    #financial-summary h3 {
-        color: #718096;
-
-        font-size: 14px;
-        font-weight: bold;
-
-        text-transform: uppercase;
-        letter-spacing: 1px;
-
-        margin-bottom: 15px;
-    }
-
-    #financial-summary p {
-        font-size: 29px;
-        font-weight: bold;
-
-        color: #193e5c;
-    }
-
-
-    /* Saldo */
-
-    #balance {
-        color: #285b82 !important;
-    }
-
-
-    /* Receita */
-
-    #revenue {
-        color: #008f35 !important;
-    }
-
-
-    /* Despesa */
-
-    #expense {
-        color: #d00000 !important;
-    }
-
-
-    /* =========================================
-   TÍTULOS
-========================================= */
-
-    section h2 {
-        color: #193e5c;
-
-        font-size: 24px;
-        font-weight: 700;
-
-        margin-bottom: 22px;
-    }
-
-    section h3 {
-        color: #193e5c;
-
-        font-size: 18px;
-        margin-bottom: 15px;
-    }
-
-
-    /* =========================================
-   NOVA TRANSAÇÃO
-========================================= */
-
-    #create-transaction {
-        background: #f8fafc;
-
-        border: 1px solid #d9e0e7;
-        border-radius: 15px;
-
-        padding: 30px;
-
-        box-shadow:
-            0 5px 15px rgba(31, 51, 68, 0.08);
-    }
-
-    #create-transaction h2 {
-        margin-bottom: 25px;
-    }
-
-
-    /* Formulário */
-
-    #formTransaction {
-        display: grid;
-
-        grid-template-columns: repeat(2, 1fr);
-
-        gap: 20px;
-    }
-
-
-    /* Cada campo */
-
-    #formTransaction>div {
-        display: flex;
-        flex-direction: column;
-
-        gap: 8px;
-    }
-
-
-    /* Descrição ocupa a linha toda */
-
-    #formTransaction>div:nth-child(4) {
-        grid-column: 1 / -1;
-    }
-
-
-    /* Labels */
-
-    #formTransaction label {
-        color: #536577;
-
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-
-    /* Inputs e selects */
-
-    #formTransaction input,
-    #formTransaction select,
-    #transaction-filter select,
-    #financial-analysis select {
-        width: 100%;
-
-        height: 45px;
-
-        padding: 0 14px;
-
-        border: 1px solid #ccd6df;
-        border-radius: 8px;
-
-        background: #ffffff;
-
-        color: #243447;
-
-        font-size: 14px;
-
-        outline: none;
-
-        transition: 0.2s;
-    }
-
-
-    /* Focus */
-
-    #formTransaction input:focus,
-    #formTransaction select:focus,
-    #transaction-filter select:focus,
-    #financial-analysis select:focus {
-        border-color: #285b82;
-
-        box-shadow:
-            0 0 0 3px rgba(40, 91, 130, 0.10);
-    }
-
-
-    /* Placeholder */
-
-    #formTransaction input::placeholder {
-        color: #9aa7b3;
-    }
-
-
-    /* Botão criar */
-
-    #formTransaction button {
-        grid-column: 1 / -1;
-
-        width: 100%;
-
-        height: 46px;
-
-        border: none;
-        border-radius: 8px;
-
-        background: linear-gradient(135deg,
-                #163a59,
-                #285b82);
-
-        color: white;
-
-        font-size: 15px;
-        font-weight: bold;
-
-        cursor: pointer;
-
-        transition: 0.2s;
-
-        margin-top: 5px;
-    }
-
-    #formTransaction button:hover {
-        transform: translateY(-2px);
-
-        box-shadow:
-            0 6px 15px rgba(22, 58, 89, 0.25);
-    }
-
-
-    /* Mensagem */
-
-    #transaction-message {
-        margin-top: 18px;
-
-        color: #285b82;
-
-        font-size: 14px;
-    }
-
-
-    /* =========================================
-   FILTRO DE TRANSAÇÕES
-========================================= */
-
-    #transaction-filter {
-        background: #f8fafc;
-
-        border: 1px solid #d9e0e7;
-        border-radius: 15px;
-
-        padding: 30px;
-
-        box-shadow:
-            0 5px 15px rgba(31, 51, 68, 0.08);
-    }
-
-
-    /* Área dos filtros */
-
-    #transaction-filter {
-        display: flex;
-        flex-wrap: wrap;
-
-        gap: 12px;
-
-        align-items: center;
-    }
-
-    #transaction-filter h2 {
-        width: 100%;
-
-        margin-bottom: 5px;
-    }
-
-
-    /* Selects */
-
-    #transaction-filter select {
-        flex: 1 1 200px;
-
-        max-width: 260px;
-    }
-
-
-    /* Botão filtrar */
-
-    #filterButton {
-        height: 45px;
-
-        padding: 0 24px;
-
-        border: none;
-        border-radius: 8px;
-
-        background: #285b82;
-
-        color: white;
-
-        font-size: 14px;
-        font-weight: bold;
-
-        cursor: pointer;
-
-        transition: 0.2s;
-    }
-
-    #filterButton:hover {
-        background: #163a59;
-
-        transform: translateY(-2px);
-    }
-
-
-    /* =========================================
-   RESULTADO DAS TRANSAÇÕES
-========================================= */
-
-    /*
-   IMPORTANTE:
-   O JS coloca os resultados dentro de #transactions.
-   Por isso deixamos uma área própria abaixo dos filtros.
-*/
-
-    #transactions {
-        width: 100%;
-
-        display: grid;
-
-        grid-template-columns:
-            repeat(auto-fit, minmax(260px, 1fr));
-
-        gap: 15px;
-
-        margin-top: 25px;
-    }
-
-
-    /* Cada transação criada pelo JS */
-
-    #transactions>div {
-        background: white;
-
-        border: 1px solid #d9e0e7;
-
-        border-left: 5px solid #285b82;
-
-        border-radius: 10px;
-
-        padding: 18px;
-
-        box-shadow:
-            0 4px 12px rgba(31, 51, 68, 0.06);
-
-        transition: 0.2s;
-    }
-
-    #transactions>div:hover {
-        transform: translateY(-2px);
-
-        box-shadow:
-            0 7px 18px rgba(31, 51, 68, 0.10);
-    }
-
-
-    #transactions p {
-        margin-bottom: 8px;
-
-        color: #617181;
-
-        font-size: 14px;
-    }
-
-    #transactions p:last-child {
-        margin-bottom: 0;
-    }
-
-
-    /* =========================================
-   ANÁLISE FINANCEIRA
-========================================= */
-
-    #financial-analysis {
-        display: grid;
-
-        grid-template-columns: repeat(2, 1fr);
-
-        gap: 22px;
-
-        margin-bottom: 60px;
-    }
-
-
-    /* Título principal */
-
-    #financial-analysis>h2 {
-        grid-column: 1 / -1;
-
-        margin-bottom: 0;
-    }
-
-
-    /* Cards de análise */
-
-    #expenses-category,
-    #expenses-month,
-    #revenue-month {
-        background: #f8fafc;
-
-        border: 1px solid #d9e0e7;
-
-        border-radius: 15px;
-
-        padding: 25px;
-
-        box-shadow:
-            0 5px 15px rgba(31, 51, 68, 0.08);
-
-        min-height: 200px;
-
-        transition: 0.25s;
-    }
-
-    #expenses-category:hover,
-    #expenses-month:hover,
-    #revenue-month:hover {
-        transform: translateY(-3px);
-
-        box-shadow:
-            0 9px 22px rgba(31, 51, 68, 0.11);
-    }
-
-
-    /* Receita fica destacada */
-
-    #revenue-month {
-        border-top: 4px solid #00a63c;
-    }
-
-
-    /* Gastos */
-
-    #expenses-category,
-    #expenses-month {
-        border-top: 4px solid #e00000;
-    }
-
-    /* Card de Gastos por Forma de Pagamento */
-    #expenses-payment {
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
-    #expenses-payment h3 {
-        margin-bottom: 15px;
-        color: #333333;
-        font-size: 1.2rem;
-    }
-
-    /* Container de Resultados */
-    #expense-payment-result {
-        margin-top: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    /* Estilização dos parágrafos gerados pelo forEach no JS */
-    #expense-payment-result p {
-        padding: 10px 12px;
-        background-color: #f8f9fa;
-        border-left: 4px solid #e74c3c;
-        /* Vermelho para indicar gasto */
-        border-radius: 4px;
-        margin: 0;
-        font-weight: 500;
-        color: #2c3e50;
-        display: flex;
-        justify-content: space-between;
-    }
-
-
-    /* Select da análise */
-
-    #financial-analysis select {
-        margin-bottom: 12px;
-    }
-
-
-    /* Botões da análise */
-
-    #financial-analysis button {
-        height: 43px;
-
-        padding: 0 18px;
-
-        border: none;
-        border-radius: 8px;
-
-        background: #285b82;
-
-        color: white;
-
-        font-size: 14px;
-        font-weight: bold;
-
-        cursor: pointer;
-
-        transition: 0.2s;
-    }
-
-    #financial-analysis button:hover {
-        background: #163a59;
-
-        transform: translateY(-2px);
-    }
-
-
-    /* Botão de receita */
-
-    #revenue-month-button {
-        background: #008f35 !important;
-    }
-
-    #revenue-month-button:hover {
-        background: #00752c !important;
-    }
-
-
-    /* =========================================
-   RESULTADOS DA ANÁLISE
-========================================= */
-
-    #expense-category-result,
-    #expense-month-result,
-    #revenue-month-result {
-        margin-top: 20px;
-    }
-
-
-    /* Resultado individual */
-
-    #expense-category-result p,
-    #expense-month-result p,
-    #revenue-month-result p {
-        background: #ffffff;
-
-        border: 1px solid #dce3e9;
-
-        border-radius: 8px;
-
-        padding: 14px 16px;
-
-        color: #536577;
-
-        font-size: 14px;
-
-        line-height: 1.5;
-
-        box-shadow:
-            0 3px 8px rgba(31, 51, 68, 0.05);
-    }
-
-
-    /* Valor de receita */
-
-    #revenue-month-result p {
-        color: #008f35;
-
-        font-size: 16px;
-        font-weight: bold;
-
-        border-left: 4px solid #00a63c;
-    }
-
-
-    /* Valor de despesa */
-
-    #expense-month-result p {
-        color: #d00000;
-
-        font-size: 16px;
-        font-weight: bold;
-
-        border-left: 4px solid #e00000;
-    }
-
-
-    /* =========================================
-   ESTADO VAZIO
-========================================= */
-
-    #transactions:empty,
-    #expense-category-result:empty,
-    #expense-month-result:empty,
-    #revenue-month-result:empty {
-        display: none;
-    }
-
-
-    /* =========================================
-   RESPONSIVO — TABLET
-========================================= */
-
-    @media (max-width: 800px) {
+    <meta name="theme-color" content="#163a59">
+
+    <title>Transações | Finance Help</title>
+
+    <style>
+        :root {
+            --ink: #172b40;
+            --ink-soft: #64748b;
+            --ink-faint: #94a3b8;
+
+            --bg: #f3f6fa;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+
+            --line: #e2e8f0;
+
+            --brand: #163a59;
+            --brand-2: #285b82;
+            --brand-light: #eaf2f8;
+
+            --in: #13805b;
+            --in-light: #e8f7ef;
+
+            --out: #d14343;
+            --out-light: #fff0f0;
+
+            --radius: 18px;
+            --radius-sm: 12px;
+
+            --shadow: 0 4px 20px rgba(23, 43, 64, 0.04);
+            --shadow-hover: 0 12px 28px rgba(23, 43, 64, 0.08);
+
+            --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Arial, Helvetica, sans-serif;
+
+            --transition: 0.2s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
+
+        body {
+            min-height: 100vh;
+            padding-bottom: 48px;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #7db8e8;
+            outline-offset: 3px;
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        ::selection {
+            background: #d5e9f8;
+            color: var(--brand);
+        }
+
+        /* ---------- Navegação ---------- */
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            min-height: 72px;
+            padding: 0 clamp(20px, 5vw, 72px);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+
+            background: var(--brand);
+            box-shadow: 0 4px 18px rgba(18, 38, 58, 0.12);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            color: #fff;
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.13);
+
+            font-size: 19px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link {
+            padding: 11px 16px;
+
+            border-radius: 10px;
+
+            color: #c9d8e6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+
+            transition:
+                background var(--transition),
+                color var(--transition);
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.09);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* ---------- Layout principal ---------- */
+
+        .page-container {
+            width: min(1200px, 92%);
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+
+            margin-top: 36px;
+            margin-bottom: 28px;
+        }
+
+        .page-header span {
+            display: block;
+            margin-bottom: 8px;
+
+            color: var(--brand-2);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .page-header h1 {
+            margin-bottom: 9px;
+
+            color: var(--ink);
+            font-size: clamp(27px, 4vw, 36px);
+            font-weight: 800;
+            letter-spacing: -1.3px;
+        }
+
+        .page-header p {
+            max-width: 540px;
+
+            color: var(--ink-soft);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .header-date {
+            flex-shrink: 0;
+            padding: 11px 15px;
+
+            border: 1px solid var(--line);
+            border-radius: 12px;
+
+            background: var(--surface);
+            color: var(--ink-soft);
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ---------- Seções ---------- */
 
         section {
-            width: 92%;
+            min-width: 0;
+            margin-top: 28px;
         }
 
-        hr {
-            width: 92%;
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+
+            margin-bottom: 18px;
         }
+
+        .section-heading h2 {
+            color: var(--ink);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .section-heading p {
+            margin-top: 6px;
+
+            color: var(--ink-soft);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .section-eyebrow {
+            display: block;
+            margin-bottom: 7px;
+
+            color: var(--ink-faint);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        /* ---------- Resumo financeiro ---------- */
 
         #financial-summary {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: 1.25fr 1fr 1fr;
+            gap: 18px;
         }
 
-        #formTransaction {
-            grid-template-columns: 1fr;
+        .summary-card {
+            position: relative;
+            overflow: hidden;
+
+            min-width: 0;
+            min-height: 150px;
+            padding: 25px;
+
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+
+            background: var(--surface);
+            box-shadow: var(--shadow);
+
+            transition:
+                transform var(--transition),
+                box-shadow var(--transition);
         }
 
-        #formTransaction>div:nth-child(4) {
-            grid-column: auto;
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
         }
 
-        #financial-analysis {
-            grid-template-columns: 1fr;
+        .summary-card.balance-card {
+            border: none;
+            background: linear-gradient(135deg, #163a59 0%, #285b82 100%);
+            color: #fff;
         }
 
-        #financial-analysis>h2 {
-            grid-column: auto;
+        .summary-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            margin-bottom: 24px;
         }
 
-        #transaction-filter select {
-            max-width: none;
-            flex: 1 1 100%;
+        .summary-top h3 {
+            color: var(--ink-soft);
+            font-size: 13px;
+            font-weight: 700;
         }
 
-        #filterButton {
-            width: 100%;
-        }
-    }
-
-
-    /* =========================================
-   RESPONSIVO — CELULAR
-========================================= */
-
-    @media (max-width: 500px) {
-
-        section {
-            width: 92%;
-
-            margin: 25px auto;
+        .balance-card .summary-top h3 {
+            color: #c7d9e8;
         }
 
-        hr {
-            width: 92%;
+        .summary-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+            background: var(--brand-light);
+            color: var(--brand);
+
+            font-size: 19px;
         }
 
-        #financial-summary {
-            gap: 15px;
-
-            margin-top: 25px;
+        .balance-card .summary-icon {
+            background: rgba(255, 255, 255, 0.13);
+            color: #fff;
         }
 
-        #financial-summary>div {
-            padding: 22px;
+        .revenue-card .summary-icon {
+            background: var(--in-light);
+            color: var(--in);
+        }
 
-            min-height: 130px;
+        .expense-card .summary-icon {
+            background: var(--out-light);
+            color: var(--out);
         }
 
         #financial-summary p {
-            font-size: 25px;
+            overflow-wrap: anywhere;
+
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 800;
+            letter-spacing: -0.9px;
+            line-height: 1.3;
         }
 
-
-        #create-transaction,
-        #transaction-filter,
-        #expenses-category,
-        #expenses-month,
-        #revenue-month {
-            padding: 20px;
+        #balance {
+            color: #fff;
         }
 
-
-        section h2 {
-            font-size: 21px;
+        #revenue {
+            color: var(--in);
         }
 
-
-        #transactions {
-            grid-template-columns: 1fr;
-
-            gap: 12px;
-
-            margin-top: 20px;
+        #expense {
+            color: var(--out);
         }
 
+        /* ---------- Cards de conteúdo ---------- */
+
+        .content-card {
+            min-width: 0;
+            padding: 28px;
+
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        /* ---------- Formulário ---------- */
+
+        #create-transaction {
+            scroll-margin-top: 100px;
+        }
+
+        #formTransaction {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        #formTransaction label {
+            color: var(--ink);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .field-hint {
+            color: var(--ink-faint);
+            font-size: 12px;
+            line-height: 1.5;
+        }
 
         #formTransaction input,
         #formTransaction select,
         #transaction-filter select,
         #financial-analysis select {
+            width: 100%;
+            min-width: 0;
+            height: 47px;
+            padding: 0 14px;
+
+            border: 1px solid #d7e0e9;
+            border-radius: 11px;
+
+            outline: none;
+            background: #fff;
+            color: var(--ink);
+
+            font-size: 14px;
+
+            transition:
+                border-color var(--transition),
+                box-shadow var(--transition),
+                background var(--transition);
+        }
+
+        #formTransaction input::placeholder {
+            color: #a2afbc;
+        }
+
+        #formTransaction input:hover,
+        #formTransaction select:hover,
+        #transaction-filter select:hover,
+        #financial-analysis select:hover {
+            border-color: #a8bacb;
+        }
+
+        #formTransaction input:focus,
+        #formTransaction select:focus,
+        #transaction-filter select:focus,
+        #financial-analysis select:focus {
+            border-color: var(--brand-2);
+            box-shadow: 0 0 0 4px rgba(40, 91, 130, 0.09);
+        }
+
+        .amount-wrapper {
+            position: relative;
+        }
+
+        .amount-prefix {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+
+            color: var(--ink-soft);
+            font-size: 14px;
+            font-weight: 700;
+
+            pointer-events: none;
+        }
+
+        #transaction-amount {
+            padding-left: 45px !important;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+
+            padding-top: 8px;
+        }
+
+        .btn {
+            min-height: 45px;
+            padding: 0 20px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            border: 1px solid transparent;
+            border-radius: 11px;
+
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                background var(--transition),
+                border-color var(--transition),
+                transform var(--transition),
+                box-shadow var(--transition);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--brand);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(22, 58, 89, 0.12);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--brand-2);
+            box-shadow: 0 6px 15px rgba(22, 58, 89, 0.18);
+        }
+
+        .btn-secondary {
+            border-color: var(--line);
+            background: #fff;
+            color: var(--ink-soft);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: #b9c8d6;
+            background: var(--surface-soft);
+        }
+
+        .btn-success {
+            background: var(--in);
+            color: #fff;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #0d694a;
+        }
+
+        .form-message {
+            margin-top: 18px;
+            padding: 0;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .form-message:not(:empty) {
+            padding: 12px 15px;
+        }
+
+        .form-message.success {
+            border: 1px solid #b8e6cc;
+            background: var(--in-light);
+            color: #126541;
+        }
+
+        .form-message.error {
+            border: 1px solid #f2caca;
+            background: var(--out-light);
+            color: #a52f2f;
+        }
+
+        /* ---------- Filtros ---------- */
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.4fr auto;
+            align-items: end;
+            gap: 14px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            min-width: 0;
+        }
+
+        .filter-group label {
+            color: var(--ink-soft);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .transactions-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+
+            margin-top: 28px;
+            padding-top: 23px;
+
+            border-top: 1px solid var(--line);
+        }
+
+        .transactions-header h3 {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .transactions-count {
+            padding: 6px 10px;
+
+            border-radius: 8px;
+            background: var(--brand-light);
+            color: var(--brand);
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* ---------- Lista de transações ---------- */
+
+        #transactions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+
+            margin-top: 17px;
+        }
+
+        #transactions:empty {
+            display: none;
+        }
+
+        #transactions > div {
+            min-width: 0;
+            padding: 19px;
+
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--brand-2);
+            border-radius: 13px;
+
+            background: var(--surface-soft);
+
+            transition:
+                transform var(--transition),
+                box-shadow var(--transition),
+                border-color var(--transition);
+        }
+
+        #transactions > div:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        #transactions p {
+            margin-bottom: 9px;
+
+            color: var(--ink-soft);
+            font-size: 13px;
+            line-height: 1.6;
+
+            overflow-wrap: anywhere;
+        }
+
+        #transactions p:last-child {
+            margin-bottom: 0;
+        }
+
+        #transactions p strong {
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+
+            padding: 42px 20px;
+
+            border: 1px dashed #ccd7e2;
+            border-radius: 14px;
+
+            background: var(--surface-soft);
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            margin-bottom: 13px;
+            font-size: 30px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 7px;
+            color: var(--ink);
+            font-size: 15px;
+        }
+
+        .empty-state p {
+            color: var(--ink-soft);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* ---------- Análise financeira ---------- */
+
+        #financial-analysis {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        #financial-analysis > .section-heading {
+            grid-column: 1 / -1;
+            margin-bottom: 0;
+        }
+
+        .analysis-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            min-width: 0;
+            padding: 25px;
+
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+
+            background: var(--surface);
+            box-shadow: var(--shadow);
+
+            transition:
+                transform var(--transition),
+                box-shadow var(--transition);
+        }
+
+        .analysis-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .analysis-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .analysis-card-header h3 {
+            margin-bottom: 7px;
+
+            color: var(--ink);
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .analysis-card-header p {
+            color: var(--ink-soft);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .analysis-icon {
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background: var(--brand-light);
+            color: var(--brand);
+
+            font-size: 18px;
+        }
+
+        .analysis-icon.income {
+            background: var(--in-light);
+            color: var(--in);
+        }
+
+        .analysis-icon.expense {
+            background: var(--out-light);
+            color: var(--out);
+        }
+
+        .analysis-controls {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .analysis-controls .filter-group {
+            gap: 7px;
+        }
+
+        .analysis-controls label {
+            color: var(--ink-soft);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .analysis-controls select {
             height: 43px;
         }
 
-
-        #financial-analysis {
-            gap: 15px;
+        .analysis-controls .btn {
+            min-height: 43px;
+            padding: 0 16px;
         }
 
+        .analysis-result {
+            min-width: 0;
 
-        #financial-analysis button {
+            color: var(--ink-soft);
+            font-size: 13px;
+            line-height: 1.7;
+
+            overflow-wrap: anywhere;
+        }
+
+        .analysis-result:empty {
+            display: none;
+        }
+
+        .chart-container {
+            position: relative;
+
             width: 100%;
+            min-width: 0;
+            height: 250px;
+            margin-top: 4px;
         }
-    }
-</style>
+
+        .chart-container canvas {
+            max-width: 100%;
+        }
+
+        /* ---------- Comparativo ---------- */
+
+        #financial-comparison {
+            grid-column: 1 / -1;
+
+            padding: 27px;
+
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-cards-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+
+            margin-top: 22px;
+        }
+
+        .comparison-card {
+            position: relative;
+            overflow: hidden;
+
+            min-width: 0;
+            padding: 23px;
+
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            border-left: 4px solid var(--out);
+
+            background: var(--surface-soft);
+        }
+
+        .comparison-card:nth-child(2) {
+            border-left-color: var(--in);
+        }
+
+        .comparison-card h4 {
+            margin-bottom: 15px;
+
+            color: var(--ink-soft);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .comparison-card div {
+            color: var(--ink);
+            font-size: clamp(20px, 3vw, 27px);
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            overflow-wrap: anywhere;
+        }
+
+        /* ---------- Rodapé ---------- */
+
+        .page-footer {
+            display: flex;
+            justify-content: center;
+
+            margin-top: 45px;
+            padding-top: 22px;
+
+            border-top: 1px solid var(--line);
+
+            color: var(--ink-faint);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* ---------- Responsividade ---------- */
+
+        @media (min-width: 1400px) {
+            .page-container {
+                width: min(1200px, 88%);
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .navbar {
+                padding: 0 24px;
+            }
+
+            .nav-link {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            #financial-summary {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .summary-card {
+                padding: 20px;
+            }
+
+            .filter-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-actions {
+                grid-column: 1 / -1;
+            }
+
+            .filter-actions .btn {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .navbar {
+                position: relative;
+
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 15px;
+
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+                gap: 5px;
+
+                overflow-x: auto;
+                padding-bottom: 2px;
+            }
+
+            .nav-link {
+                flex: 0 0 auto;
+                padding: 10px 13px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+
+                margin-top: 27px;
+            }
+
+            .header-date {
+                display: none;
+            }
+
+            #financial-summary {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .summary-card {
+                min-height: 120px;
+                padding: 21px;
+            }
+
+            .summary-top {
+                margin-bottom: 15px;
+            }
+
+            .summary-top h3 {
+                font-size: 13px;
+            }
+
+            #financial-summary p {
+                font-size: 25px;
+            }
+
+            .content-card {
+                padding: 22px;
+            }
+
+            #financial-analysis {
+                grid-template-columns: 1fr;
+            }
+
+            #financial-analysis > .section-heading {
+                grid-column: auto;
+            }
+
+            #transactions {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-card {
+                padding: 21px;
+            }
+
+            .comparison-cards-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            #financial-comparison {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-container {
+                width: 92%;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .section-heading h2 {
+                font-size: 18px;
+            }
+
+            .section-heading p {
+                font-size: 12px;
+            }
+
+            .content-card {
+                padding: 19px;
+            }
+
+            #formTransaction {
+                grid-template-columns: 1fr;
+                gap: 19px;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                grid-column: auto;
+                flex-direction: column;
+            }
+
+            .filter-actions .btn {
+                width: 100%;
+            }
+
+            .analysis-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-controls .btn {
+                width: 100%;
+            }
+
+            .chart-container {
+                height: 220px;
+            }
+
+            .transactions-header {
+                align-items: flex-start;
+            }
+
+            .comparison-card {
+                padding: 19px;
+            }
+
+            .page-footer {
+                font-size: 11px;
+                line-height: 1.7;
+            }
+        }
+
+        /* ---------- Acessibilidade ---------- */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
 
 <body>
 
+    <!-- Navegação -->
+    <nav class="navbar" aria-label="Navegação principal">
 
-   <section id="financial-summary">
-
-    <div>
-        <h3>Saldo</h3>
-        <p id="balance">Carregando...</p>
-    </div>
-
-    <div>
-        <h3>Receitas</h3>
-        <p id="revenue">Carregando...</p>
-    </div>
-
-    <div>
-        <h3>Despesas</h3>
-        <p id="expense">Carregando...</p>
-    </div>
-
-</section>
-
-
-<hr>
-<!-- Criar nova transação -->
-<section id="create-transaction">
-
-    <h2>Nova transação</h2>
-
-    <form id="formTransaction">
-
-        <!-- Tipo -->
-        <div>
-            <label for="transaction-type">
-                Tipo:
-            </label>
-
-            <select id="transaction-type" name="type" required>
-                <option value="">
-                    Escolha o tipo
-                </option>
-
-                <option value="expense">
-                    Despesa
-                </option>
-
-                <option value="revenue">
-                    Receita
-                </option>
-            </select>
+        <div class="logo">
+            <span class="logo-icon" aria-hidden="true">↗</span>
+            <span>Finance Help</span>
         </div>
 
+        <div class="nav-links">
+            <a class="nav-link" href="dashboard.html">Início</a>
 
-        <!-- Valor -->
-        <div>
-            <label for="transaction-amount">
-                Valor:
-            </label>
+            <a class="nav-link active"
+               href="transactions.html"
+               aria-current="page">
+                Transações
+            </a>
 
-            <input type="number" id="transaction-amount" name="amount" placeholder="Digite o valor" step="0.01"
-                min="0" required>
+            <a class="nav-link" href="goal.html">Objetivos</a>
+
+            <a class="nav-link" href="investiments.html">
+                Investimentos
+            </a>
         </div>
 
+    </nav>
 
-        <!-- Categoria -->
-        <div>
-            <label for="transaction-category">
-                Categoria:
-            </label>
-
-            <select id="transaction-category" name="category" required>
-                <option value="">
-                    Escolha uma categoria
-                </option>
-
-                <!-- Receitas -->
-                <optgroup label="Receitas">
-                    <option value="salary">
-                        Salário
-                    </option>
-
-                    <option value="freelance">
-                        Freelance
-                    </option>
-
-                    <option value="investment">
-                        Investimento
-                    </option>
-
-                    <option value="other_income">
-                        Outras receitas
-                    </option>
-                </optgroup>
-
-                <!-- Despesas -->
-                <optgroup label="Despesas">
-                    <option value="water_bill">
-                        Conta de água
-                    </option>
-
-                    <option value="electricity_bill">
-                        Conta de luz
-                    </option>
-
-                    <option value="internet">
-                        Internet
-                    </option>
+    <main class="page-container">
 
-                    <option value="rent">
-                        Aluguel
-                    </option>
+        <!-- Cabeçalho -->
+        <header class="page-header">
 
-                    <option value="food">
-                        Alimentação
-                    </option>
+            <div>
+                <span>Controle financeiro</span>
 
-                    <option value="groceries">
-                        Supermercado
-                    </option>
+                <h1>Suas transações</h1>
 
-                    <option value="leisure">
-                        Lazer
-                    </option>
+                <p>
+                    Acompanhe suas receitas, despesas e movimentações.
+                    Tenha mais clareza sobre como seu dinheiro está sendo utilizado.
+                </p>
+            </div>
 
-                    <option value="transportation">
-                        Transporte
-                    </option>
+            <div class="header-date">
+                Controle suas movimentações
+            </div>
 
-                    <option value="health">
-                        Saúde
-                    </option>
+        </header>
 
-                    <option value="education">
-                        Educação
-                    </option>
+        <!-- Resumo financeiro -->
+        <section id="financial-summary" aria-label="Resumo financeiro">
 
-                    <option value="other_expense">
-                        Outras despesas
-                    </option>
-                </optgroup>
-            </select>
-        </div>
+            <div class="summary-card balance-card">
 
+                <div class="summary-top">
+                    <h3>Saldo disponível</h3>
 
-        <!-- Forma de Pagamento -->
-        <div>
-            <label for="payment_method">
-                Forma de Pagamento:
-            </label>
+                    <span class="summary-icon" aria-hidden="true">
+                        ◈
+                    </span>
+                </div>
 
-            <select id="payment_method" name="payment_method" required>
-                <option value="">
-                    Escolha a forma de pagamento
-                </option>
+                <p id="balance" aria-live="polite">
+                    Carregando...
+                </p>
 
-                <option value="pix">
-                    Pix
-                </option>
+            </div>
 
-                <option value="credit">
-                    Cartão de Crédito
-                </option>
+            <div class="summary-card revenue-card">
 
-                <option value="debit">
-                    Cartão de Débito
-                </option>
+                <div class="summary-top">
+                    <h3>Total de receitas</h3>
 
-                <option value="cash">
-                    Dinheiro
-                </option>
+                    <span class="summary-icon" aria-hidden="true">
+                        ↗
+                    </span>
+                </div>
 
-                <option value="bank_transfer">
-                    Transferência Bancária / TED / DOC
-                </option>
+                <p id="revenue" aria-live="polite">
+                    Carregando...
+                </p>
 
-                <option value="other">
-                    Outro
-                </option>
-            </select>
-        </div>
+            </div>
 
+            <div class="summary-card expense-card">
 
-        <!-- Descrição -->
-        <div>
-            <label for="transaction-description">
-                Descrição:
-            </label>
+                <div class="summary-top">
+                    <h3>Total de despesas</h3>
 
-            <input type="text" id="transaction-description" name="description" placeholder="Digite uma descrição"
-                required>
-        </div>
+                    <span class="summary-icon" aria-hidden="true">
+                        ↘
+                    </span>
+                </div>
 
+                <p id="expense" aria-live="polite">
+                    Carregando...
+                </p>
 
-        <!-- Enviar -->
-        <button type="submit">
-            Criar
-        </button>
+            </div>
 
-    </form>
-    <p id="transaction-message"></p>
+        </section>
 
-</section>
+        <!-- Nova transação -->
+        <section id="create-transaction" class="content-card">
 
+            <div class="section-heading">
 
+                <div>
+                    <span class="section-eyebrow">
+                        Movimentações
+                    </span>
 
-<hr>
+                    <h2>Adicionar transação</h2>
 
+                    <p>
+                        Registre uma nova receita ou despesa.
+                    </p>
+                </div>
 
-<!-- ========================= -->
-<!-- FILTRAR TRANSAÇÕES -->
-<!-- ========================= -->
+            </div>
 
-<section id="transaction-filter">
+            <form id="formTransaction">
 
-    <h2>Minhas transações</h2>
+                <div class="form-group">
 
-    <select id="month">
-
-        <option value="">
-            Escolha o mês
-        </option>
-
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
-
-    </select>
-
-
-    <select id="revenue-expense">
-
-        <option value="">
-            Tipo
-        </option>
-
-        <option value="expense">
-            Despesa
-        </option>
-
-        <option value="revenue">
-            Receita
-        </option>
-
-    </select>
-
-
-    <select id="category">
-
-        <option value="">
-            Escolha uma categoria
-        </option>
-
-        <option value="salary">Salário</option>
-        <option value="freelance">Freelance</option>
-        <option value="investment">Investimento</option>
-        <option value="other_income">Outras receitas</option>
-
-        <option value="water_bill">Conta de água</option>
-        <option value="electricity_bill">Conta de luz</option>
-        <option value="internet">Internet</option>
-        <option value="rent">Aluguel</option>
-        <option value="food">Alimentação</option>
-        <option value="groceries">Supermercado</option>
-        <option value="leisure">Lazer</option>
-        <option value="transportation">Transporte</option>
-        <option value="health">Saúde</option>
-        <option value="education">Educação</option>
-        <option value="other_expense">Outras despesas</option>
-
-    </select>
-
-
-    <button id="filterButton">
-        Filtrar
-    </button>
-
-
-    <div id="transactions"></div>
-
-</section>
-
-
-<hr>
-
-
-<!-- ========================= -->
-<!-- ANÁLISE FINANCEIRA -->
-<!-- ========================= -->
-
-<section id="financial-analysis">
-
-    <h2>Análise financeira</h2>
-
-
-    <!-- ========================= -->
-    <!-- GASTOS POR CATEGORIA -->
-    <!-- ========================= -->
-
-    <div id="expenses-category">
-
-        <h3>Gastos por categoria</h3>
-
-        <select id="expense-category-filter">
-
-            <option value="">
-                Escolha o mês
-            </option>
-
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-
-        </select>
-
-        <button id="expense-category-button">
-            Verificar
-        </button>
-
-        <div id="expense-category-result"></div>
-        <canvas id="expense-category-chart"></canvas>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- GASTOS POR MÊS -->
-    <!-- ========================= -->
-
-    <div id="expenses-month">
-
-        <h3>Gastos por mês</h3>
-
-        <select id="expense-month-filter">
-
-            <option value="">
-                Escolha o mês
-            </option>
-
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-
-        </select>
-
-        <button id="expense-month-button">
-            Verificar
-        </button>
-
-        <div id="expense-month-result"></div>
-        <canvas id="expense-month-chart"></canvas>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- RECEITAS POR MÊS -->
-    <!-- ========================= -->
-
-    <div id="revenue-month">
-
-        <h3>Receitas por mês</h3>
-
-        <select id="revenue-month-filter">
-
-            <option value="">
-                Escolha o mês
-            </option>
-
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-
-        </select>
-
-        <button id="revenue-month-button">
-            Verificar
-        </button>
-
-        <div id="revenue-month-result"></div>
-        <canvas id="revenue-month-chart"></canvas>
-
-    </div>
-
-    <!-- ========================= -->
-    <!-- MÉTODOS DE PAGAMENTO -->
-    <!-- ========================= -->
-
-    <div id="expenses-payment">
-        <h3>Despesas por Método de Pagamento</h3>
-        <div id="expense-payment-result"></div>
-        <canvas id="expense-payment-chart"></canvas>
-    </div>
-
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="../script/scriptTransation.js"></script>
-<script src="../script/scriptPayment.js"></script>
-
+                    <label for="transaction-type">
+                        Tipo de transação
+                    </label>
+
+                    <select
+                        id="transaction-type"
+                        name="type"
+                        required
+                    >
+                        <option value="">Selecione o tipo</option>
+                        <option value="expense">Despesa</option>
+                        <option value="revenue">Receita</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="transaction-amount">
+                        Valor da transação
+                    </label>
+
+                    <div class="amount-wrapper">
+
+                        <span class="amount-prefix" aria-hidden="true">
+                            R$
+                        </span>
+
+                        <input
+                            type="number"
+                            id="transaction-amount"
+                            name="amount"
+                            placeholder="0,00"
+                            step="0.01"
+                            min="0.01"
+                            inputmode="decimal"
+                            required
+                        >
+
+                    </div>
+
+                    <span class="field-hint">
+                        Informe um valor maior que zero.
+                    </span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="transaction-category">
+                        Categoria
+                    </label>
+
+                    <select
+                        id="transaction-category"
+                        name="category"
+                        required
+                    >
+                        <option value="">Selecione a categoria</option>
+
+                        <optgroup label="Receitas">
+                            <option value="salary">Salário</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="investment">Investimento</option>
+                            <option value="other_income">Outras receitas</option>
+                        </optgroup>
+
+                        <optgroup label="Despesas">
+                            <option value="water_bill">Conta de água</option>
+                            <option value="electricity_bill">Conta de luz</option>
+                            <option value="internet">Internet</option>
+                            <option value="rent">Aluguel</option>
+                            <option value="food">Alimentação</option>
+                            <option value="groceries">Supermercado</option>
+                            <option value="leisure">Lazer</option>
+                            <option value="transportation">Transporte</option>
+                            <option value="health">Saúde</option>
+                            <option value="education">Educação</option>
+                            <option value="other_expense">Outras despesas</option>
+                        </optgroup>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="payment_method">
+                        Forma de pagamento
+                    </label>
+
+                    <select
+                        id="payment_method"
+                        name="payment_method"
+                        required
+                    >
+                        <option value="">Selecione a forma de pagamento</option>
+                        <option value="pix">Pix</option>
+                        <option value="credit">Cartão de crédito</option>
+                        <option value="debit">Cartão de débito</option>
+                        <option value="cash">Dinheiro</option>
+                        <option value="bank_transfer">
+                            Transferência bancária / TED / DOC
+                        </option>
+                        <option value="other">Outro</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group full-width">
+
+                    <label for="transaction-description">
+                        Descrição
+                    </label>
+
+                    <input
+                        type="text"
+                        id="transaction-description"
+                        name="description"
+                        placeholder="Ex.: Mercado, salário, conta de internet..."
+                        maxlength="255"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        type="reset"
+                        class="btn btn-secondary"
+                    >
+                        Limpar campos
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        <span aria-hidden="true">+</span>
+                        Criar transação
+                    </button>
+
+                </div>
+
+            </form>
+
+            <p
+                id="transaction-message"
+                class="form-message"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+        </section>
+
+        <!-- Minhas transações -->
+        <section id="transaction-filter" class="content-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-eyebrow">
+                        Histórico
+                    </span>
+
+                    <h2>Minhas transações</h2>
+
+                    <p>
+                        Encontre movimentações específicas usando os filtros.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="filter-grid">
+
+                <div class="filter-group">
+
+                    <label for="month">
+                        Mês
+                    </label>
+
+                    <select id="month">
+                        <option value="">Todos os meses</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fevereiro</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group">
+
+                    <label for="revenue-expense">
+                        Tipo
+                    </label>
+
+                    <select id="revenue-expense">
+                        <option value="">Todos os tipos</option>
+                        <option value="expense">Despesas</option>
+                        <option value="revenue">Receitas</option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group">
+
+                    <label for="category">
+                        Categoria
+                    </label>
+
+                    <select id="category">
+                        <option value="">Todas as categorias</option>
+
+                        <option value="salary">Salário</option>
+                        <option value="freelance">Freelance</option>
+                        <option value="investment">Investimento</option>
+                        <option value="other_income">Outras receitas</option>
+
+                        <option value="water_bill">Conta de água</option>
+                        <option value="electricity_bill">Conta de luz</option>
+                        <option value="internet">Internet</option>
+                        <option value="rent">Aluguel</option>
+                        <option value="food">Alimentação</option>
+                        <option value="groceries">Supermercado</option>
+                        <option value="leisure">Lazer</option>
+                        <option value="transportation">Transporte</option>
+                        <option value="health">Saúde</option>
+                        <option value="education">Educação</option>
+                        <option value="other_expense">Outras despesas</option>
+                    </select>
+
+                </div>
+
+                <div class="filter-actions">
+
+                    <button
+                        id="filterButton"
+                        class="btn btn-primary"
+                        type="button"
+                    >
+                        Filtrar transações
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="transactions-header">
+
+                <h3>Movimentações encontradas</h3>
+
+                <span class="transactions-count">
+                    Histórico
+                </span>
+
+            </div>
+
+            <div id="transactions" aria-live="polite"></div>
+
+        </section>
+
+        <!-- Análise financeira -->
+        <section id="financial-analysis">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-eyebrow">
+                        Inteligência financeira
+                    </span>
+
+                    <h2>Análise financeira</h2>
+
+                    <p>
+                        Visualize seus hábitos financeiros e acompanhe
+                        a evolução das suas movimentações.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Gastos por categoria -->
+            <div id="expenses-category" class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+                        <h3>Gastos por categoria</h3>
+
+                        <p>
+                            Descubra quais categorias concentram suas despesas.
+                        </p>
+                    </div>
+
+                    <span class="analysis-icon expense" aria-hidden="true">
+                        ◉
+                    </span>
+
+                </div>
+
+                <div class="analysis-controls">
+
+                    <div class="filter-group">
+
+                        <label for="expense-category-filter">
+                            Período mensal
+                        </label>
+
+                        <select id="expense-category-filter">
+                            <option value="">Selecione o mês</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+
+                    </div>
+
+                    <button
+                        id="expense-category-button"
+                        class="btn btn-primary"
+                        type="button"
+                    >
+                        Analisar
+                    </button>
+
+                </div>
+
+                <div
+                    id="expense-category-result"
+                    class="analysis-result"
+                    aria-live="polite"
+                ></div>
+
+                <div class="chart-container">
+                    <canvas
+                        id="expense-category-chart"
+                        role="img"
+                        aria-label="Gráfico de despesas por categoria"
+                    ></canvas>
+                </div>
+
+            </div>
+
+            <!-- Gastos por mês -->
+            <div id="expenses-month" class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+                        <h3>Gastos por mês</h3>
+
+                        <p>
+                            Acompanhe a evolução das suas despesas mensais.
+                        </p>
+                    </div>
+
+                    <span class="analysis-icon expense" aria-hidden="true">
+                        ↘
+                    </span>
+
+                </div>
+
+                <div class="analysis-controls">
+
+                    <div class="filter-group">
+
+                        <label for="expense-month-filter">
+                            Mês de referência
+                        </label>
+
+                        <select id="expense-month-filter">
+                            <option value="">Selecione o mês</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+
+                    </div>
+
+                    <button
+                        id="expense-month-button"
+                        class="btn btn-primary"
+                        type="button"
+                    >
+                        Analisar
+                    </button>
+
+                </div>
+
+                <div
+                    id="expense-month-result"
+                    class="analysis-result"
+                    aria-live="polite"
+                ></div>
+
+                <div class="chart-container">
+                    <canvas
+                        id="expense-month-chart"
+                        role="img"
+                        aria-label="Gráfico de despesas mensais"
+                    ></canvas>
+                </div>
+
+            </div>
+
+            <!-- Receitas por mês -->
+            <div id="revenue-month" class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+                        <h3>Receitas por mês</h3>
+
+                        <p>
+                            Visualize a evolução dos seus ganhos mensais.
+                        </p>
+                    </div>
+
+                    <span class="analysis-icon income" aria-hidden="true">
+                        ↗
+                    </span>
+
+                </div>
+
+                <div class="analysis-controls">
+
+                    <div class="filter-group">
+
+                        <label for="revenue-month-filter">
+                            Mês de referência
+                        </label>
+
+                        <select id="revenue-month-filter">
+                            <option value="">Selecione o mês</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+
+                    </div>
+
+                    <button
+                        id="revenue-month-button"
+                        class="btn btn-success"
+                        type="button"
+                    >
+                        Analisar
+                    </button>
+
+                </div>
+
+                <div
+                    id="revenue-month-result"
+                    class="analysis-result"
+                    aria-live="polite"
+                ></div>
+
+                <div class="chart-container">
+                    <canvas
+                        id="revenue-month-chart"
+                        role="img"
+                        aria-label="Gráfico de receitas mensais"
+                    ></canvas>
+                </div>
+
+            </div>
+
+            <!-- Despesas por pagamento -->
+            <div id="expenses-payment" class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+                        <h3>Despesas por pagamento</h3>
+
+                        <p>
+                            Entenda como você realiza seus pagamentos.
+                        </p>
+                    </div>
+
+                    <span class="analysis-icon expense" aria-hidden="true">
+                        ▤
+                    </span>
+
+                </div>
+
+                <div
+                    id="expense-payment-result"
+                    class="analysis-result"
+                    aria-live="polite"
+                ></div>
+
+                <div class="chart-container">
+                    <canvas
+                        id="expense-payment-chart"
+                        role="img"
+                        aria-label="Gráfico de despesas por método de pagamento"
+                    ></canvas>
+                </div>
+
+            </div>
+
+            <!-- Receitas por pagamento -->
+            <div id="revenue-payment" class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+                        <h3>Receitas por pagamento</h3>
+
+                        <p>
+                            Identifique como suas receitas são recebidas.
+                        </p>
+                    </div>
+
+                    <span class="analysis-icon income" aria-hidden="true">
+                        ▤
+                    </span>
+
+                </div>
+
+                <div
+                    id="revenue-payment-result"
+                    class="analysis-result"
+                    aria-live="polite"
+                ></div>
+
+                <div class="chart-container">
+                    <canvas
+                        id="revenue-payment-chart"
+                        role="img"
+                        aria-label="Gráfico de receitas por método de pagamento"
+                    ></canvas>
+                </div>
+
+            </div>
+
+            <!-- Comparativo -->
+            <div id="financial-comparison" class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+                        <span class="section-eyebrow">
+                            Evolução financeira
+                        </span>
+
+                        <h3>Comparativo de crescimento</h3>
+
+                        <p>
+                            Compare a variação das despesas e receitas
+                            entre os períodos calculados pelo sistema.
+                        </p>
+                    </div>
+
+                    <span class="analysis-icon" aria-hidden="true">
+                        ⇄
+                    </span>
+
+                </div>
+
+                <div class="comparison-cards-wrapper">
+
+                    <div class="comparison-card">
+
+                        <h4>Aumento de despesas</h4>
+
+                        <div id="expenses-increased-result">
+                            Carregando...
+                        </div>
+
+                    </div>
+
+                    <div class="comparison-card">
+
+                        <h4>Aumento de receitas</h4>
+
+                        <div id="revenues-increased-result">
+                            Carregando...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <footer class="page-footer">
+            Finance Help · Organize suas finanças, acompanhe seus resultados.
+        </footer>
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../script/scriptTransation.js"></script>
+    <script src="../script/scriptPayment.js"></script>
+    <script src="../script/scriptIncresead.js"></script>
 </body>
-
 </html>

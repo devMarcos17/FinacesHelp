@@ -9,6 +9,8 @@ services:
       - APP_DEBUG=true
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/database/database.sqlite
+    volumes:
+      - ./backend:/var/www
     restart: unless-stopped
 
   frontend:
@@ -16,4 +18,6 @@ services:
     container_name: finaceshelp_frontend
     ports:
       - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
     restart: unless-stopped

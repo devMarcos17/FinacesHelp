@@ -1,135 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+    <title>Metas concluídas | Finance Help</title>
+
     <style>
- * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+        :root {
+            --ink: #12263a;
+            --ink-soft: #5b6b7c;
+            --bg: #eef2f6;
+            --surface: #ffffff;
+            --line: #dce3ea;
+            --brand: #163a59;
+            --brand-2: #285b82;
+            --in: #0f7b4f;
+            --in-bg: #e5f4ec;
+            --radius: 16px;
+            --font: Arial, Helvetica, sans-serif;
+        }
 
-body {
-    background-color: #f4f6f9;
-    color: #333;
-    padding: 40px 20px;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.completed-goals-section {
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
 
-.goals-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
+        :focus-visible { outline: 3px solid #63b3ed; outline-offset: 2px; }
 
-.goals-header h2 {
-    font-size: 2rem;
-    color: #1e293b;
-    margin-bottom: 8px;
-}
+        /* ---------- Navbar ---------- */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 clamp(18px, 4vw, 48px);
+            background: var(--brand);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 6px 18px rgba(18, 38, 58, 0.18);
+        }
 
-.goals-header p {
-    color: #64748b;
-    font-size: 1rem;
-}
+        .logo { color: #fff; font-size: 20px; font-weight: bold; letter-spacing: 0.2px; }
 
-#result-finished {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-}
+        .nav-links { display: flex; align-items: center; gap: 4px; }
 
-.goal-card.completed-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
-    border-top: 5px solid #0284c7;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+        .nav-link {
+            color: #c9d6e2;
+            text-decoration: none;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s, color 0.2s;
+        }
 
-.goal-card.completed-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
+        .nav-link:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .nav-link.active { background: rgba(255, 255, 255, 0.16); color: #fff; }
 
-.badge-completed {
-    align-self: flex-start;
-    background-color: #e0f2fe;
-    color: #0284c7;
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
-}
+        /* ---------- Conteúdo ---------- */
+        .completed-goals-section {
+            width: 92%;
+            max-width: 1200px;
+            margin: 36px auto 60px;
+        }
 
-.goal-card p {
-    width: 100%;
-    color: #475569;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 12px;
-}
+        .goals-header { margin-bottom: 24px; }
+        .goals-header h2 { color: var(--ink); font-size: clamp(24px, 4vw, 30px); margin-bottom: 6px; }
+        .goals-header p { color: var(--ink-soft); font-size: 14px; }
 
-.goal-card p strong {
-    color: #0f172a;
-}
+        /* ---------- Lista (gerada pelo JS) ---------- */
+        #result-finished {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 20px;
+        }
 
-.goal-card img {
-    width: 100%;
-    max-width: 220px;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin: 10px 0 15px 0;
-    border: 1px solid #f1f5f9;
-}
+        #result-finished:empty::before {
+            content: "Você ainda não concluiu nenhum objetivo. Quando bater uma meta, ela aparece aqui.";
+            grid-column: 1 / -1;
+            padding: 28px;
+            background: var(--surface);
+            border: 1px dashed #c3cfda;
+            border-radius: var(--radius);
+            color: var(--ink-soft);
+            font-size: 14px;
+            text-align: center;
+        }
 
-.progress-container {
-    width: 100%;
-    height: 8px;
-    background-color: #e2e8f0;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
+        .goal-card.completed-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 0;
+        }
 
-.progress-bar {
-    height: 100%;
-    border-radius: 10px;
-    background-color: #0284c7 !important;
-}
+        .badge-completed {
+            align-self: flex-start;
+            background: var(--in-bg);
+            color: var(--in);
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
 
-.goal-card p:last-child {
-    font-size: 0.85rem;
-    color: #0284c7;
-    text-align: right;
-    margin-bottom: 0;
-}
+        .goal-card p {
+            width: 100%;
+            color: var(--ink-soft);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .goal-card p strong { color: var(--ink); }
+        .goal-card p strong:first-child { font-size: 17px; }
+
+        .goal-card img {
+            width: 100%;
+            max-width: none;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 4px 0 12px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            background-color: var(--in) !important;
+        }
+
+        /* Percentual / última linha do card */
+        .goal-card p:last-child {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--in);
+            text-align: right;
+            margin-bottom: 0;
+        }
+
+        /* ---------- Celular ---------- */
+        @media (max-width: 640px) {
+            .navbar { height: auto; padding: 12px 18px; flex-wrap: wrap; gap: 10px; }
+            .nav-links { width: 100%; flex-wrap: wrap; justify-content: center; }
+            .completed-goals-section { margin-top: 28px; }
+            #result-finished { grid-template-columns: 1fr; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
     </style>
-    <section class="completed-goals-section">
-    <div class="goals-header">
-        <h2>Metas Concluídas</h2>
-        <p>Parabéns! Veja aqui todas as conquistas que você alcançou.</p>
-    </div>
+</head>
 
-    <div id="result-finished"></div>
-</section>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Finance Help</div>
+        <div class="nav-links">
+            <a class="nav-link" href="dashboard.html">Início</a>
+            <a class="nav-link" href="transactions.html">Transações</a>
+            <a class="nav-link active" href="goal.html" aria-current="page">Objetivos</a>
+            <a class="nav-link" href="investiments.html">Investimentos</a>
+        </div>
+    </nav>
+
+    <section class="completed-goals-section">
+        <div class="goals-header">
+            <h2>Metas concluídas</h2>
+            <p>Parabéns! Veja aqui todas as conquistas que você alcançou.</p>
+        </div>
+
+        <!-- Metas geradas pelo JavaScript -->
+        <div id="result-finished"></div>
+    </section>
+
     <script src="../script/scriptGoalCompleted.js"></script>
+
 </body>
+
 </html>

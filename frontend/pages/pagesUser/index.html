@@ -4,10 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dashboard Financeiro</title>
+    <title>Dashboard Financeiro | Finance Help</title>
 
     <style>
+        :root {
+            --ink: #12263a;
+            --ink-soft: #5b6b7c;
+            --ink-faint: #8a98a8;
+            --bg: #eef2f6;
+            --surface: #ffffff;
+            --line: #dce3ea;
+            --brand: #163a59;
+            --brand-2: #285b82;
+            --in: #0f7b4f;
+            --in-bg: #e5f4ec;
+            --out: #c0392b;
+            --out-bg: #fbe9e6;
+            --radius: 16px;
+            --font: Arial, Helvetica, sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,217 +31,337 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #edf1f5;
-            color: #243447;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--ink);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
 
+        :focus-visible {
+            outline: 3px solid #63b3ed;
+            outline-offset: 2px;
+        }
+
+        /* ---------- Navbar ---------- */
         .navbar {
-            width: 100%;
-            height: 70px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            height: 68px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 50px;
-            background: linear-gradient(135deg, #163a59, #285b82);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 0 clamp(18px, 4vw, 48px);
+            background: var(--brand);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 6px 18px rgba(18, 38, 58, 0.18);
         }
 
         .logo {
-            color: white;
-            font-size: 21px;
+            color: #fff;
+            font-size: 20px;
             font-weight: bold;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.2px;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 4px;
         }
 
         .nav-link {
-            color: #e8eef4;
+            color: #c9d6e2;
             text-decoration: none;
-            padding: 10px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 8px;
+            padding: 9px 16px;
+            border: 0;
+            border-radius: 999px;
             background: transparent;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--font);
             font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            transition: background 0.2s, color 0.2s;
         }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+        }
+
+        .logout-button {
+            margin-left: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .logout-button:hover {
-            background: #d00000;
-            border-color: #d00000;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(208, 0, 0, 0.35);
+            background: var(--out);
+            border-color: var(--out);
+            color: #fff;
         }
 
-        .logout-button:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
-
+        /* ---------- Layout ---------- */
         .container {
-            width: 90%;
+            width: 92%;
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 36px auto 0;
             flex: 1;
         }
 
         .welcome {
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .welcome span {
             display: block;
-            color: #6b7b8c;
-            font-size: 15px;
-            margin-bottom: 5px;
+            color: var(--ink-soft);
+            font-size: 14px;
+            margin-bottom: 4px;
         }
 
         .welcome h1 {
-            color: #193e5c;
-            font-size: 32px;
-            font-weight: 700;
+            font-size: clamp(26px, 4vw, 34px);
+            font-weight: bold;
+            letter-spacing: -0.3px;
         }
 
-        .cards {
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
-            margin-bottom: 35px;
+            grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+            gap: 20px;
+            align-items: stretch;
         }
 
-        .cards-highlights {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 22px;
-            margin-bottom: 35px;
+        .dashboard-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
         }
 
-        .card {
-            position: relative;
-            background: #f8fafc;
-            border: 1px solid #d9e0e7;
-            border-radius: 15px;
-            padding: 25px;
-            min-height: 145px;
-            box-shadow: 0 5px 15px rgba(31, 51, 68, 0.08);
-            overflow: hidden;
-            transition: 0.25s;
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
         }
 
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(31, 51, 68, 0.13);
+        /* ---------- Saldo (destaque) ---------- */
+        .hero {
+            background: linear-gradient(140deg, var(--brand) 0%, var(--brand-2) 100%);
+            border: 0;
+            color: #fff;
+            padding: 28px;
         }
 
-        .card::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 5px;
-            height: 100%;
-            background: #285b82;
-        }
-
-        .card-title {
-            color: #718096;
+        .hero-label {
             font-size: 14px;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
+            color: #bcd0e2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .card-value {
-            font-size: 29px;
+        .hero-value {
+            font-size: clamp(36px, 6vw, 52px);
             font-weight: bold;
-            color: #193e5c;
+            letter-spacing: -1px;
+            margin: 6px 0 22px;
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .flow-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .flow-item .label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #bcd0e2;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flow-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot.in {
+            background: #4ade9a;
+        }
+
+        .dot.out {
+            background: #ff8a7a;
+        }
+
+        /* ---------- Médias ---------- */
+        .averages {
+            padding: 20px 24px;
+        }
+
+        .averages h2 {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .averages-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .avg {
+            padding: 0 16px;
+            border-left: 1px solid var(--line);
+        }
+
+        .avg:first-child {
+            padding-left: 0;
+            border-left: 0;
+        }
+
+        .avg .label {
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .avg .value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 4px;
+            color: var(--out);
+        }
+
+        /* ---------- Destaques do mês ---------- */
+        .highlights-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .highlight {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .badge {
+            align-self: flex-start;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+
+        .highlight.revenue .badge {
+            background: var(--in-bg);
+            color: var(--in);
+        }
+
+        .highlight.expense .badge {
+            background: var(--out-bg);
+            color: var(--out);
+        }
+
+        .highlight .value {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -0.3px;
+        }
+
+        .highlight.revenue .value {
+            color: var(--in);
+        }
+
+        .highlight.expense .value {
+            color: var(--out);
+        }
+
+        /* ---------- Projeção ---------- */
+        .projection {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .projection .badge {
+            background: #e5f4ec;
+            color: var(--in);
+        }
+
+        .projection .value {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -0.3px;
+            color: var(--in);
         }
 
         .card-desc {
-            margin-top: 8px;
             font-size: 14px;
-            color: #718096;
+            color: var(--ink);
+            overflow-wrap: anywhere;
         }
 
         .card-payment {
-            margin-top: 4px;
             font-size: 13px;
-            color: #a0aec0;
+            color: var(--ink-faint);
             text-transform: capitalize;
         }
 
-        .balance-card::before {
-            background: #285b82;
-        }
-
-        .balance-card .card-value {
-            color: #285b82;
-        }
-
-        .revenue-card::before {
-            background: #00a63c;
-        }
-
-        .revenue-card .card-value {
-            color: #008f35;
-        }
-
-        .expense-card::before {
-            background: #e00000;
-        }
-
-        .expense-card .card-value {
-            color: #d00000;
-        }
-
+        /* ---------- Gráfico ---------- */
         .chart-card {
-            background: #f8fafc;
-            border: 1px solid #d9e0e7;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(31, 51, 68, 0.08);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .chart-header {
-            text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 16px;
         }
 
         .chart-header h2 {
-            color: #193e5c;
-            font-size: 22px;
-            margin-bottom: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
         }
 
         .chart-header p {
-            color: #7a8794;
-            font-size: 14px;
+            color: var(--ink-soft);
+            font-size: 13px;
         }
 
         .chart-container {
-            width: 100%;
-            max-width: 500px;
-            height: 420px;
-            margin: 0 auto;
+            position: relative;
+            flex: 1;
+            min-height: 360px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -236,16 +372,16 @@
             max-height: 100%;
         }
 
+        /* ---------- Rodapé ---------- */
         .footer {
-            background: #163a59;
-            color: #e8eef4;
-            padding: 30px 0 20px 0;
-            margin-top: 50px;
-            border-top: 3px solid #285b82;
+            background: var(--brand);
+            color: #dbe5ee;
+            padding: 28px 0 18px;
+            margin-top: 48px;
         }
 
         .footer-content {
-            width: 90%;
+            width: 92%;
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
@@ -256,68 +392,97 @@
         }
 
         .footer-brand h3 {
-            color: #ffffff;
-            font-size: 18px;
-            margin-bottom: 5px;
+            color: #fff;
+            font-size: 17px;
+            margin-bottom: 4px;
         }
 
         .footer-brand p {
-            color: #a0aec0;
+            color: #a9bccd;
             font-size: 13px;
         }
 
         .footer-info {
             display: flex;
-            gap: 25px;
+            gap: 24px;
             align-items: center;
             flex-wrap: wrap;
-        }
-
-        .footer-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-size: 14px;
-            color: #d1d5db;
         }
 
         .footer-item a {
-            color: #63b3ed;
+            color: #8cc8f5;
             text-decoration: none;
-            transition: color 0.2s;
         }
 
         .footer-item a:hover {
-            color: #ffffff;
+            color: #fff;
             text-decoration: underline;
         }
 
         .footer-bottom {
-            width: 90%;
+            width: 92%;
             max-width: 1200px;
-            margin: 20px auto 0 auto;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 18px auto 0;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
             text-align: center;
             font-size: 12px;
-            color: #718096;
+            color: #8ea3b6;
         }
 
-        @media (max-width: 800px) {
+        /* ---------- Responsivo ---------- */
+        @media (max-width: 960px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
             .navbar {
-                padding: 0 25px;
+                height: auto;
+                padding: 12px 18px;
+                flex-wrap: wrap;
+                gap: 10px;
             }
 
-            .container {
-                width: 92%;
+            .nav-links {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
-            .cards, .cards-highlights {
+            .logout-button {
+                margin-left: 0;
+            }
+
+            .hero {
+                padding: 22px;
+            }
+
+            .averages-row {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .avg {
+                padding: 0;
+                border-left: 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+            }
+
+            .avg .value {
+                margin-top: 0;
+            }
+
+            .highlights-row {
                 grid-template-columns: 1fr;
             }
 
-            .welcome h1 {
-                font-size: 27px;
+            .chart-container {
+                min-height: 300px;
             }
 
             .footer-content {
@@ -327,54 +492,13 @@
 
             .footer-info {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
             }
         }
 
-        @media (max-width: 500px) {
-            .navbar {
-                height: auto;
-                min-height: 65px;
-                padding: 15px 18px;
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-
-            .logo {
-                font-size: 17px;
-            }
-
-            .nav-links {
-                width: 100%;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 7px;
-            }
-
-            .nav-link {
-                padding: 8px 12px;
-                font-size: 14px;
-            }
-
-            .container {
-                margin: 25px auto;
-            }
-
-            .card {
-                padding: 22px;
-            }
-
-            .card-value {
-                font-size: 25px;
-            }
-
-            .chart-card {
-                padding: 20px 10px;
-            }
-
-            .chart-container {
-                height: 350px;
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
             }
         }
     </style>
@@ -383,10 +507,9 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">
-            Finance Help
-        </div>
+        <div class="logo">Finance Help</div>
         <div class="nav-links">
+            <a class="nav-link active" href="dashboard.html" aria-current="page">Início</a>
             <a class="nav-link" href="transactions.html">Transações</a>
             <a class="nav-link" href="goal.html">Objetivos</a>
             <a class="nav-link" href="investiments.html">Investimentos</a>
@@ -400,45 +523,80 @@
             <h1 id="user-name">Carregando usuário...</h1>
         </section>
 
-        <section class="cards">
-            <div class="card balance-card">
-                <div class="card-title">Saldo atual</div>
-                <p class="card-value" id="balance">Carregando...</p>
-            </div>
-            <div class="card revenue-card">
-                <div class="card-title">Entradas</div>
-                <p class="card-value" id="revenue">Carregando...</p>
-            </div>
-            <div class="card expense-card">
-                <div class="card-title">Saídas</div>
-                <p class="card-value" id="expense">Carregando...</p>
-            </div>
-        </section>
+        <div class="dashboard-grid">
 
-        <section class="cards-highlights">
-            <div class="card revenue-card">
-                <div class="card-title">Maior Receita do Mês</div>
-                <p class="card-value" id="highest-revenue">0</p>
-                <p class="card-desc" id="highest-revenue-description">--</p>
-                <p class="card-payment" id="highest-revenue-payment">--</p>
-            </div>
-            <div class="card expense-card">
-                <div class="card-title">Maior Despesa do Mês</div>
-                <p class="card-value" id="highest-expense">0</p>
-                <p class="card-desc" id="highest-expense-description">--</p>
-                <p class="card-payment" id="highest-expense-payment">--</p>
-            </div>
-        </section>
+            <div class="dashboard-column">
 
-        <section class="chart-card">
-            <div class="chart-header">
-                <h2>Entradas x Saídas</h2>
-                <p>Visualização da movimentação financeira</p>
+                <section class="panel hero" aria-label="Resumo do saldo">
+                    <div class="hero-label">💼 Saldo atual</div>
+                    <p class="hero-value" id="balance">0</p>
+
+                    <div class="flow">
+                        <div class="flow-item">
+                            <div class="label"><span class="dot in"></span>Entradas</div>
+                            <p class="value" id="revenue">0</p>
+                        </div>
+                        <div class="flow-item">
+                            <div class="label"><span class="dot out"></span>Saídas</div>
+                            <p class="value" id="expense">0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel averages" aria-label="Média de gastos">
+                    <h2>Média de gastos</h2>
+                    <div class="averages-row">
+                        <div class="avg">
+                            <p class="label">Por dia</p>
+                            <p class="value" id="mean-day-expense">0</p>
+                        </div>
+                        <div class="avg">
+                            <p class="label">Por mês</p>
+                            <p class="value" id="mean-month-expense">0</p>
+                        </div>
+                        <div class="avg">
+                            <p class="label">Por ano</p>
+                            <p class="value" id="year-month-expense">0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="highlights-row">
+                    <section class="panel highlight revenue">
+                        <span class="badge">⬆️ Maior receita do mês</span>
+                        <p class="value" id="highest-revenue">0</p>
+                        <p class="card-desc" id="highest-revenue-description">--</p>
+                        <p class="card-payment" id="highest-revenue-payment">--</p>
+                    </section>
+                    <section class="panel highlight expense">
+                        <span class="badge">⬇️ Maior despesa do mês</span>
+                        <p class="value" id="highest-expense">0</p>
+                        <p class="card-desc" id="highest-expense-description">--</p>
+                        <p class="card-payment" id="highest-expense-payment">--</p>
+                    </section>
+                </div>
+
+                <section class="panel projection">
+                    <span class="badge">Projeção do seu saldo</span>
+                    <p class="value" id="projection-expense">0</p>
+                    <p class="card-desc" id="projection-description">Estimativa para o fim do mês</p>
+                </section>
+
             </div>
-            <div class="chart-container">
-                <canvas id="dashboard-chart"></canvas>
+
+            <div class="dashboard-column">
+                <section class="panel chart-card">
+                    <div class="chart-header">
+                        <h2>Entradas x Saídas</h2>
+                        <p>Veja para onde seu dinheiro está indo</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="dashboard-chart"></canvas>
+                    </div>
+                </section>
             </div>
-        </section>
+
+        </div>
     </main>
 
     <footer class="footer">
@@ -448,22 +606,13 @@
                 <p>Gestão financeira pessoal simples e eficiente.</p>
             </div>
             <div class="footer-info">
-                <div class="footer-item">
-                    <span>Desenvolvido por: <strong>Marcos Lucas</strong></span>
-                </div>
-                <div class="footer-item">
-                    <span>GitHub:</span>
-                    <a href="https://github.com/devMarcos17" target="_blank">github.com/devMarcos17</a>
-                </div>
-                <div class="footer-item">
-                    <span>Contato:</span>
-                    <strong>(21) 97230-5425</strong>
-                </div>
+                <div class="footer-item">Desenvolvido por: <strong>Marcos Lucas</strong></div>
+                <div class="footer-item">GitHub: <a href="https://github.com/devMarcos17" target="_blank"
+                        rel="noopener">github.com/devMarcos17</a></div>
+                <div class="footer-item">Contato: <strong>(21) 97230-5425</strong></div>
             </div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2026 Finance Help. Todos os direitos reservados.
-        </div>
+        <div class="footer-bottom">&copy; 2026 Finance Help. Todos os direitos reservados.</div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -471,6 +620,8 @@
     <script src="../script/scriptDashBoard.js"></script>
     <script src="../script/scriptMe.js"></script>
     <script src="../script/scriptLogout.js"></script>
+    <script src="../script/scriptMeanByExpense.js"></script>
+    <script src="../script/scriptProjectionInBalance.js"></script>
 
 </body>
 

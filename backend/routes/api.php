@@ -61,6 +61,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::get('/meanByMonthExpense', [TransactionController::class, 'meanByMonthExpense'])->middleware('auth')->name('meanByMonthExpense');
     Route::get('/meanByDayExpense', [TransactionController::class, 'meanByDayExpense'])->middleware('auth')->name('meanByDayExpense');
     Route::get('/meanByYearExpense', [TransactionController::class, 'meanByYearExpense'])->middleware('auth')->name('meanByYearExpense');
+    Route::get('/projection', [TransactionController::class, 'projectionInBalance'])->middleware('auth')->name('projectionInBalance');
+    Route::get('/expensesIncresead', [TransactionController::class, 'expensesIncresead'])->middleware('auth')->name('expensesIncresead');
+    Route::get('/revenuesIncresead', [TransactionController::class, 'revenuesIncresead'])->middleware('auth')->name('revenuesIncresead');
 
     Route::put('/update', [TransactionController::class, 'updateTransaction'])->middleware('auth')->name('updateTransaction');
 

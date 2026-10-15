@@ -387,10 +387,6 @@ document
     .addEventListener('click', getRevenueMounth);
 
 
-// ==========================================
-// GASTOS POR MÊS
-// ==========================================
-
 let chartExpensesMonth = null;
 async function getExpensesMonth() {
 

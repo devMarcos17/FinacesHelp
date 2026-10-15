@@ -297,4 +297,19 @@ class TransactionController extends Controller
         $transaction = $this->transactionService->meanByYearExpense();
         return response()->json(['transaction' => ['avg' => $transaction]], 200);
     }
+    public function projectionInBalance(): JsonResponse
+    {
+        $transaction = $this->transactionService->projectionInBalance();
+        return response()->json(['transaction' => $transaction], 200);
+    }
+    public function expensesIncresead(): JsonResponse
+    {
+        $transaction = $this->transactionService->expensesIncresead();
+        return response()->json(['transaction' => ['percentage' =>$transaction]], 200);
+    }
+    public function revenuesIncresead(): JsonResponse
+    {
+        $transaction = $this->transactionService->revenuesIncresead();
+        return response()->json(['transaction' => ['percentage' =>$transaction]], 200);
+    }
 }

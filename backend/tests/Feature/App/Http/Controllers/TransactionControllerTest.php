@@ -248,7 +248,7 @@ class TransactionControllerTest extends TestCase
     }
 
     //php artisan test --filter TransactionControllerTest::test_mean_month_expense
-    public function test_mean_month_expense()
+    public function test_mean_month_expense(): void
     {
         $response = $this->actingAs($this->user)->getJson(
             'api/transaction/meanByMonthExpense'
@@ -258,7 +258,7 @@ class TransactionControllerTest extends TestCase
     }
 
     //php artisan test --filter TransactionControllerTest::test_mean_day_expense
-    public function test_mean_day_expense()
+    public function test_mean_day_expense(): void
     {
         $response = $this->actingAs($this->user)->getJson(
             'api/transaction/meanByDayExpense'
@@ -268,12 +268,45 @@ class TransactionControllerTest extends TestCase
     }
 
     //php artisan test --filter TransactionControllerTest::test_mean_year_expense
-    public function test_mean_year_expense()
+    public function test_mean_year_expense(): void
     {
         $response = $this->actingAs($this->user)->getJson(
             'api/transaction/meanByYearExpense'
         );
         $response->assertOk();
         $response->assertJsonStructure(['transaction' => ['avg']]);
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_projection_in_balance
+    public function test_projection_in_balance(): void
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/projection'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction']);
+        $this->assertIsNumeric($response->json('transaction'));
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_expenses_incresead
+    public function test_expenses_incresead(): void
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/expensesIncresead'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction']);
+        $this->assertIsNumeric($response->json('transaction.percentage'));
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_revenues_incresead
+    public function test_revenues_incresead(): void
+    {
+        $response = $this->actingAs($this->user)->getJson(
+            'api/transaction/revenuesIncresead'
+        );
+        $response->assertOk();
+        $response->assertJsonStructure(['transaction']);
+        $this->assertIsNumeric($response->json('transaction.percentage'));
     }
 }
