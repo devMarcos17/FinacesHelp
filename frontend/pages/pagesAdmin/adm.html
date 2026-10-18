@@ -6,532 +6,334 @@
     <title>Painel Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* =========================================
-           RESET & BASE
-        ========================================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --navy: #193e5c;
+            --blue: #285b82;
+            --blue-dark: #163a59;
+            --green: #2e7d32;
+            --red: #d00000;
+            --gray: #6c757d;
+            --bg: #eef2f6;
+            --surface: #fff;
+            --line: #dbe3ea;
+            --text: #0f172a;
+            --muted: #536577;
+            --radius: 14px;
+            --shadow: 0 4px 14px rgba(25, 62, 92, .08);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background-color: #edf1f5;
-            color: #1e293b;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding-bottom: 40px;
         }
 
-        /* =========================================
-           BARRA DE NAVEGAÇÃO
-        ========================================= */
+        :focus-visible { outline: 3px solid rgba(40, 91, 130, .4); outline-offset: 2px; }
+
+        .welcome, .metrics-grid, .search-container, .list {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 24px;
+        }
+
+        /* Navegação */
         .navbar {
-            background-color: #193e5c;
-            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 10;
             display: flex;
-            gap: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            gap: 8px;
+            padding: 12px 5%;
+            background: var(--navy);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .15);
+            margin-bottom: 28px;
         }
 
         .navbar a {
-            color: #ffffff;
+            color: #fff;
             text-decoration: none;
             font-size: 14px;
-            font-weight: 600;
-            transition: opacity 0.2s ease;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background .2s;
         }
 
-        .navbar a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
+        .navbar a:hover { background: rgba(255, 255, 255, .15); }
 
-        /* =========================================
-           BOAS-VINDAS (WELCOME)
-        ========================================= */
+        /* Boas-vindas */
         .welcome {
-            width: 90%;
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 30px;
-            background: linear-gradient(135deg, #163a59, #285b82);
-            border-radius: 15px;
-            color: #ffffff;
-            box-shadow: 0 6px 18px rgba(31, 51, 68, 0.15);
             position: relative;
             overflow: hidden;
+            padding: 32px;
+            border-radius: var(--radius);
+            color: #fff;
+            background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+            box-shadow: 0 8px 22px rgba(25, 62, 92, .22);
         }
 
         .welcome::after {
             content: "";
             position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 220px;
+            height: 220px;
             right: -60px;
-            top: -70px;
+            top: -90px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, .07);
         }
 
-        .welcome span {
-            display: block;
-            color: #dbe7f0;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
+        .welcome span { display: block; font-size: 14px; color: #cfe0ee; }
+        .welcome h1 { font-size: clamp(22px, 4vw, 32px); font-weight: 700; }
 
-        .welcome h1 {
-            font-size: 30px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        /* =========================================
-           MÉTRICAS DA PLATAFORMA
-        ========================================= */
+        /* Métricas */
         .metrics-grid {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto 30px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            gap: 16px;
         }
 
         .metric-card {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #d9e0e7;
-            box-shadow: 0 4px 12px rgba(31, 51, 68, 0.05);
+            padding: 20px 22px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-bottom: 4px solid var(--navy);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
         }
 
-        .metric-card h3 {
-            font-size: 13px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .metric-card h3 { font-size: 13px; font-weight: 500; color: #64748b; }
+        .metric-card p { font-size: 32px; font-weight: 700; line-height: 1.2; margin-top: 4px; }
 
-        .metric-card p {
-            font-size: 28px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 5px;
-        }
+        .active-border { border-bottom-color: var(--green); }
+        .inactive-border { border-bottom-color: var(--red); }
+        .admin-border { border-bottom-color: var(--blue); }
 
-        .active-border { border-bottom: 4px solid #2e7d32; }
-        .inactive-border { border-bottom: 4px solid #d00000; }
-        .admin-border { border-bottom: 4px solid #285b82; }
-
-        /* =========================================
-           CAMPO DE PESQUISA
-        ========================================= */
-        .search-container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto 20px;
-        }
-
+        /* Pesquisa */
         #search-input {
             width: 100%;
             padding: 14px 20px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            color: #0f172a;
-            background-color: #ffffff;
-            border: 1px solid #d9e0e7;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(31, 51, 68, 0.05);
+            font: 400 14px 'Poppins', sans-serif;
+            color: var(--text);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             outline: none;
-            transition: all 0.25s ease;
+            transition: border-color .2s, box-shadow .2s;
         }
 
-        #search-input::placeholder {
-            color: #94a3b8;
-            font-weight: 400;
-        }
+        #search-input::placeholder { color: #94a3b8; }
+        #search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(40, 91, 130, .15); }
 
-        #search-input:focus {
-            border-color: #285b82;
-            box-shadow: 0 0 0 4px rgba(40, 91, 130, 0.15);
-        }
-
-        /* =========================================
-           CONTAINERS DE LISTAGEM
-        ========================================= */
+        /* Seções de listagem */
         .list {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto 40px;
+            padding: 28px;
             background: #f8fafc;
-            border: 1px solid #d9e0e7;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(31, 51, 68, 0.08);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
         }
 
         .list h2 {
-            color: #193e5c;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #d9e0e7;
+            color: var(--navy);
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--line);
         }
 
-        /* =========================================
-           GRID DE CARDS E ELEMENTOS
-        ========================================= */
-        #list-users,
-        #list-filterUsers {
+        .list-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .list-header h2 { margin: 0; padding: 0; border: 0; }
+
+        .list-header span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue);
+            background: #e3edf5;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        /* Botão PDF */
+        .btn-pdf {
+            margin-bottom: 20px;
+            padding: 11px 20px;
+            font: 600 13px 'Poppins', sans-serif;
+            color: #fff;
+            background: var(--navy);
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+        }
+
+        .btn-pdf:hover { background: var(--blue); transform: translateY(-1px); }
+
+        /* Grids e cards (as 4 listas compartilham o mesmo estilo) */
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
 
-        #list-users > .user-card,
-        #list-users > div,
-        #list-filterUsers > .user-card,
-        #list-filterUsers > div {
-            background: #ffffff;
-            border: 1px solid #d9e0e7;
-            border-left: 5px solid #285b82;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 4px 12px rgba(31, 51, 68, 0.07);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) > * {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding: 22px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-left: 5px solid var(--blue);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform .2s, box-shadow .2s;
         }
 
-        #list-users > .user-card:hover,
-        #list-users > div:hover,
-        #list-filterUsers > .user-card:hover,
-        #list-filterUsers > div:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 9px 22px rgba(31, 51, 68, 0.12);
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) > *:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(25, 62, 92, .14);
         }
 
-        /* Tipografia interna dos cards */
-        #list-users p,
-        #list-filterUsers p {
-            color: #536577;
+        #list-filterUsers > * { border-left-color: var(--green); }
+
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) p {
+            padding-bottom: 8px;
+            margin-bottom: 8px;
             font-size: 14px;
             font-weight: 500;
-            line-height: 1.6;
-            margin-bottom: 8px;
+            color: var(--muted);
+            border-bottom: 1px solid #e8edf2;
+            word-break: break-word;
         }
 
-        #list-users strong,
-        #list-filterUsers strong {
-            color: #0f172a;
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) p:last-of-type {
+            border-bottom: 0;
+        }
+
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) strong {
+            color: var(--text);
             font-weight: 600;
         }
 
-        /* =========================================
-           AÇÕES DO USUÁRIO (BOTÕES)
-        ========================================= */
-        .user-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
+        /* Botões de ação */
+        .user-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 
-        #list-users button,
-        #list-filterUsers button {
+        :is(#list-users, #list-filterUsers) button {
+            flex: 1 1 calc(50% - 8px);
             height: 38px;
             padding: 0 10px;
-            border: none;
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
+            font: 600 12px 'Poppins', sans-serif;
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            flex: 1 1 calc(50% - 8px);
+            transition: background .2s, transform .1s;
         }
 
-        #list-users button:hover,
-        #list-filterUsers button:hover {
-            transform: translateY(-2px);
-        }
+        :is(#list-users, #list-filterUsers) button:hover { transform: translateY(-2px); }
 
-        /* Variantes dos Botões */
-        .btn-edit { background-color: #285b82; }
-        .btn-edit:hover { background-color: #163a59; }
+        .btn-edit { background: var(--blue); }
+        .btn-edit:hover { background: var(--blue-dark) !important; }
+        .btn-active { background: var(--green); }
+        .btn-active:hover { background: #1b5e20 !important; }
+        .btn-disable { background: var(--gray); }
+        .btn-disable:hover { background: #495057 !important; }
+        .btn-delete { background: var(--red); }
+        .btn-delete:hover { background: #a80000 !important; }
 
-        .btn-active { background-color: #2e7d32; }
-        .btn-active:hover { background-color: #1b5e20; }
-
-        .btn-disable { background-color: #6c757d; }
-        .btn-disable:hover { background-color: #495057; }
-
-        .btn-delete { background-color: #d00000; }
-        .btn-delete:hover { background-color: #a80000; }
-
-        /* =========================================
-           ESTADOS VAZIOS (EMPTY STATE)
-        ========================================= */
-        #list-users:empty::before,
-        #list-filterUsers:empty::before {
+        /* Estado vazio */
+        :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent):empty::before {
             content: "Nenhum usuário encontrado.";
-            display: block;
             grid-column: 1 / -1;
-            padding: 35px;
+            padding: 36px;
             text-align: center;
-            color: #718096;
             font-size: 14px;
-            background: #ffffff;
+            color: #718096;
+            background: var(--surface);
             border: 1px dashed #ccd6df;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
-        /* =========================================
-           RESPONSIVIDADE
-        ========================================= */
-        @media (max-width: 500px) {
-            .user-actions {
-                flex-direction: column;
-            }
-            #list-users button,
-            #list-filterUsers button {
-                flex: 1 1 100%;
-            }
-            
+        /* Responsivo */
+        @media (max-width: 600px) {
+            .list { padding: 20px 16px; }
+            .welcome { padding: 24px 20px; }
+            :is(#list-users, #list-filterUsers, #users-filters-old, #users-filters-recent) { grid-template-columns: 1fr; }
+            :is(#list-users, #list-filterUsers) button { flex: 1 1 100%; }
+            .btn-pdf { width: 100%; }
         }
-        /* Container em Grid para os cards */
-#list-filterUsers {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-}
 
-/* O card de cada usuário agrupado */
-#list-filterUsers .user-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-left: 6px solid #193e5c;
-    border-bottom: 5px solid #0f172a; /* DIVISÓRIA ESCURA MARCANTE */
-    border-radius: 12px;
-    padding: 22px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-    display: flex;
-    flex-direction: column;
-}
-
-/* Linha separando os dados dentro do próprio card */
-#list-filterUsers .user-card p {
-    color: #334155;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.6;
-    margin-bottom: 8px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-
-#list-filterUsers .user-card p:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-#list-filterUsers .user-card strong {
-    color: #0f172a;
-    font-weight: 600;
-}
-/* =========================================
-   OLD E RECENT - GRID
-========================================= */
-
-#users-filters-old,
-#users-filters-recent {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-
-/* =========================================
-   OLD E RECENT - CARDS
-========================================= */
-
-#users-filters-old .user-card,
-#users-filters-recent .user-card {
-    background: #ffffff;
-
-    border: 1px solid #d9e0e7;
-
-    border-left: 5px solid #285b82;
-
-    border-radius: 12px;
-
-    padding: 22px;
-
-    box-shadow: 0 4px 12px rgba(31, 51, 68, 0.07);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-
-/* =========================================
-   HOVER DOS CARDS
-========================================= */
-
-#users-filters-old .user-card:hover,
-#users-filters-recent .user-card:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 9px 22px rgba(31, 51, 68, 0.12);
-}
-
-
-/* =========================================
-   TEXTOS DOS CARDS
-========================================= */
-
-#users-filters-old .user-card p,
-#users-filters-recent .user-card p {
-    color: #536577;
-
-    font-size: 14px;
-
-    font-weight: 500;
-
-    line-height: 1.6;
-
-    margin-bottom: 8px;
-
-    padding-bottom: 8px;
-
-    border-bottom: 1px solid #e2e8f0;
-
-    word-break: break-word;
-}
-
-
-/* =========================================
-   ÚLTIMO PARÁGRAFO
-========================================= */
-
-#users-filters-old .user-card p:last-child,
-#users-filters-recent .user-card p:last-child {
-    margin-bottom: 0;
-
-    padding-bottom: 0;
-
-    border-bottom: none;
-}
-
-
-/* =========================================
-   STRONG
-========================================= */
-
-#users-filters-old .user-card strong,
-#users-filters-recent .user-card strong {
-    color: #0f172a;
-
-    font-weight: 600;
-}
-
-
-/* =========================================
-   RESPONSIVIDADE
-========================================= */
-
-@media (max-width: 600px) {
-
-    #users-filters-old,
-    #users-filters-recent {
-        grid-template-columns: 1fr;
-    }
-
-}
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Navegação Principial -->
     <nav class="navbar">
         <a href="activeUser.html">Ativos</a>
         <a href="disableUser.html">Inativos</a>
         <a href="register.html">Novo Usuário</a>
     </nav>
 
-    <!-- Cabeçalho de Boas-Vindas -->
     <section class="welcome">
         <span>Bem-vindo de volta</span>
         <h1 id="user-name">Carregando usuário...</h1>
     </section>
 
-    <!-- Indicadores / Métricas -->
     <div class="metrics-grid">
-        <div class="metric-card">
-            <h3>Total Usuários</h3>
-            <p id="total-users">0</p>
-        </div>
-        <div class="metric-card active-border">
-            <h3>Ativos</h3>
-            <p id="active-users">0</p>
-        </div>
-        <div class="metric-card inactive-border">
-            <h3>Inativos</h3>
-            <p id="inactive-users">0</p>
-        </div>
-        <div class="metric-card admin-border">
-            <h3>Admins</h3>
-            <p id="admin-users">0</p>
-        </div>
+        <div class="metric-card"><h3>Total de usuários</h3><p id="total-users">0</p></div>
+        <div class="metric-card active-border"><h3>Ativos</h3><p id="active-users">0</p></div>
+        <div class="metric-card inactive-border"><h3>Inativos</h3><p id="inactive-users">0</p></div>
+        <div class="metric-card admin-border"><h3>Admins</h3><p id="admin-users">0</p></div>
     </div>
 
-    <!-- Filtro de Busca -->
     <div class="search-container">
         <input type="text" id="search-input" placeholder="Pesquisar por nome ou e-mail...">
     </div>
 
     <section class="list">
         <h2>Lista de Usuários</h2>
+        <button onclick="createPdfUser()" class="btn-pdf">Baixar PDF de usuários</button>
         <div id="list-users"></div>
     </section>
 
     <section class="list">
-        <h2>Novos Cadastros (Este Mês)</h2>
+        <h2>Novos cadastros (este mês)</h2>
         <div id="list-filterUsers"></div>
     </section>
- <section class="list">
 
-    <div class="list-header">
-        <h2>Usuários mais antigos</h2>
-        <span>Antigos</span>
-    </div>
+    <section class="list">
+        <div class="list-header">
+            <h2>Usuários mais antigos</h2>
+            <span>Antigos</span>
+        </div>
+        <div id="users-filters-old"></div>
+    </section>
 
-    <div id="users-filters-old"></div>
+    <section class="list">
+        <div class="list-header">
+            <h2>Usuários mais recentes</h2>
+            <span>Recentes</span>
+        </div>
+        <div id="users-filters-recent"></div>
+    </section>
 
-</section>
-
-
-<section class="list">
-
-    <div class="list-header">
-        <h2>Usuários mais recentes</h2>
-        <span>Recentes</span>
-    </div>
-
-    <div id="users-filters-recent"></div>
-
-</section>
-
-    <!-- Scripts da Aplicação -->
     <script src="../scriptAdm/scriptMe.js"></script>
     <script src="../scriptAdm/scriptList.js"></script>
     <script src="../scriptAdm/scriptTotal.js"></script>

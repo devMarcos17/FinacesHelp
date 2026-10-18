@@ -29,7 +29,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::get('/listById', [UserController::class, 'listById'])->middleware(['auth', 'admin'])->name('listById');
     Route::get('/filterDataOld', [UserController::class, 'filterDataOld'])->middleware(['auth', 'admin'])->name('filterDataOld');
     Route::get('/filterDataRecent', [UserController::class, 'filterDataRecent'])->middleware(['auth', 'admin'])->name('filterDataRecent');
-    
+    Route::get('/createPdfUserTotal', [UserController::class, 'createPdfUserTotal'])->middleware(['auth', 'admin'])->name('createPdfUserTotal');
+    Route::get('/createPdfUserActive', [UserController::class, 'createPdfUserActive'])->middleware(['auth', 'admin'])->name('createPdfUserActive');
+    Route::get('/createPdfUserDisable', [UserController::class, 'createPdfUserDisable'])->middleware(['auth', 'admin'])->name('createPdfUserDisable');
     
     Route::put('/update', [UserController::class, 'update'])->middleware(['auth', 'admin'])->name('update');
 
@@ -64,6 +66,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
     Route::get('/projection', [TransactionController::class, 'projectionInBalance'])->middleware('auth')->name('projectionInBalance');
     Route::get('/expensesIncresead', [TransactionController::class, 'expensesIncresead'])->middleware('auth')->name('expensesIncresead');
     Route::get('/revenuesIncresead', [TransactionController::class, 'revenuesIncresead'])->middleware('auth')->name('revenuesIncresead');
+    Route::get('/createPdfTransaction', [TransactionController::class, 'createPdfTransaction'])->middleware('auth')->name('createPdfTransaction');
 
     Route::put('/update', [TransactionController::class, 'updateTransaction'])->middleware('auth')->name('updateTransaction');
 
@@ -72,6 +75,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'transaction'], function ($rout
 
 Route::group(['middleware' => 'api', 'prefix' => 'dashboard'], function ($router) {
     Route::get('/dashboard', [DashBoardController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+    Route::get('/createPdf', [DashBoardController::class, 'createPdf'])->middleware('auth')->name('createPdf');
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'goals'], function ($router) {

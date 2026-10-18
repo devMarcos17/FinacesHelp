@@ -4,8 +4,11 @@ namespace Tests\Feature\App\Http\Controllers;
 
 
 use App\Enums\TransactionCategory;
+use App\Http\Controllers\DashBoardController;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\TransactionService;
+use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -308,5 +311,32 @@ class TransactionControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonStructure(['transaction']);
         $this->assertIsNumeric($response->json('transaction.percentage'));
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_download_dashboard_transaction
+    public function test_download_dashboard_transaction()
+    {
+        $response = $this->actingAs($this->user)->get('api/dashboard/createPdf');
+
+        $response->assertOk();
+
+        $response->assertHeader('Content-Type', 'application/pdf');
+        $this->assertNotEmpty($response->getContent());
+    }
+
+    //php artisan test --filter TransactionControllerTest::test_download_dashboard_transaction_with_moch
+    public function test_download_dashboard_transaction_with_moch()
+    {
+        $this->mock(DashBoardController::class, fn($mock) =>
+        $mock->shoudReceive('createPdf')
+        ->once()
+        ->andReturn('%PDF-1.4 [CONTENT SIMULATION OF PDF IN USER')
+        );
+
+        $response = $this->actingAs($this->user)->get('api/dashboard/createPdf');
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'application/pdf');
+        $this->assertNotEmpty($response->getContent());
     }
 }

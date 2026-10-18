@@ -2,16 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\Goal;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 
-use function PHPUnit\Framework\isEmpty;
 
 class UserService
 {
@@ -26,7 +25,7 @@ class UserService
         $user->date_of_birt = $data['date_of_birt'];
 
         $user->status = 'ativo';
-        $user->role = 'user';
+        $user->role = 'admin';
 
         $user->save();
 
@@ -49,7 +48,7 @@ class UserService
 
         return $user;
     }
-    public function disableUser(int $idUser)
+    public function disableUser(int $idUser): User
     {
         $user = User::where('id', $idUser)
         ->where('status', 'ativo')
@@ -60,7 +59,7 @@ class UserService
 
         return $user;
     }
-    public function activeUser(int $idUser)
+    public function activeUser(int $idUser): User
     {
         $user = User::where('id', $idUser)
         ->where('status', 'inativo')
@@ -105,7 +104,7 @@ class UserService
         $user = User::where('status', 'ativo')->count();
         return $user;
     }
-    public function search(string $search)
+    public function search(string $search): Collection
     {
         $search = User::whereAny([
             'id',
@@ -142,7 +141,7 @@ class UserService
 
         return $status === Password::RESET_LINK_SENT;
     }
-    public function resetPassword(string $email, string $token, string $password)
+    public function resetPassword(string $email, string $token, string $password): bool
     {
         $status = Password::reset([
             'email' => $email,
@@ -155,5 +154,51 @@ class UserService
 
         return $status === Password::PASSWORD_RESET;
         
+    }
+    public function createPdfUserTotal(): Response
+    {
+        $date = Carbon::now()->format('d-m-y');
+
+        $user = User::select('id', 'name', 'email', 'phone', 'status', 'role', 'created_at')
+        ->orderBy('id', 'ASC')
+        ->get();
+
+        $pdf = Pdf::loadView('pdf.pdfDownloadUserTotal', compact(
+            'user'
+        ));
+        
+        return $pdf->download('pdf-listagem-usuario' . $date . '.pdf');
+
+    }
+    public function createPdfUserActive(): Response
+    {
+        $date = Carbon::now()->format('d-m-y');
+        
+        $user = User::select('id', 'name', 'email', 'phone', 'status', 'role', 'created_at')
+        ->where('status', 'ativo')
+        ->orderBy('id', 'ASC')
+        ->get();
+
+        $pdf = Pdf::loadView('pdf.pdfDownloadUserActive',compact(
+            'user'
+        ));
+
+        return $pdf->download('pdf-listagem-usuario-ativo' . $date . '.pdf');
+    }
+    public function createPdfUserDisable()
+    {
+        $date = Carbon::now()->format('d-m-y');
+
+        $user = User::select('name', 'email', 'phone', 'status', 'role')
+        ->where('status', 'inativo')
+        ->where('role', 'user')
+        ->orderBy('id', 'ASC')
+        ->get();
+
+        $pdf = Pdf::loadView('pdf.pdfDownloadUserDisable', compact(
+            'user'
+        ));
+
+        return $pdf->download('pdf-listagem-usuario-inativo' . $date . '.pdf');
     }
 }

@@ -96,5 +96,39 @@ async function activeUser(id) {
     }
 }
 
+async function createPdfUserActive() {
+    const token = 'Bearer ' + sessionStorage.getItem('session');
 
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/auth/createPdfUserActive', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/pdf',
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Detalhes do erro do servidor:', errorText);
+            throw new Error('Erro ao gerar o PDF no servidor');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pdf-listagem-usuario.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        alert('Baixado com sucesso!');
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        alert('Erro ao baixar o arquivo.');
+    }
+}
 getActiveUser();

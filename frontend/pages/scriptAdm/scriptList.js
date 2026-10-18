@@ -46,13 +46,50 @@ async function searchUsers(query) {
         const data = await response.json();
 
         if (response.ok) {
-            const users = data.users || data.user || data;
-            renderUsersList(users);
+            // Renderiza os usuários encontrados na pesquisa
+            renderUsersList(data.user || data);
         } else {
             console.error('Erro na pesquisa:', data);
         }
+
     } catch (error) {
-        console.error('Erro na pesquisa:', error);
+        console.error('Erro de conexão na pesquisa:', error);
+    }
+}
+
+async function createPdfUser() {
+    const token = 'Bearer ' + sessionStorage.getItem('session');
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/auth/createPdfUserTotal', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/pdf',
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Detalhes do erro do servidor:', errorText);
+            throw new Error('Erro ao gerar o PDF no servidor');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pdf-listagem-usuario.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        alert('Baixado com sucesso!');
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        alert('Erro ao baixar o arquivo.');
     }
 }
 
@@ -61,6 +98,10 @@ function renderUsersList(users) {
     if (!listContainer) return;
 
     listContainer.innerHTML = '';
+
+    if (!users || users.length === 0) {
+        return;
+    }
 
     users.forEach(user => {
         listContainer.innerHTML += `

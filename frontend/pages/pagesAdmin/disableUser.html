@@ -189,11 +189,18 @@
         <a href="adm.html" class="btn-back">← Voltar ao Painel</a>
     </header>
 
-    <main class="content-section">
-        <div id="users">
-            <!-- Os usuários serão exibidos aqui pelo script -->
-        </div>
-    </main>
+   <main class="content-section">
+    <!-- Botão para gerar o PDF dos usuários inativos -->
+    <div class="mb-3">
+        <button type="button" onclick="createPdfUserDisable()" class="btn btn-primary">
+            Gerar PDF (Usuários Inativos)
+        </button>
+    </div>
+
+    <div id="users">
+        <!-- Os usuários serão exibidos aqui pelo script -->
+    </div>
+</main>
 
     <script src="../scriptAdm/scriptActive.js"></script>
 

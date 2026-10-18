@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\App\Http\Controllers;
 
+use App\Http\Controllers\UserController;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -31,7 +33,7 @@ class UserControllerTest extends TestCase
     // php artisan test --filter UserControllerTest::test_user_register_sucess
     public function test_user_register_sucess()
     {
-         $response = $this->postJson(
+        $response = $this->postJson(
             '/api/auth/register',
             [
                 'name' => 'Marcos',
@@ -176,11 +178,13 @@ class UserControllerTest extends TestCase
     // php artisan test --filter UserControllerTest::test_update_fails_with_invalid_id
     public function test_update_fails_with_invalid_id(): void
     {
-        $response = $this->actingAs($this->user)->putJson('api/auth/update',
-        [
-            'id' => 999999,
-            'name' => 'New Marcos',
-        ]);
+        $response = $this->actingAs($this->user)->putJson(
+            'api/auth/update',
+            [
+                'id' => 999999,
+                'name' => 'New Marcos',
+            ]
+        );
 
         $response->assertNotFound();
     }
@@ -196,11 +200,48 @@ class UserControllerTest extends TestCase
     //php artisan test --filter UserControllerTest::test_search_user_returns_empty_when_no_match
     public function test_search_user_returns_empty_when_no_match(): void
     {
-        $response = $this->actingAs($this->user)->postJson('api/auth/search',
-        [
-            'search' => 'user_not_exists',
-        ]);
+        $response = $this->actingAs($this->user)->postJson(
+            'api/auth/search',
+            [
+                'search' => 'user_not_exists',
+            ]
+        );
         $response->assertOk();
         $response->assertJson(['user' => []]);
+    }
+
+    //php artisan test --filter UserControllerTest::test_download_pdf_user_total
+    public function test_download_pdf_user_total(): void
+    {
+        $response = $this->actingAs($this->user)->get('api/auth/createPdfUserTotal');
+
+        $response->assertOk();
+
+        $response->assertHeader('Content-Type', 'application/pdf');
+
+        $this->assertNotEmpty($response->getContent());
+    }
+
+    //php artisan test --filter UserControllerTest::test_download_pdf_user_active
+    public function test_download_pdf_user_active()
+    {
+        $response = $this->actingAs($this->user)->get('api/auth/createPdfUserActive');
+        $response->assertOk();
+
+        $response->assertHeader('Content-Type', 'application/pdf');
+
+        $this->assertNotEmpty($response->getContent());
+    }
+
+    //php artisan test --filter UserControllerTest::test_download_pdf_user_disable
+    public function test_download_pdf_user_disable()
+    {
+        $response = $this->actingAs($this->user)->get('api/auth/createPdfUserDisable');
+
+        $response->assertOk();
+
+        $response->assertHeader('Content-Type', 'application/pdf');
+
+        $this->assertNotEmpty($response->getContent());
     }
 }

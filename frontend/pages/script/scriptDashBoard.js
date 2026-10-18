@@ -74,6 +74,37 @@ async function highestMonthlyRevenue() {
         console.log(error);
     }
 }
+async function createPdf() {
+    const token = 'Bearer ' + sessionStorage.getItem('session');
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/dashboard/createPdf', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/pdf'
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao gerar o PDF no servidor');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'relatorio-financeshelp.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao baixar o arquivo.');
+    }
+}
 
 function createDashboardChart(revenue, expense) {
 

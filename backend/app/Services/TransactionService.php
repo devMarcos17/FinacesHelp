@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use App\Enums\TransactionCategory;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DivisionByZeroError;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Database\Eloquent\Collection;
@@ -151,14 +153,14 @@ class TransactionService
         $transaction = Transaction::where('id_user', $this->getUserId())
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
-            ->selectRaw('category, SUM(amount) as total')
-            ->groupBy('category')
+            ->selectRaw('category, type, SUM(amount) as total')
+            ->groupBy('category', 'type')
             ->get()
             ->values();
 
         return $transaction;
     }
-    public function highestMonthlyExpense()
+    public function highestMonthlyExpense(): ?Transaction
     {
         $start = Carbon::now()->startOfMonth();
         $end = Carbon::now()->endOfMonth();
@@ -171,7 +173,7 @@ class TransactionService
 
         return $transaction;
     }
-    public function highestMonthlyRevenue()
+    public function highestMonthlyRevenue(): ?Transaction
     {
         $start = Carbon::now()->startOfMonth();
         $end = Carbon::now()->endOfMonth();
@@ -198,15 +200,15 @@ class TransactionService
     public function expensesByPayment(): Collection
     {
         $transaction = Transaction::where('id_user', $this->getUserId())
-        ->where('type', 'expense')
-        ->selectRaw('payment_method, SUM(amount) as total')
-        ->groupBy('payment_method')
-        ->get()
-        ->values();
+            ->where('type', 'expense')
+            ->selectRaw('payment_method, SUM(amount) as total')
+            ->groupBy('payment_method')
+            ->get()
+            ->values();
 
         return $transaction;
     }
-    public function meanByMonthExpense()
+    public function meanByMonthExpense(): float
     {
         $start = Carbon::now()->startOfMonth();
         $end = Carbon::now()->endOfMonth();
@@ -216,9 +218,9 @@ class TransactionService
             ->whereBetween('created_at', [$start, $end])
             ->avg('amount');
 
-        return $transaction;
+        return (float) ($transaction ?? 0.0);
     }
-    public function meanByDayExpense()
+    public function meanByDayExpense(): float
     {
         $start = Carbon::now()->startOfDay();
         $end = Carbon::now()->endOfDay();
@@ -228,9 +230,9 @@ class TransactionService
             ->whereBetween('created_at', [$start, $end])
             ->avg('amount');
 
-        return $transaction;
+        return (float) ($transaction ?? 0.0);
     }
-    public function meanByYearExpense()
+    public function meanByYearExpense(): float
     {
         $start = Carbon::now()->startOfYear();
         $end = Carbon::now()->endOfYear();
@@ -240,7 +242,7 @@ class TransactionService
             ->whereBetween('created_at', [$start, $end])
             ->avg('amount');
 
-        return $transaction;
+        return (float) ($transaction ?? 0.0);
     }
     public function projectionInBalance(): float|int
     {
@@ -324,6 +326,36 @@ class TransactionService
         }
         $percentage = (($totalRevenueThisMonth - $totalRevenueLastMonth) / $totalRevenueLastMonth) * 100;
 
-        return $percentage;
+        return round($percentage, 2);
+    }
+
+    public function reportByCategoryAndMonth(int $month, int $year): Collection
+    {
+        return Transaction::where('id_user', $this->getUserId())
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->selectRaw('category, type, SUM(amount) as total')
+            ->groupBy('category', 'type')
+            ->get()
+            ->values();
+    }
+    public function createPdfTransaction(int $month, int $year)
+    {
+        $transaction = $this->expensesByCategory($month, $year);
+
+        $totalIncome = $this->monthlyRevenue($month, $year);
+        $totalExpense = $this->monthlyExpense($month, $year);
+        $balance = $totalIncome - $totalExpense;
+
+        $pdf = Pdf::loadView('pdf.pdfDownloadTransaction', compact(
+            'transaction',
+            'month',
+            'year',
+            'totalIncome',
+            'totalExpense',
+            'balance'
+        ));
+
+        return $pdf->download('pdf-historico_transacoes_' . $year . '-' . $month . '.pdf');
     }
 }

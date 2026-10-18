@@ -8,10 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\Response;
 
 
 class UserController extends Controller
@@ -229,17 +228,17 @@ class UserController extends Controller
     }
     public function getActiveUsers(): JsonResponse
     {
-        $users = $this->userService->getActiveUsers();
+        $users = $this->userService->getActiveUser();
         return response()->json(['users' => $users], 200);
     }
     public function getDisableUsers(): JsonResponse
     {
-        $users = $this->userService->getDisableUsers();
+        $users = $this->userService->getDisablesUser();
         return response()->json(['users' => $users], 200);
     }
     public function getAdminsTotal(): JsonResponse
     {
-        $userAdm = $this->userService->getAdminsTotal();
+        $userAdm = $this->userService->getAdminTotal();
         return response()->json(['users' => $userAdm], 200);
     }
     public function getUsersTotal(): JsonResponse
@@ -249,12 +248,12 @@ class UserController extends Controller
     }
     public function getDisableUsersTotal(): JsonResponse
     {
-        $usersDisable = $this->userService->getDisableUsersTotal();
+        $usersDisable = $this->userService->getDisableUserTotal();
         return response()->json(['users' => $usersDisable], 200);
     }
     public function getActiveUsersTotal(): JsonResponse
     {
-        $usersActive = $this->userService->getActiveUsersTotal();
+        $usersActive = $this->userService->getActiveUserTotal();
         return response()->json(['users' => $usersActive], 200);
     }
     public function search(Request $request): JsonResponse
@@ -334,5 +333,21 @@ class UserController extends Controller
             return response()->json(['message' => 'Password has been reset successfully.'], 200);
         }
         return response()->json(['message' => 'Invalid token or password reset failed.'], 400);
+    }
+    public function createPdfUserTotal(): Response
+    {
+        $pdfTotalUser = $this->userService->createPdfUserTotal();
+
+        return $pdfTotalUser;
+    }
+    public function createPdfUserActive(): Response
+    {
+        $pdfUserActive = $this->userService->createPdfUserActive();
+        return $pdfUserActive;
+    }
+     public function createPdfUserDisable(): Response
+    {
+        $pdfUserDisable = $this->userService->createPdfUserDisable();
+        return $pdfUserDisable;
     }
 }

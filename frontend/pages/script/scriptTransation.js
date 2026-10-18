@@ -89,14 +89,14 @@ async function getFilteredTransactionsMonth() {
     data.transactions.forEach(transaction => {
 
         transactionsContainer.innerHTML += `
-                <div>
-                    <p>Categoria: ${transaction.category}</p>
-                    <p>Valor: ${transaction.amount}</p>
-                    <p>Tipo: ${transaction.type}</p>
-                    <p>Descrição: ${transaction.description}</p>
-                    <p>Forma de pagamento: ${transaction.payment_method}</p>
-                </div>
-            `;
+                    <div>
+                        <p>Categoria: ${transaction.category}</p>
+                        <p>Valor: ${transaction.amount}</p>
+                        <p>Tipo: ${transaction.type}</p>
+                        <p>Descrição: ${transaction.description}</p>
+                        <p>Forma de pagamento: ${transaction.payment_method}</p>
+                    </div>
+                `;
     });
 }
 
@@ -154,13 +154,13 @@ async function getFilteredTransactionsType() {
     data.transactions.forEach(transaction => {
 
         transactionsContainer.innerHTML += `
-                <div>
-                    <p>Categoria: ${transaction.category}</p>
-                    <p>Valor: R$ ${transaction.amount}</p>
-                    <p>Tipo: ${transaction.type}</p>
-                    <p>Descrição: ${transaction.description}</p>
-                </div>
-            `;
+                    <div>
+                        <p>Categoria: ${transaction.category}</p>
+                        <p>Valor: R$ ${transaction.amount}</p>
+                        <p>Tipo: ${transaction.type}</p>
+                        <p>Descrição: ${transaction.description}</p>
+                    </div>
+                `;
     });
 }
 
@@ -218,13 +218,13 @@ async function getFilterCategory() {
     data.transactions.forEach(transaction => {
 
         transactionsContainer.innerHTML += `
-                <div>
-                    <p>Categoria: ${transaction.category}</p>
-                    <p>Valor: R$ ${transaction.amount}</p>
-                    <p>Tipo: ${transaction.type}</p>
-                    <p>Descrição: ${transaction.description}</p>
-                </div>
-            `;
+                    <div>
+                        <p>Categoria: ${transaction.category}</p>
+                        <p>Valor: R$ ${transaction.amount}</p>
+                        <p>Tipo: ${transaction.type}</p>
+                        <p>Descrição: ${transaction.description}</p>
+                    </div>
+                `;
     });
 }
 
@@ -301,13 +301,13 @@ async function getExpenses() {
     data.transactions.forEach(transaction => {
 
         transactionsContainer.innerHTML += `
-                <div>
-                    <p>Categoria: ${transaction.category}</p>
-                    <p>Valor: R$ ${transaction.amount}</p>
-                    <p>Tipo: ${transaction.type}</p>
-                    <p>Descrição: ${transaction.description}</p>
-                </div>
-            `;
+                    <div>
+                        <p>Categoria: ${transaction.category}</p>
+                        <p>Valor: R$ ${transaction.amount}</p>
+                        <p>Tipo: ${transaction.type}</p>
+                        <p>Descrição: ${transaction.description}</p>
+                    </div>
+                `;
     });
 }
 
@@ -354,8 +354,8 @@ async function getRevenueMounth() {
         document.getElementById('revenue-month-result');
 
     revenueMonthResult.innerHTML = `
-            <p>Total recebido no mês: R$ ${data.transactions}</p>
-        `;
+                <p>Total recebido no mês: R$ ${data.transactions}</p>
+            `;
 
     const canvas = document.getElementById('revenue-month-chart');
     if (canvas) {
@@ -430,8 +430,8 @@ async function getExpensesMonth() {
         document.getElementById('expense-month-result');
 
     expenseMonthResult.innerHTML = `
-            <p>Total gasto no mês: R$ ${data.transactions}</p>
-        `;
+                <p>Total gasto no mês: R$ ${data.transactions}</p>
+            `;
 
     const canvas = document.getElementById('expense-month-chart');
     if (canvas) {
@@ -499,8 +499,8 @@ async function getExpenseCategories() {
             console.log('ERRO NA API:', data);
 
             document.getElementById('expense-category-result').innerHTML = `
-                <p>Erro ao buscar os gastos.</p>
-            `;
+                    <p>Erro ao buscar os gastos.</p>
+                `;
 
             return;
         }
@@ -511,11 +511,11 @@ async function getExpenseCategories() {
 
         data.transaction.forEach(item => {
             result.innerHTML += `
-                <p>
-                    Categoria: ${item.category}
-                    - Total: R$ ${item.total}
-                </p>
-            `;
+                    <p>
+                        Categoria: ${item.category}
+                        - Total: R$ ${item.total}
+                    </p>
+                `;
         });
 
         const canvas = document.getElementById('expense-category-chart');
@@ -554,8 +554,8 @@ async function getExpenseCategories() {
         console.error('Erro na requisição:', error);
 
         document.getElementById('expense-category-result').innerHTML = `
-            <p>Erro ao conectar com a API.</p>
-        `;
+                <p>Erro ao conectar com a API.</p>
+            `;
     }
 }
 
@@ -590,5 +590,44 @@ async function createTransaction() {
             console.log(error);
         }
     });
+}
+async function createPdfTransaction() {
+    const token = 'Bearer ' + sessionStorage.getItem('session');
+
+    const month = document.getElementById('month').value;
+    const year = new Date().getFullYear()
+
+    if (!month) {
+        alert('Por favor, seleciona um mês para gerar o relatório em PDF.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/transaction/createPdfTransaction?month=${month}&year=${year}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/pdf'
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao gerar o PDF no servidor');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `relatorio-financeshelp-${year}-${month}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao baixar o arquivo.');
+    }
 }
 createTransaction();

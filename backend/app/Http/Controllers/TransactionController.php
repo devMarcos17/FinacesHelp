@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\TransactionCategory;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
@@ -305,11 +306,20 @@ class TransactionController extends Controller
     public function expensesIncresead(): JsonResponse
     {
         $transaction = $this->transactionService->expensesIncresead();
-        return response()->json(['transaction' => ['percentage' =>$transaction]], 200);
+        return response()->json(['transaction' => ['percentage' => $transaction]], 200);
     }
     public function revenuesIncresead(): JsonResponse
     {
         $transaction = $this->transactionService->revenuesIncresead();
-        return response()->json(['transaction' => ['percentage' =>$transaction]], 200);
+        return response()->json(['transaction' => ['percentage' => $transaction]], 200);
+    }
+    public function createPdfTransaction(Request $request)
+    {
+        $month = (int) $request->input('month', Carbon::now()->month);
+        $year = (int) $request->input('year', Carbon::now()->year);
+
+        $transaction = $this->transactionService->createPdfTransaction($month, $year);
+
+        return $transaction;
     }
 }

@@ -11,7 +11,7 @@ async function getUsersTotal() {
         const data = await response.json();
         const totalUsersElement = document.getElementById('total-users');
         if (totalUsersElement) {
-            totalUsersElement.textContent = data.users  ;
+            totalUsersElement.textContent = data.users;
         }
     } catch (error) {
         console.log(error);
@@ -31,7 +31,7 @@ async function getAdmnisTotal() {
         const data = await response.json();
         const totalUsersElement = document.getElementById('admin-users');
         if (totalUsersElement) {
-            totalUsersElement.textContent = data.users  ;
+            totalUsersElement.textContent = data.users;
         }
     } catch (error) {
         console.log(error);
@@ -51,7 +51,7 @@ async function getActiveUserTotal() {
         const data = await response.json();
         const totalUsersElement = document.getElementById('active-users');
         if (totalUsersElement) {
-            totalUsersElement.textContent = data.users  ;
+            totalUsersElement.textContent = data.users;
         }
     } catch (error) {
         console.log(error);
@@ -71,7 +71,7 @@ async function getDisableUsersTotal() {
         const data = await response.json();
         const totalUsersElement = document.getElementById('inactive-users');
         if (totalUsersElement) {
-            totalUsersElement.textContent = data.users  ;
+            totalUsersElement.textContent = data.users;
         }
     } catch (error) {
         console.log(error);

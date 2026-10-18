@@ -431,6 +431,52 @@
             color: #8ea3b6;
         }
 
+        .pdf-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e5e7eb;
+            margin-top: 15px;
+        }
+
+        .pdf-download .badge {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+            letter-spacing: -0.2px;
+        }
+
+        .pdf-download button {
+            background-color: #4f46e5;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .pdf-download button:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        .pdf-download button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2);
+        }
+
         /* ---------- Responsivo ---------- */
         @media (max-width: 960px) {
             .dashboard-grid {
@@ -580,6 +626,10 @@
                     <span class="badge">Projeção do seu saldo</span>
                     <p class="value" id="projection-expense">0</p>
                     <p class="card-desc" id="projection-description">Estimativa para o fim do mês</p>
+                </section>
+                <section class="pdf-download">
+                    <span class="badge">Relaório  Financeiro</span>
+                    <button onclick="createPdf()">Gerar PDF</button>
                 </section>
 
             </div>

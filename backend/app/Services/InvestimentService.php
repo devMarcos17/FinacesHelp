@@ -60,7 +60,7 @@ class InvestimentService
 
         return $investiment;
     }
-    public function profitability(int $idInvestiment)
+    public function profitability(int $idInvestiment): array
     {
         $investiment = Investiment::where('id', $idInvestiment)
             ->where('id_user', $this->getUserId())
@@ -80,7 +80,7 @@ class InvestimentService
             'profitability' => round($profitability, 2),
         ];
     }
-    public function withDraw(int $idInvestiment, float $devolutionAmount)
+    public function withDraw(int $idInvestiment, float $devolutionAmount): array|bool
     {
         $investiment = Investiment::where('id', $idInvestiment)
             ->where('id_user', $this->getUserId())
