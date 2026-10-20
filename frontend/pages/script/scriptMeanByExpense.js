@@ -1,9 +1,13 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function meanByDayExpense() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/transaction/meanByDayExpense',
+            `${API_URL}/api/transaction/meanByDayExpense`,
             {
                 method: 'GET',
                 headers: {
@@ -32,7 +36,7 @@ async function meanByMonthExpense() {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/transaction/meanByMonthExpense',
+            `${API_URL}/api/transaction/meanByMonthExpense`,
             {
                 method: 'GET',
                 headers: {
@@ -55,10 +59,11 @@ async function meanByMonthExpense() {
         console.error(error);
     }
 }
+
 async function meanByYearExpense() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/transaction/meanByMonthExpense', {
+        const response = await fetch(`${API_URL}/api/transaction/meanByMonthExpense`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -76,9 +81,6 @@ async function meanByYearExpense() {
     } catch (error) {
         console.log(error);
     }
-
-
-
 }
 
 function formatCurrency(value) {

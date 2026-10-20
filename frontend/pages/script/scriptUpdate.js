@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function update() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
@@ -19,10 +23,8 @@ async function update() {
         const formData = new FormData(form);
 
         try {
-            const formData = new FormData(form);
-
             const response = await fetch(
-                'http://127.0.0.1:8000/api/goals/update',
+                `${API_URL}/api/goals/update`,
                 {
                     method: 'POST',
                     headers: {

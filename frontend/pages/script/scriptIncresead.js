@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function fetchExpensesIncreased() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const resultDiv = document.getElementById('expenses-increased-result');

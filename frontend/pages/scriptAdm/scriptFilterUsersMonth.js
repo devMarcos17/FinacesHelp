@@ -1,7 +1,11 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function filterUsersMonth() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/filterUsersMonth', {
+        const response = await fetch(`${API_URL}/api/auth/filterUsersMonth`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -31,6 +35,6 @@ async function filterUsersMonth() {
     } catch (error) {
         console.log(error);
     }
-
 }
+
 filterUsersMonth();

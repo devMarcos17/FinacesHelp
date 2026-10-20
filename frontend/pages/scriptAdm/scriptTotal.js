@@ -1,7 +1,11 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function getUsersTotal() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/usersTotal', {
+        const response = await fetch(`${API_URL}/api/auth/usersTotal`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -18,10 +22,11 @@ async function getUsersTotal() {
     }
 }
 getUsersTotal();
+
 async function getAdmnisTotal() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/adminsTotal', {
+        const response = await fetch(`${API_URL}/api/auth/adminsTotal`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -38,10 +43,11 @@ async function getAdmnisTotal() {
     }
 }
 getAdmnisTotal();
+
 async function getActiveUserTotal() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/activeUsersTotal', {
+        const response = await fetch(`${API_URL}/api/auth/activeUsersTotal`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -58,10 +64,11 @@ async function getActiveUserTotal() {
     }
 }
 getActiveUserTotal();
+
 async function getDisableUsersTotal() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/disableUsersTotal', {
+        const response = await fetch(`${API_URL}/api/auth/disableUsersTotal`, {
             method: 'GET',
             headers: {
                 'Authorization': token,

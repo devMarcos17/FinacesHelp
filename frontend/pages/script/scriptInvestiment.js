@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function listInvestiment() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const resultado = document.getElementById('resultado');
@@ -8,7 +12,7 @@ async function listInvestiment() {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/investiment/list',
+            `${API_URL}/api/investiment/list`,
             {
                 method: 'GET',
                 headers: {
@@ -87,7 +91,7 @@ async function getProfitability(id) {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/investiment/profitability',
+            `${API_URL}/api/investiment/profitability`,
             {
                 method: 'POST',
                 headers: {
@@ -182,7 +186,7 @@ async function createInvestiment() {
 
         try {
             const response = await fetch(
-                'http://127.0.0.1:8000/api/investiment/create',
+                `${API_URL}/api/investiment/create`,
                 {
                     method: 'POST',
                     headers: {

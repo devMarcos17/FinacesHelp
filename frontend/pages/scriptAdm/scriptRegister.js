@@ -1,5 +1,14 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function register() {
     const form = document.querySelector('#form');
+
+    if (!form) {
+        console.log('Formulário não encontrado!');
+        return;
+    }
 
     form.addEventListener('submit', async event => {
         event.preventDefault();
@@ -16,7 +25,7 @@ async function register() {
         console.log('Enviando:', Object.fromEntries(formData));
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/auth/register', {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json'
@@ -40,4 +49,5 @@ async function register() {
         }
     });
 }
+
 register();

@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+    
 async function crateGoal() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const form = document.getElementById('formGoal');
@@ -5,7 +9,7 @@ async function crateGoal() {
         event.preventDefault();
         const formData = new FormData(form);
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/goals/create', {
+            const response = await fetch(`${API_URL}/api/goals/create`, {
                 method: 'POST',
                 headers: {
                     'Authorization': token,
@@ -28,12 +32,13 @@ async function crateGoal() {
     });
 }
 crateGoal();
+
 async function listGoal() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const resultado = document.getElementById('resultado');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/goals/list', {
+        const response = await fetch(`${API_URL}/api/goals/list`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -55,7 +60,7 @@ async function listGoal() {
             <strong>Status:</strong> ${status}<br>
 
             <img 
-                src="http://127.0.0.1:8000/img/goals/${goals.image_path}" 
+                src="${API_URL}/img/goals/${goals.image_path}" 
                 alt="${goals.title}"
                 style="width: 200px; height: auto;"
             >
@@ -161,12 +166,13 @@ async function listGoal() {
     }
 }
 listGoal();
+
 async function deleteGoal(id) {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/goals/delete',
+            `${API_URL}/api/goals/delete`,
             {
                 method: 'DELETE',
                 headers: {
@@ -193,12 +199,13 @@ async function deleteGoal(id) {
         console.log('Erro:', error);
     }
 }
+
 async function getGoalPercentage(id) {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/goals/progress',
+            `${API_URL}/api/goals/progress`,
             {
                 method: 'POST',
                 headers: {
@@ -228,4 +235,4 @@ async function getGoalPercentage(id) {
     } catch (error) {
         console.log('Erro ao buscar progresso:', error);
     }
-}
+}   

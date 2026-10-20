@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function filterDataOld() {
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
@@ -5,7 +9,7 @@ async function filterDataOld() {
     try {
 
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/filterDataOld',
+            `${API_URL}/api/auth/filterDataOld`,
             {
                 method: 'GET',
                 headers: {
@@ -21,6 +25,10 @@ async function filterDataOld() {
 
             const listContainer =
                 document.getElementById('users-filters-old');
+
+            if (!listContainer) return;
+
+            listContainer.innerHTML = '';
 
             data.users.forEach(user => {
 
@@ -90,7 +98,7 @@ async function filterDataRecent() {
     try {
 
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/filterDataRecent',
+            `${API_URL}/api/auth/filterDataRecent`,
             {
                 method: 'GET',
                 headers: {
@@ -106,6 +114,10 @@ async function filterDataRecent() {
 
             const listContainer =
                 document.getElementById('users-filters-recent');
+
+            if (!listContainer) return;
+
+            listContainer.innerHTML = '';
 
             data.users.forEach(user => {
 

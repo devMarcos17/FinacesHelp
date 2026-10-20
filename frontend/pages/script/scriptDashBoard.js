@@ -1,9 +1,13 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function getDashBoard() {
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     const response = await fetch(
-        'http://127.0.0.1:8000/api/dashboard/dashboard',
+        `${API_URL}/api/dashboard/dashboard`,
         {
             method: 'GET',
             headers: {
@@ -35,7 +39,7 @@ async function getDashBoard() {
 async function highestMonthlyExpense() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/transaction/highestMonthlyExpense', {
+        const response = await fetch(`${API_URL}/api/transaction/highestMonthlyExpense`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -56,7 +60,7 @@ async function highestMonthlyExpense() {
 async function highestMonthlyRevenue() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/transaction/highestMonthlyRevenue', {
+        const response = await fetch(`${API_URL}/api/transaction/highestMonthlyRevenue`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -74,11 +78,12 @@ async function highestMonthlyRevenue() {
         console.log(error);
     }
 }
+
 async function createPdf() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/dashboard/createPdf', {
+        const response = await fetch(`${API_URL}/api/dashboard/createPdf`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -126,8 +131,8 @@ function createDashboardChart(revenue, expense) {
                 ],
 
                 backgroundColor: [
-                    '#01ac40', // verde = receita
-                    '#e10c0c'  // vermelho = despesa
+                    '#01ac40',
+                    '#e10c0c'
                 ],
 
                 borderColor: '#ffffff',
@@ -157,6 +162,7 @@ function createDashboardChart(revenue, expense) {
         }
     });
 }
+
 getDashBoard();
 highestMonthlyExpense();
 highestMonthlyRevenue();

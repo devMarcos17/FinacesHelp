@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+    
 async function deposit(event, id) {
     event.preventDefault();
 
@@ -9,7 +13,7 @@ async function deposit(event, id) {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/goals/deposit',
+            `${API_URL}/api/goals/deposit`,
             {
                 method: 'POST',
                 headers: {

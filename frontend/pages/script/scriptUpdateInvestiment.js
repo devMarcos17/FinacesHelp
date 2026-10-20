@@ -1,3 +1,7 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function update() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
@@ -26,7 +30,7 @@ async function update() {
 
         try {
             const response = await fetch(
-                'http://127.0.0.1:8000/api/investiment/update',
+                `${API_URL}/api/investiment/update`,
                 {
                     method: 'PUT',
                     headers: {

@@ -1,8 +1,12 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function getList() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/list', {
+        const response = await fetch(`${API_URL}/api/auth/list`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -31,7 +35,7 @@ async function searchUsers(query) {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/search', {
+        const response = await fetch(`${API_URL}/api/auth/search`, {
             method: 'POST',
             headers: {
                 'Authorization': token,
@@ -61,7 +65,7 @@ async function createPdfUser() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/createPdfUserTotal', {
+        const response = await fetch(`${API_URL}/api/auth/createPdfUserTotal`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -144,7 +148,7 @@ async function deleteUser(id) {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/delete',
+            `${API_URL}/api/auth/delete`,
             {
                 method: 'DELETE',
                 headers: {
@@ -175,7 +179,7 @@ async function deleteUser(id) {
 async function activeUser(id) {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/active', {
+        const response = await fetch(`${API_URL}/api/auth/active`, {
             method: 'POST',
             headers: {
                 'Authorization': token,
@@ -201,7 +205,7 @@ async function activeUser(id) {
 async function disableUser(id) {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/disable', {
+        const response = await fetch(`${API_URL}/api/auth/disable`, {
             method: 'POST',
             headers: {
                 'Authorization': token,

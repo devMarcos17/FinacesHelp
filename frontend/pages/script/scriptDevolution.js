@@ -1,3 +1,6 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
 async function devolution(event, id) {
     event.preventDefault();
 
@@ -6,7 +9,7 @@ async function devolution(event, id) {
     const formData = new FormData(form);
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/goals/withDraw', {
+        const response = await fetch(`${API_URL}/api/goals/withDraw`, {
             method: 'POST',
             headers: {
                 'Authorization': token,

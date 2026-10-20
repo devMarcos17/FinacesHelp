@@ -27,7 +27,7 @@ form.addEventListener('submit', async event => {
             alert('Credenciais inválidas');
         }
     } catch (error) {
-        console.log(error);
+        console.logln || console.log(error);
     }
 
-})
+});

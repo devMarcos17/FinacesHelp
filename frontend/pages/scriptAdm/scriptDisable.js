@@ -1,9 +1,13 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function getActiveUser() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/getActiveUsers',
+            `${API_URL}/api/auth/getActiveUsers`,
             {
                 method: 'GET',
                 headers: {
@@ -21,6 +25,7 @@ async function getActiveUser() {
         }
 
         const usersContainer = document.getElementById("users");
+        if (!usersContainer) return;
 
         usersContainer.innerHTML = '';
 
@@ -63,7 +68,7 @@ async function activeUser(id) {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/disable',
+            `${API_URL}/api/auth/disable`,
             {
                 method: 'POST',
                 headers: {
@@ -96,11 +101,12 @@ async function activeUser(id) {
     }
 }
 
+
 async function createPdfUserActive() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/createPdfUserActive', {
+        const response = await fetch(`${API_URL}/api/auth/createPdfUserActive`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -131,4 +137,5 @@ async function createPdfUserActive() {
         alert('Erro ao baixar o arquivo.');
     }
 }
+
 getActiveUser();

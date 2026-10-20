@@ -1,9 +1,13 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function getDisableUsers() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/getDisableUsers',
+            `${API_URL}/api/auth/getDisableUsers`,
             {
                 method: 'GET',
                 headers: {
@@ -21,6 +25,7 @@ async function getDisableUsers() {
         }
 
         const usersContainer = document.getElementById("users");
+        if (!usersContainer) return;
 
         usersContainer.innerHTML = '';
 
@@ -63,7 +68,7 @@ async function disableUser(id) {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/auth/active',
+            `${API_URL}/api/auth/active`,
             {
                 method: 'POST',
                 headers: {
@@ -83,7 +88,7 @@ async function disableUser(id) {
 
         if (!response.ok) {
             console.error('Erro ao ativar usuário:', data);
-            alert('Erro ao desativar usuário.');
+            alert('Erro ao ativar usuário.');
             return;
         }
 
@@ -96,11 +101,12 @@ async function disableUser(id) {
     }
 }
 
+
 async function createPdfUserDisable() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/createPdfUserDisable', {
+        const response = await fetch(`${API_URL}/api/auth/createPdfUserDisable`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -131,4 +137,5 @@ async function createPdfUserDisable() {
         alert('Erro ao baixar o arquivo.');
     }
 }
+
 getDisableUsers();

@@ -1,10 +1,14 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function getTransaction() {
 
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     const [responseRevenue, responseExpense, responseBalance] = await Promise.all([
 
-        fetch('http://127.0.0.1:8000/api/transaction/totalRevenue', {
+        fetch(`${API_URL}/api/transaction/totalRevenue`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -12,7 +16,7 @@ async function getTransaction() {
             }
         }),
 
-        fetch('http://127.0.0.1:8000/api/transaction/totalExpense', {
+        fetch(`${API_URL}/api/transaction/totalExpense`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -20,7 +24,7 @@ async function getTransaction() {
             }
         }),
 
-        fetch('http://127.0.0.1:8000/api/transaction/balance', {
+        fetch(`${API_URL}/api/transaction/balance`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -56,7 +60,7 @@ async function getFilteredTransactionsMonth() {
     const month = document.getElementById('month').value;
 
     const response = await fetch(
-        'http://127.0.0.1:8000/api/transaction/filter',
+        `${API_URL}/api/transaction/filter`,
         {
             method: 'POST',
 
@@ -114,13 +118,13 @@ async function getFilteredTransactionsType() {
 
     if (type === 'expense') {
 
-        url = 'http://127.0.0.1:8000/api/transaction/filterExpense';
+        url = `${API_URL}/api/transaction/filterExpense`;
 
     }
 
     if (type === 'revenue') {
 
-        url = 'http://127.0.0.1:8000/api/transaction/filterRevenue';
+        url = `${API_URL}/api/transaction/filterRevenue`;
 
     }
 
@@ -182,7 +186,7 @@ async function getFilterCategory() {
     }
 
     const response = await fetch(
-        'http://127.0.0.1:8000/api/transaction/expensesCategories',
+        `${API_URL}/api/transaction/expensesCategories`,
         {
             method: 'POST',
 
@@ -267,7 +271,7 @@ async function getExpenses() {
     const category =
         document.getElementById('expense-month-button').value;
     const response = await fetch(
-        'http://127.0.0.1:8000/api/transaction/expensesByCategory',
+        `${API_URL}/api/transaction/expensesByCategory`,
         {
             method: 'POST',
 
@@ -324,7 +328,7 @@ async function getRevenueMounth() {
     }
 
     const response = await fetch(
-        'http://127.0.0.1:8000/api/transaction/monthlyRevenue',
+        `${API_URL}/api/transaction/monthlyRevenue`,
         {
             method: 'POST',
 
@@ -400,7 +404,7 @@ async function getExpensesMonth() {
     }
 
     const response = await fetch(
-        'http://127.0.0.1:8000/api/transaction/monthlyExpense',
+        `${API_URL}/api/transaction/monthlyExpense`,
         {
             method: 'POST',
 
@@ -474,7 +478,7 @@ async function getExpenseCategories() {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/transaction/expensesByCategory',
+            `${API_URL}/api/transaction/expensesByCategory`,
             {
                 method: 'POST',
 
@@ -513,7 +517,8 @@ async function getExpenseCategories() {
             result.innerHTML += `
                     <p>
                         Categoria: ${item.category}
-                        - Total: R$ ${item.total}
+- Total: R$ 
+${item.total}
                     </p>
                 `;
         });
@@ -567,11 +572,13 @@ document
 async function createTransaction() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const formTransaction = document.getElementById('formTransaction');
+    if (!formTransaction) return;
+    
     formTransaction.addEventListener('submit', async event => {
         event.preventDefault();
         const formDataTransaction = new FormData(formTransaction);
         try {
-            const responseTransaction = await fetch('http://127.0.0.1:8000/api/transaction/create', {
+            const responseTransaction = await fetch(`${API_URL}/api/transaction/create`, {
                 method: 'POST',
                 headers: {
                     'Authorization': token,
@@ -591,11 +598,12 @@ async function createTransaction() {
         }
     });
 }
+
 async function createPdfTransaction() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
 
     const month = document.getElementById('month').value;
-    const year = new Date().getFullYear()
+    const year = new Date().getFullYear();
 
     if (!month) {
         alert('Por favor, seleciona um mês para gerar o relatório em PDF.');
@@ -603,7 +611,7 @@ async function createPdfTransaction() {
     }
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/transaction/createPdfTransaction?month=${month}&year=${year}`, {
+        const response = await fetch(`${API_URL}/api/transaction/createPdfTransaction?month=${month}&year=${year}`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -630,4 +638,5 @@ async function createPdfTransaction() {
         alert('Erro ao baixar o arquivo.');
     }
 }
+
 createTransaction();

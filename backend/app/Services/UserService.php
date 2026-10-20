@@ -25,7 +25,7 @@ class UserService
         $user->date_of_birt = $data['date_of_birt'];
 
         $user->status = 'ativo';
-        $user->role = 'admin';
+        $user->role = 'user';
 
         $user->save();
 

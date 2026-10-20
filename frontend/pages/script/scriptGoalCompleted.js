@@ -1,9 +1,13 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
+
 async function goalCompleted() {
     const token = 'Bearer ' + sessionStorage.getItem('session');
     const container = document.getElementById('result-finished');
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/goals/completed', {
+        const response = await fetch(`${API_URL}/api/goals/completed`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -33,7 +37,7 @@ async function goalCompleted() {
                         </p>
 
                         <img 
-                            src="http://127.0.0.1:8000/img/goals/${goal.image_path}" 
+                            src="${API_URL}/img/goals/${goal.image_path}" 
                             alt="${goal.title}"
                             style="width: 200px; height: auto;"
                         >
