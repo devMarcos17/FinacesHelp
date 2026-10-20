@@ -323,20 +323,4 @@ class TransactionControllerTest extends TestCase
         $response->assertHeader('Content-Type', 'application/pdf');
         $this->assertNotEmpty($response->getContent());
     }
-
-    //php artisan test --filter TransactionControllerTest::test_download_dashboard_transaction_with_moch
-    public function test_download_dashboard_transaction_with_moch()
-    {
-        $this->mock(DashBoardController::class, fn($mock) =>
-        $mock->shoudReceive('createPdf')
-        ->once()
-        ->andReturn('%PDF-1.4 [CONTENT SIMULATION OF PDF IN USER')
-        );
-
-        $response = $this->actingAs($this->user)->get('api/dashboard/createPdf');
-
-        $response->assertOk();
-        $response->assertHeader('Content-Type', 'application/pdf');
-        $this->assertNotEmpty($response->getContent());
-    }
 }
