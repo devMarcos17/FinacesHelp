@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('goals', function (Blueprint $table) {
@@ -18,17 +15,16 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('target_year');
             $table->date('target_date')->nullable();
+            $table->decimal('target_amount', 10, 2)->default(0.00);
+            $table->decimal('current_amount', 10, 2)->default(0.00);
             $table->enum('status', ['in_progress', 'completed', 'cancelled', 'paused'])->default('in_progress');
             $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('table_goals');
+        Schema::dropIfExists('goals');
     }
 };
