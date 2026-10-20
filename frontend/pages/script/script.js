@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://finaceshelp.onrender.com';
 
 const form = document.querySelector('#form');
 
@@ -17,7 +19,7 @@ form.addEventListener('submit', async event => {
     console.log('Enviando:', Object.fromEntries(formData));
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/register', {
+        const response = await fetch(`${API_URL}/api/auth/register`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
