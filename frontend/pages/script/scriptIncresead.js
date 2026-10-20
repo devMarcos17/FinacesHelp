@@ -4,7 +4,7 @@ async function fetchExpensesIncreased() {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/transaction/expensesIncresead',
+            `${API_URL}/api/transaction/expensesIncresead`,
             {
                 method: 'GET',
                 headers: {
@@ -24,7 +24,9 @@ async function fetchExpensesIncreased() {
 
     } catch (error) {
         console.error(error);
-        resultDiv.innerHTML = `<p style="color: red;">Erro ao carregar dados.</p>`;
+        if (resultDiv) {
+            resultDiv.innerHTML = `<p style="color: red;">Erro ao carregar dados.</p>`;
+        }
     }
 }
 
@@ -34,7 +36,7 @@ async function fetchRevenuesIncreased() {
 
     try {
         const response = await fetch(
-            'http://127.0.0.1:8000/api/transaction/revenuesIncresead',
+            `${API_URL}/api/transaction/revenuesIncresead`,
             {
                 method: 'GET',
                 headers: {
@@ -55,7 +57,9 @@ async function fetchRevenuesIncreased() {
 
     } catch (error) {
         console.error(error);
-        resultDiv.innerHTML = `<p style="color: red;">Erro ao carregar dados.</p>`;
+        if (resultDiv) {
+            resultDiv.innerHTML = `<p style="color: red;">Erro ao carregar dados.</p>`;
+        }
     }
 }
 
