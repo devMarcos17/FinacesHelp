@@ -1,9 +1,11 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const form = document.getElementById('formLogin');
 form.addEventListener('submit', async event => {
     event.preventDefault();
     const formData = new FormData(form);
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/login', {
+        const response = await fetch(`${API_URL}/api/auth/login`, {
             method: 'post',
             mode: 'cors',
             body: formData
