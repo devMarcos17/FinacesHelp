@@ -36,7 +36,7 @@ class UserController extends Controller
                 'password' => 'required|min:7',
                 'phone' => 'required|string',
                 'cpf' => 'required|string',
-                'date_of_birt' => 'required|date_format:d/m/Y',
+                'date_of_birt' => 'required|date_format:Y-m-d'
             ]
         );
 
